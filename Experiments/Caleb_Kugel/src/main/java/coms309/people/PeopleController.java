@@ -87,7 +87,8 @@ public class PeopleController {
     
     @DeleteMapping("/people/{firstName}")
     public @ResponseBody HashMap<String, Person> deletePerson(@PathVariable String firstName) {
-        peopleList.remove(firstName);
+	deleteSteps(firstName);
+	peopleList.remove(firstName);
         return peopleList;
     }
 
@@ -95,7 +96,7 @@ public class PeopleController {
   public @ResponseBody String addSteps(@PathVariable String firstName, @RequestBody Walking walk) {
     Person p = peopleList.get(firstName);
     peopleWalking.put(p, walk);
-    return "Updated steps for " + firstName + ".";
+    return "Updated steps for " + firstName + ". with: " + walk.toString();
   }
 
   @PutMapping("/people/{firstName}/updateSteps")
@@ -108,6 +109,12 @@ public class PeopleController {
   @GetMapping("/people/{firstName}/getSteps")
   public @ResponseBody Walking getSteps(@PathVariable String firstName) {
     return peopleWalking.get(peopleList.get(firstName));
+  }
+
+  @DeleteMapping("/people/{firstName}/steps")
+  public @ResponseBody HashMap<Person, Walking> deleteSteps(@PathVariable String firstName) {
+    peopleWalking.remove(peopleList.get(firstName));
+    return peopleWalking;
   }
 
 
