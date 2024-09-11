@@ -1,8 +1,8 @@
-# android_unit1_1
+# android_unit1_3
 
 ### What is this example: 
 
-A "hello world" example for testing environment setup
+A "login & signup" example. This is only an example of the interface, NO actual connections are made in this example.
 
 ### version tested
 |Android Studio            | Android SDK | Gradle | Emulator |
