@@ -27,7 +27,7 @@ public class PeopleController {
 
     HashMap<Person, Walking> peopleWalking = new HashMap<>();
 
-    HashMap<String, List<People>> organizationMembers = new HashMap<>();
+    HashMap<String, Organization> organizationList = new HashMap<>();
 
     //CRUDL (create/read/update/delete/list)
     // use POST, GET, PUT, DELETE, GET methods for CRUDL
@@ -119,13 +119,29 @@ public class PeopleController {
     return peopleWalking;
   }
 
-  @postMapping("/organization")
-  public @ResponseBody Organization createOrganization(@RequestParam(required = false) Person creator, @RequestParam(required = true) String name) {
-    
+  @PostMapping("/organization")
+  public @ResponseBody Organization createOrganization(@RequestParam(required = true) Person creator, @RequestParam(required = true) String name, @RequestParam(required = true) String location) {
+    Organization org = new Organization(name, creator.firstName, location);
+    organizationList.put(name, org);
+    return org;
   }
 
-  @postMapping("/organization/addUsers")
-  public @ResponseBody Organization 
+  @PutMapping("/organization/{organization}/add-user/{firstName}")
+  public @ResponseBody Organization addUserToOrganization(@PathVariable String organization, @PathVariable String firstName) {
+    Organization org = organizationList.get(organizarion);
+    org.addPerson(organizationList.get(firstName));
+    return org;
+  }
+
+  @GetMapping("/organization/{organization}")
+  public @ResponseBody Organization getOrganization(@PathVariable String organization) {
+    return organizationList.get(organization);
+  }
+
+  @DeleteMapping("/organization/{organization}")
+  public @ResponseBody Organization deleteOrganization(@PathVariable String organization) {
+    return organizationList.remove(organization);
+  }
 
 
 }
