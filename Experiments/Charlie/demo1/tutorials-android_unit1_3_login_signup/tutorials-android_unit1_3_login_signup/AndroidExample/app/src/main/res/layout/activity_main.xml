@@ -32,6 +32,17 @@
     </TextView>
 
 
+    <TextView
+        android:id="@+id/main_stepcount_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="100dp"
+        android:text="{{daily_stepcount}}"
+        android:textColor="#000000"
+        android:textSize="30dp"></TextView>
+
     <Button
         android:id="@+id/main_login_btn"
         android:layout_width="150dp"

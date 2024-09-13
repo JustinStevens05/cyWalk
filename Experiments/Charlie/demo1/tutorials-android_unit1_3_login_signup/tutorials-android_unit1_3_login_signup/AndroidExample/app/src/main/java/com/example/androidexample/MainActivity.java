@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
     private TextView usernameText;  // define username textview variable
+    private TextView stepcountText;
     private Button loginButton;     // define login button variable
     private Button signupButton;    // define signup button variable
 
@@ -27,17 +28,22 @@ public class MainActivity extends AppCompatActivity {
         usernameText = findViewById(R.id.main_username_txt);// link to username textview in the Main activity XML
         loginButton = findViewById(R.id.main_login_btn);    // link to login button in the Main activity XML
         signupButton = findViewById(R.id.main_signup_btn);  // link to signup button in the Main activity XML
+        stepcountText = findViewById(R.id.main_stepcount_txt);
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
-            messageText.setText("Home Page");
+            messageText.setText("CyWalk");
             usernameText.setVisibility(View.INVISIBLE);             // set username text invisible initially
         } else {
-            messageText.setText("Welcome");
+            messageText.setText("Welcome back");
             usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
+            stepcountText.setText("You have {stepcount} steps today", extras.getString("stepcount"));
+            String stepcountString = "You have " + extras.getString("stepcount") + " steps today";
+            stepcountText.setText(stepcountString);
             loginButton.setVisibility(View.INVISIBLE);              // set login button invisible
             signupButton.setVisibility(View.INVISIBLE);             // set signup button invisible
+
         }
 
         /* click listener on login button pressed */
