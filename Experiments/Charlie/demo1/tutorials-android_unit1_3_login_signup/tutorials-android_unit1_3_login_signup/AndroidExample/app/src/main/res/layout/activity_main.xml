@@ -39,7 +39,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="100dp"
-        android:text="{{daily_stepcount}}"
         android:textColor="#000000"
         android:textSize="30dp"></TextView>
 

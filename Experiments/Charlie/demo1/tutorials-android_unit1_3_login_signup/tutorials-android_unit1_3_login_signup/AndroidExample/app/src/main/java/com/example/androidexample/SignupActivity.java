@@ -50,6 +50,12 @@ public class SignupActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 String confirm = confirmEditText.getText().toString();
 
+                if (password.length() < 5) {
+                    Toast.makeText(getApplication(), "Password must be at least 5 characters.", Toast.LENGTH_LONG).show();
+                    passwordEditText.setText("");
+                    confirmEditText.setText("");
+                }
+
                 if (password.equals(confirm)){
                     Toast.makeText(getApplicationContext(), "Signing up", Toast.LENGTH_LONG).show();
                 }

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             messageText.setText("Welcome back");
             usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
-            stepcountText.setText("You have {stepcount} steps today", extras.getString("stepcount"));
+            // stepcountText.setText("You have {stepcount} steps today", extras.getString("stepcount"));
             String stepcountString = "You have " + extras.getString("stepcount") + " steps today";
             stepcountText.setText(stepcountString);
             loginButton.setVisibility(View.INVISIBLE);              // set login button invisible

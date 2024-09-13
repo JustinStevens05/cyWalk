@@ -35,10 +35,13 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
+                String stepcount = "50";
+
                 /* when login button is pressed, use intent to switch to Login Activity */
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.putExtra("USERNAME", username);  // key-value to pass to the MainActivity
                 intent.putExtra("PASSWORD", password);  // key-value to pass to the MainActivity
+                intent.putExtra("stepcount", stepcount);
                 startActivity(intent);  // go to MainActivity with the key-value data
             }
         });
