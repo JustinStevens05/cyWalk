@@ -11,13 +11,12 @@
         android:id="@+id/main_msg_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home Page"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="50dp"
-        android:textSize="30dp"
-        android:textColor="#fc0303">
-    </TextView>
+        android:text="Welcome to CyWalk"
+        android:textColor="#F003FC"
+        android:textSize="30dp"></TextView>
 
     <TextView
         android:id="@+id/main_username_txt"
