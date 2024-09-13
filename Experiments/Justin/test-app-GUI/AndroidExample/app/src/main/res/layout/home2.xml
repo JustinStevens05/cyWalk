@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".HomePageTwo">
+
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:fontFamily="monospace"
+        android:text="home page"
+        android:textAllCaps="true"
+        android:textColor="#ffffff"
+        android:textSize="30sp"
+        android:translationY="1400px"
+        android:background="@color/black"
+        app:cornerRadius="25px"></Button>
+
+    <EditText
+        android:id="@+id/textBox1"
+        android:layout_width="match_parent"
+        android:layout_height="300px"
+        android:ems="10"
+        android:inputType="text"
+        android:singleLine="false"
+        android:textColor="@color/black"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="ToggleButton"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:translationX="400px"
+        android:translationY="300px" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
