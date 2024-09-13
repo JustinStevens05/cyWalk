@@ -1,5 +1,8 @@
 package coms309.people;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Organization {
   private String name;
   
@@ -15,9 +18,9 @@ public class Organization {
 
   public Organization(String name, String adminsName, String location) {
     this.name = name;
-    this.adminsName = adminName;
+    this.adminsName = adminsName;
     this.location = location;
-    poeple = new ArrayList<>();
+    people = new ArrayList<>();
   }
 
   public String getName() {
@@ -41,7 +44,7 @@ public class Organization {
   }
 
   public String toString() {
-    return name + ", " + adminName + ", " + location; 
+    return name + ", " + adminsName + ", " + location; 
   }
 
 }
