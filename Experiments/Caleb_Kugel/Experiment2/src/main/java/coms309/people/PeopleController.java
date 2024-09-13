@@ -28,8 +28,6 @@ public class PeopleController {
 
     HashMap<Person, Walking> peopleWalking = new HashMap<>();
 
-    HashMap<String, Organization> organizationList = new HashMap<>();
-
     //CRUDL (create/read/update/delete/list)
     // use POST, GET, PUT, DELETE, GET methods for CRUDL
 
@@ -143,6 +141,7 @@ public class PeopleController {
   public @ResponseBody Organization deleteOrganization(@PathVariable String organization) {
     return organizationList.remove(organization);
   }
+
 
 
 }
