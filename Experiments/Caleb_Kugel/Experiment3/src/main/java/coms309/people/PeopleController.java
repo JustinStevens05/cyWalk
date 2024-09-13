@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 import java.util.HashMap;
@@ -120,16 +121,16 @@ public class PeopleController {
   }
 
   @PostMapping("/organization")
-  public @ResponseBody Organization createOrganization(@RequestParam(required = true) Person creator, @RequestParam(required = true) String name, @RequestParam(required = true) String location) {
-    Organization org = new Organization(name, creator.firstName, location);
+  public @ResponseBody Organization createOrganization(@RequestParam(required = true) String creator, @RequestParam(required = true) String name, @RequestParam(required = true) String location) {
+    Organization org = new Organization(name, creator, location);
     organizationList.put(name, org);
     return org;
   }
 
   @PutMapping("/organization/{organization}/add-user/{firstName}")
   public @ResponseBody Organization addUserToOrganization(@PathVariable String organization, @PathVariable String firstName) {
-    Organization org = organizationList.get(organizarion);
-    org.addPerson(organizationList.get(firstName));
+    Organization org = organizationList.get(organization);
+    org.addPerson(peopleList.get(firstName));
     return org;
   }
 
