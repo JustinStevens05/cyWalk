@@ -27,14 +27,30 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:text="Daily"/>
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-black"
+                android:layout_weight="1"
+                android:text="Daily:"/>
+
+            <EditText
+                android:id="@+id/dailySteps"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-black"
+                android:textAlignment="textEnd"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/dailyprogressBar"
@@ -45,14 +61,29 @@
             android:paddingVertical="10sp"
             android:progressTint="#FFEB3B" />
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/black"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:text="Weekly"/>
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-black"
+                android:text="Weekly:"/>
+
+            <EditText
+                android:id="@+id/weeklySteps"
+                android:layout_width="1dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-black"
+                android:textAlignment="textEnd"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/weeklyprogressBar"
@@ -113,5 +144,4 @@
             android:text="Profile" />
 
     </LinearLayout>
-
 </RelativeLayout>
