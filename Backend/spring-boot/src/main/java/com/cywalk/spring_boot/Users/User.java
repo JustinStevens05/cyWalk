@@ -11,9 +11,14 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  private String username;
-  private String email;
 
+  @Column(unique = true, nullable = false)
+  @get:NotBlank(message = "Username must not be blank")
+  private String username;
+
+  @Column(unique = true, nullable = false)
+  @get:NotBlank(message = "email must not be blank")
+  private String email;
 
   @OneToMany
   private List<Steps> steps;
