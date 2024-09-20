@@ -27,6 +27,11 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5sp"
+            android:background="@android:color/black"/>
+
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -121,6 +126,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:padding="10dp"
             android:layout_height="wrap_content">
 
             <Button
@@ -131,6 +137,11 @@
                 android:padding="5sp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5sp"
+            android:background="@android:color/black"/>
 
     </LinearLayout>
 

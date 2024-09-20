@@ -16,7 +16,7 @@ public class Goals extends AppCompatActivity {
     private ProgressBar daily_bar;
     private ProgressBar weekly_bar;
     private int dailyStepCount = 1000;
-    private int weeklyStepCount = 5000;
+    private int weeklyStepCount = 51000;
     private final int dailyGoal = 10000;
     private final int weeklyGoal = 70000;
 
