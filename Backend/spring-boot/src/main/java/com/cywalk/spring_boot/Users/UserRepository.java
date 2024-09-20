@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot;
+package com.cywalk.spring_boot.Users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
