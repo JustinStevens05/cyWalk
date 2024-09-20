@@ -12,15 +12,15 @@ public class StepsService {
     @Autowired
     private StepRepository stepRepository;
 
-    public Step saveStep(Step step) {
+    public Steps saveStep(Steps step) {
         return stepRepository.save(step);
     }
 
-    public Optional<Step> getStepById(Long id) {
+    public Optional<Steps> getStepById(Long id) {
         return stepRepository.findById(id);
     }
 
-    public List<Step> getAllSteps() {
+    public List<Steps> getAllSteps() {
         return stepRepository.findAll();
     }
 

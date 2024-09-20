@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Step.Users;
+package com.cywalk.spring_boot.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -11,20 +11,20 @@ import java.util.Optional;
 public class StepsController {
 
     @Autowired
-    private StepService stepService;
+    private StepsService stepService;
 
     @PostMapping
-    public Step createStep(@RequestBody Step step) {
+    public Steps createStep(@RequestBody Steps step) {
         return stepService.saveStep(step);
     }
 
     @GetMapping("/{id}")
-    public Optional<Step> getStepById(@PathVariable Long id) {
+    public Optional<Steps> getStepById(@PathVariable Long id) {
         return stepService.getStepById(id);
     }
 
     @GetMapping
-    public List<Step> getAllSteps() {
+    public List<Steps> getAllSteps() {
         return stepService.getAllSteps();
     }
 

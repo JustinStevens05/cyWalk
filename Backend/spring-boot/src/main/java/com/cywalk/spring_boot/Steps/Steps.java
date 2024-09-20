@@ -1,8 +1,10 @@
 package com.cywalk.spring_boot.Steps;
 
 import com.cywalk.spring_boot.Steps.Steps;
+import com.cywalk.spring_boot.Users.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
