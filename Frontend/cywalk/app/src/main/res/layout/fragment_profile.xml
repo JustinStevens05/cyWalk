@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".Profile" >
 
+    <ListView
+        android:id="@+id/friends_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below = "@id/dailySteps_text"/>
+
     <TextView
         android:id="@+id/currentLeague_text"
         android:layout_width="wrap_content"
@@ -29,7 +35,8 @@
         android:id="@+id/user_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below = "@id/username_text"
         android:scaleX="1"
         android:scaleY="1"
 
@@ -39,8 +46,8 @@
         android:id="@+id/username_text"
         android:layout_width="100dp"
         android:layout_height="30dp"
-        android:layout_above = "@id/user_avatar"
         android:layout_centerHorizontal = "true"
+        android:layout_alignParentTop="true"
         android:text="{ USERNAME }" />
 
 
