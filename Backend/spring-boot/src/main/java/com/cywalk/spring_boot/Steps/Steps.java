@@ -14,7 +14,7 @@ public class Steps {
 
     private int amountOfSteps;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -28,12 +28,12 @@ public class Steps {
         this.amountOfSteps = amountOfSteps;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public User getUser() {

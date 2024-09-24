@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StepRepository extends JpaRepository<Steps, Long> {
     List<Steps> findByDate(LocalDate date);
-    List<Steps> findByDateAndTime(LocalDate date, LocalTime time);
+    //List<Steps> findByDateAndTime(LocalDate date, LocalTime time);
 }

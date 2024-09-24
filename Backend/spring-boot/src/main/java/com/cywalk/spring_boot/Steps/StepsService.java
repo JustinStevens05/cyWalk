@@ -12,6 +12,10 @@ public class StepsService {
     @Autowired
     private StepRepository stepRepository;
 
+    public StepsService() {
+
+    }
+
     public Steps saveStep(Steps step) {
         return stepRepository.save(step);
     }

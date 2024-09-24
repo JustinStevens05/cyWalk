@@ -10,6 +10,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserService() {
+
+    }
+
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
