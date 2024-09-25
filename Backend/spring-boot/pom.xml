@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.cywalk</groupId>
 	<artifactId>spring-boot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>CyWalk</name>
 	<description>Cywalk backend application</description>
 	<url/>
@@ -31,29 +31,29 @@
 	</properties>
   <dependencies>
 		<!-- The H2 database dependency. To be replaced with mongoDb for production -->
-		<dependency> 
-			<groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.4.200</version>
-      <scope>runtime</scope>
-      </dependency>
+	      <dependency> 
+		<groupId>com.h2database</groupId>
+		<artifactId>h2</artifactId>
+		<version>1.4.200</version>
+		<scope>runtime</scope>
+	      </dependency>
 
-    <!-- The ORM JPA specs/hibernate impl -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-      </dependency>
+	    <!-- The ORM JPA specs/hibernate impl -->
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-data-jpa</artifactId>
+	    </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+	    <dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+	    <dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-test</artifactId>
+		<scope>test</scope>
+	    </dependency>
 	</dependencies>
 
 	<build>
