@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Profile" >
+
+    <ListView
+        android:id="@+id/friends_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below = "@id/dailySteps_text"/>
+
+    <TextView
+        android:id="@+id/currentLeague_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below = "@id/user_avatar"
+        android:layout_centerHorizontal = "true"
+        android:padding = "25dp"
+        android:layout_margin="25dp"
+        android:text="Current League: { LEAGUE }" />
+
+    <TextView
+        android:id="@+id/dailySteps_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below = "@id/currentLeague_text"
+        android:layout_centerHorizontal = "true"
+        android:padding = "15dp"
+        android:text="You have { DAILYSTEPS } steps today!" />
+
+    <ImageView
+        android:id="@+id/user_avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below = "@id/username_text"
+        android:scaleX="1"
+        android:scaleY="1"
+
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/username_text"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal = "true"
+        android:layout_alignParentTop="true"
+        android:text="{ USERNAME }" />
+
+
+</RelativeLayout>
