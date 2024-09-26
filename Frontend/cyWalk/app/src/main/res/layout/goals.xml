@@ -172,12 +172,12 @@
             android:text="Goals" />
 
         <Button
-            android:id="@+id/leaderBoardBtn"
+            android:id="@+id/socialBtn"
             android:layout_width="0sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#000000"
-            android:text="Leaders" />
+            android:text="Social" />
 
         <Button
             android:id="@+id/profileBtn"

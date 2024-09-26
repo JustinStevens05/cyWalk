@@ -19,12 +19,14 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 51000;
     private final int dailyGoal = 10000;
     private final int weeklyGoal = 70000;
+    private Button socialButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.goals);
 
+        socialButton = findViewById(R.id.socialBtn);
         daily_step_disp = findViewById(R.id.dailySteps);
         weekly_step_disp = findViewById(R.id.weeklySteps);
         daily_bar = findViewById(R.id.dailyprogressBar);
@@ -36,5 +38,14 @@ public class Goals extends AppCompatActivity {
         daily_bar.setProgress(dailyStepCount);
         weekly_bar.setProgress(weeklyStepCount);
 
+        socialButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* when counter button is pressed, use intent to switch to Counter Activity */
+                Intent intent = new Intent(Goals.this, Social.class);
+                startActivity(intent);
+            }
+        });
     }
 }
