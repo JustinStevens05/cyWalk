@@ -32,7 +32,7 @@ public class StringReqActivity extends AppCompatActivity {
 
     /** Uncomment to use: if sending a [GET] StringRequest */
     /** Use public API on the Internet */
-//    private static final String URL_STRING_REQ = "https://jsonplaceholder.typicode.com/users/1";
+    private static final String URL_STRING_REQ = "https://jsonplaceholder.typicode.com/users/1";
 
     /** Uncomment to use: if sending a [GET] StringRequest */
     /** Use API created with POSTMAN-mockserver */
@@ -45,7 +45,7 @@ public class StringReqActivity extends AppCompatActivity {
 
     /** Uncomment to use: if sending a [POST] StringRequest */
     /** Use backend: https://git.las.iastate.edu/cs309/tutorials/-/tree/springboot_unit2_1_onetoone */
-    public static final String URL_STRING_REQ = "http://10.0.2.2:8080/users";
+//    public static final String URL_STRING_REQ = "http://10.0.2.2:8080/users";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
