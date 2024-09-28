@@ -27,36 +27,37 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
-        <LinearLayout
+        <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:background="@color/black"
+            android:id="@+id/tabLayout"
+            app:tabSelectedTextColor="@android:color/holo_orange_light"
+            app:tabTextColor="@color/white">
 
-            <Button
-                android:id="@+id/friendBoardBtn"
-                android:layout_width="0sp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#000000"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/friendsTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Friends" />
 
-            <Button
-                android:id="@+id/localBoardBtn"
-                android:layout_width="0sp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#000000"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/localTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Local" />
 
-            <Button
-                android:id="@+id/globalBoardBtn"
-                android:layout_width="0sp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="#000000"
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/globalTab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Global" />
+        </com.google.android.material.tabs.TabLayout>
 
-        </LinearLayout>
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/viewPager"/>
 
     </LinearLayout>
 
@@ -99,4 +100,5 @@
             android:text="Profile" />
 
     </LinearLayout>
+
 </RelativeLayout>
