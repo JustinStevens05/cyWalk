@@ -1,6 +1,6 @@
 package com.cywalk.spring_boot.Users;
 
-import com.cywalk.spring_boot.Steps.Steps;
+import com.cywalk.spring_boot.Locations.Location;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,9 +15,9 @@ public class User {
   private String email;
 
   @OneToMany
-  private List<Steps> steps;
+  private List<Location> steps;
 
-  public User(long id, String username, String email, List<Steps> steps) {
+  public User(long id, String username, String email, List<Location> steps) {
     this.id = id;
     this.username = username;
     this.email = email;
@@ -52,11 +52,11 @@ public class User {
     this.email = email;
   }
 
-  public List<Steps> getSteps() {
+  public List<Location> getSteps() {
     return steps;
   }
 
-  public void setSteps(List<Steps> steps) {
+  public void setSteps(List<Location> steps) {
     this.steps = steps;
   }
 }

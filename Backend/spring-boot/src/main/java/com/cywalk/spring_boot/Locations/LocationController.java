@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Steps;
+package com.cywalk.spring_boot.Locations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,23 +8,23 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/steps")
-public class StepsController {
+public class LocationController {
 
     @Autowired
-    private StepsService stepService;
+    private LocationService stepService;
 
     @PostMapping
-    public Steps createStep(@RequestBody Steps step) {
+    public Location createStep(@RequestBody Location step) {
         return stepService.saveStep(step);
     }
 
     @GetMapping("/{id}")
-    public Optional<Steps> getStepById(@PathVariable Long id) {
+    public Optional<Location> getStepById(@PathVariable Long id) {
         return stepService.getStepById(id);
     }
 
     @GetMapping
-    public List<Steps> getAllSteps() {
+    public List<Location> getAllSteps() {
         return stepService.getAllSteps();
     }
 

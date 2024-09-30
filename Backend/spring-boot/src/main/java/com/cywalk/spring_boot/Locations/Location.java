@@ -1,14 +1,12 @@
-package com.cywalk.spring_boot.Steps;
+package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.Steps.Steps;
 import com.cywalk.spring_boot.Users.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-public class Steps {
+public class Location {
     @Id
     private Long id;
 
