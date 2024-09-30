@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 public class Location {
@@ -15,11 +16,7 @@ public class Location {
 
     private Point coordinates;
 
-    private LocalDateTime date;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private LocalTime time;
 
     public Point getCoordinates() {
         return coordinates;
@@ -29,20 +26,12 @@ public class Location {
         this.coordinates = coordinates;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalTime getTime() {
+        return time;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public void setId(Long id) {

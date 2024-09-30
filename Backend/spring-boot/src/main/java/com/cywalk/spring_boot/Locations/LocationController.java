@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/steps")
+@RequestMapping("/locations")
 public class LocationController {
 
     @Autowired
@@ -19,17 +19,17 @@ public class LocationController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Location> getStepById(@PathVariable Long id) {
+    public Optional<Location> getLocationById(@PathVariable Long id) {
         return stepService.getLocationById(id);
     }
 
     @GetMapping
-    public List<Location> getAllSteps() {
+    public List<Location> getAllLocations() {
         return stepService.getAllLocations();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteStep(@PathVariable Long id) {
+    public void deleteLocation(@PathVariable Long id) {
         stepService.deleteLocation(id);
     }
 }
