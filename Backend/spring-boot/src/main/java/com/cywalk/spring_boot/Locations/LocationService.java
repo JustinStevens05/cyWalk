@@ -16,19 +16,19 @@ public class LocationService {
 
     }
 
-    public Location saveStep(Location step) {
-        return locationRepository.save(step);
+    public Location saveLocation(Location location) {
+        return locationRepository.save(location);
     }
 
-    public Optional<Location> getStepById(Long id) {
+    public Optional<Location> getLocationById(Long id) {
         return locationRepository.findById(id);
     }
 
-    public List<Location> getAllSteps() {
+    public List<Location> getAllLocations() {
         return locationRepository.findAll();
     }
 
-    public void deleteStep(Long id) {
+    public void deleteLocation(Long id) {
         locationRepository.deleteById(id);
     }
 }

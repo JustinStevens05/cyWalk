@@ -14,23 +14,23 @@ public class LocationController {
     private LocationService stepService;
 
     @PostMapping
-    public Location createStep(@RequestBody Location step) {
-        return stepService.saveStep(step);
+    public Location createLocation(@RequestBody Location step) {
+        return stepService.saveLocation(step);
     }
 
     @GetMapping("/{id}")
     public Optional<Location> getStepById(@PathVariable Long id) {
-        return stepService.getStepById(id);
+        return stepService.getLocationById(id);
     }
 
     @GetMapping
     public List<Location> getAllSteps() {
-        return stepService.getAllSteps();
+        return stepService.getAllLocations();
     }
 
     @DeleteMapping("/{id}")
     public void deleteStep(@PathVariable Long id) {
-        stepService.deleteStep(id);
+        stepService.deleteLocation(id);
     }
 }
 

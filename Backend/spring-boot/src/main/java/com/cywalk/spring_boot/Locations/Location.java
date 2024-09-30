@@ -2,6 +2,9 @@ package com.cywalk.spring_boot.Locations;
 
 import com.cywalk.spring_boot.Users.User;
 import jakarta.persistence.*;
+import org.locationtech.jts.geom.Point;
+import org.hibernate.annotations.Type;
+
 
 import java.time.LocalDateTime;
 
@@ -10,7 +13,7 @@ public class Location {
     @Id
     private Long id;
 
-    private int amountOfSteps;
+    private Point coordinates;
 
     private LocalDateTime date;
 
@@ -18,12 +21,12 @@ public class Location {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public int getAmountOfSteps() {
-        return amountOfSteps;
+    public Point getCoordinates() {
+        return coordinates;
     }
 
-    public void setAmountOfSteps(int amountOfSteps) {
-        this.amountOfSteps = amountOfSteps;
+    public void setCoordinates(Point coordinates) {
+        this.coordinates = coordinates;
     }
 
     public LocalDateTime getDate() {
