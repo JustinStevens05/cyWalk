@@ -33,7 +33,6 @@ public class LocationDay {
      * A list of keys to the location table in the database
      */
     @OneToMany
-    @JoinColumns(name = "location_id")
     private List<Location> locations;
 
     /**
@@ -67,5 +66,19 @@ public class LocationDay {
         return id;
     }
 
-    
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    public void setTotalDistance(double totalDistance) {
+        this.totalDistance = totalDistance;
+    }
+
+    public List<Location> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<Location> locations) {
+        this.locations = locations;
+    }
 }

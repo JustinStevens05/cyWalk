@@ -7,30 +7,30 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/locations")
+@RequestMapping("{key}/locations")
 public class LocationController {
 
     @Autowired
-    private LocationService stepService;
+    private LocationService locationService;
 
     @PostMapping
-    public Location createLocation(@RequestBody Location step) {
-        return stepService.saveLocation(step);
+    public Location createLocation(@PathVariable String key, @RequestBody Location step) {
+        return locationService.saveLocation(step);
     }
 
     @GetMapping("/{id}")
-    public Optional<Location> getLocationById(@PathVariable Long id) {
-        return stepService.getLocationById(id);
+    public Optional<Location> getLocationById(@PathVariable String key, @PathVariable Long id) {
+        return locationService.getLocationById(id);
     }
 
     @GetMapping
-    public List<Location> getAllLocations() {
-        return stepService.getAllLocations();
+    public List<Location> getAllLocations(@PathVariable String key) {
+        return locationService.getAllLocations();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLocation(@PathVariable Long id) {
-        stepService.deleteLocation(id);
+    public void deleteLocation(@PathVariable String key, @PathVariable Long id) {
+        locationService.deleteLocation(id);
     }
 }
 
