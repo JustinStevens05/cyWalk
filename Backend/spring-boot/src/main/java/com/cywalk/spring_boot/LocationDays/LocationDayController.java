@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.LocationDays.Locations;
+package com.cywalk.spring_boot.LocationDays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

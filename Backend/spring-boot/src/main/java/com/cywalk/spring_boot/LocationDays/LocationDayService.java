@@ -1,7 +1,8 @@
-package com.cywalk.spring_boot.LocationDays.Locations;
+package com.cywalk.spring_boot.LocationDays;
 
 import com.cywalk.spring_boot.Locations.Location;
-import com.cywalk.spring_boot.Locations.LocationRepository;
+import com.cywalk.spring_boot.Locations.LocationService;
+import com.cywalk.spring_boot.Users.User;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class LocationDayService {
 
     @Autowired
     private LocationDayRepository locationDayRepository;
+
+    @Autowired
+    private LocationService locationService;
+
+    Logger logger = LoggerFactory.getLogger(LocationDayService.class);
 
     public LocationDayService() {
 
@@ -31,8 +40,29 @@ public class LocationDayService {
         return locationDayRepository.findAll();
     }
 
-    public void addLocationToDayList(Location newLogged) {
+    public void addLocationToDayList(User userAdding, Location newLogged) {
         
+    }
+
+    public void addLocationToDayList(long id, Location newLogged) {
+        Optional<LocationDay> locationDayResult = locationDayRepository.findById(id);
+        if (locationDayResult.isPresent()) {
+            LocationDay ld = locationDayResult.get();
+            ld.addLocation(newLogged);
+        }
+        else {
+            logger.warn("Problem adding location to Day list, locationDay not findable by id.");
+        }
+    }
+
+    public void addLocationToDayList(long id, long locationID) {
+        Optional<Location> locationResult = locationService.getLocationById(locationID);
+        if (locationResult.isPresent()) {
+            addLocationToDayList(id, locationResult.get());
+        }
+        else {
+            logger.warn("location not found when adding location to day list.");
+        }
     }
 
     public void deleteLocationDay(Long id) {

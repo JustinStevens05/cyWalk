@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.LocationDays.Locations;
+package com.cywalk.spring_boot.LocationDays;
 
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Users.User;
@@ -80,5 +80,9 @@ public class LocationDay {
 
     public void setLocations(List<Location> locations) {
         this.locations = locations;
+    }
+
+    public void addLocation(Location newLocation) {
+        this.locations.add(newLocation);
     }
 }
