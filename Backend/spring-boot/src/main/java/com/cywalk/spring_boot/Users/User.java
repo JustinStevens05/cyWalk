@@ -15,17 +15,17 @@ public class User {
   private String email;
 
   @OneToMany
-  private List<Location> steps;
+  private List<Location> locations;
 
-  public User(long id, String username, String email, List<Location> steps) {
+  public User(long id, String username, String email, List<Location> locations) {
     this.id = id;
     this.username = username;
     this.email = email;
-    this.steps = steps;
+    this.locations = locations;
   }
 
   public User() {
-    
+
   }
 
   public long getId() {
@@ -52,13 +52,15 @@ public class User {
     this.email = email;
   }
 
-  public List<Location> getSteps() {
-    return steps;
+  public List<Location> getLocations() {
+    return locations;
   }
 
-  public void setSteps(List<Location> steps) {
-    this.steps = steps;
+  public void setLocations(List<Location> steps) {
+    this.locations = steps;
   }
+
+
 }
 
 
