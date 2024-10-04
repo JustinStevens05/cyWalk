@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-public class User {
+public class People {
 
   @Id
   private String username;
@@ -16,13 +16,13 @@ public class User {
   @OneToMany
   private List<Location> locations;
 
-  public User(String username, String email, List<Location> locations) {
+  public People(String username, String email, List<Location> locations) {
     this.username = username;
     this.email = email;
     this.locations = locations;
   }
 
-  public User() {
+  public People() {
 
   }
 
@@ -52,7 +52,7 @@ public class User {
 
   @Override
   public String toString() {
-    return "User{" +
+    return "People{" +
             ", username='" + username + '\'' +
             ", email='" + email + '\'' +
             ", locations=" + locations +

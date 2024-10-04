@@ -1,7 +1,7 @@
 package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.Users.User;
-import com.cywalk.spring_boot.Users.UserService;
+import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +16,13 @@ public class LocationController {
     private LocationService locationService;
 
     @Autowired
-    private UserService userService;
+    private PeopleService peopleService;
 
     @PostMapping
     public Optional<Location> createLocation(@PathVariable Long key, @RequestBody Location step) {
-        Optional<User> user = userService.getUserFromKey(key);
+        Optional<People> user = peopleService.getUserFromKey(key);
         if (user.isPresent()) {
-            return locationService.saveLocation(key, step);
+            return Optional.ofNullable(locationService.saveLocation(key, step));
         }
         else {
             return Optional.empty();

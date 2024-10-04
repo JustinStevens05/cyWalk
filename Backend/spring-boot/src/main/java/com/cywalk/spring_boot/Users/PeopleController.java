@@ -6,24 +6,24 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class PeopleController {
 
     @Autowired
-    private UserService userService;
+    private PeopleService peopleService;
 
     @GetMapping("/username/{username}")
-    public Optional<User> getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    public Optional<People> getUserByUsername(@PathVariable String username) {
+        return peopleService.getUserByUsername(username);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.saveUser(user);
+    public People createUser(@RequestBody People people) {
+        return peopleService.saveUser(people);
     }
 
     @DeleteMapping("/username/{username}")
     public void deleteUserByName(@PathVariable String username) {
-        userService.deleteUserByName(username);
+        peopleService.deleteUserByName(username);
     }
 
     //TODO: @ethan implement post mapping sign up here
@@ -34,6 +34,6 @@ public class UserController {
      */
     @PutMapping
     public Optional<Long> login(@RequestBody UserRequest userRequest) {
-        return userService.login(userRequest);
+        return peopleService.login(userRequest);
     }
 }
