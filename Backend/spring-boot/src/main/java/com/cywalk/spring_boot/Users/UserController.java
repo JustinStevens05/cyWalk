@@ -11,11 +11,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
-
     @GetMapping("/username/{username}")
     public Optional<User> getUserByUsername(@PathVariable String username) {
         return userService.getUserByUsername(username);
@@ -26,8 +21,19 @@ public class UserController {
         return userService.saveUser(user);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/username/{username}")
+    public void deleteUserByName(@PathVariable String username) {
+        userService.deleteUserByName(username);
+    }
+
+    //TODO: @ethan implement post mapping sign up here
+
+    /**
+     * @param userRequest usernmae password combo
+     * @return the key to be used during the session
+     */
+    @PutMapping
+    public Optional<Long> login(@RequestBody UserRequest userRequest) {
+        return userService.login(userRequest);
     }
 }
