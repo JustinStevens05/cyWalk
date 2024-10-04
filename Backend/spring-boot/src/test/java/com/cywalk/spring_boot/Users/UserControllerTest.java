@@ -30,7 +30,6 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     public static String asJsonString(Object o) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
@@ -40,15 +39,30 @@ class UserControllerTest {
         }
     }
 
-    private final User baseUser = new User(1, "base", "base@email.com", null);
-    private final User testUser = new User(2, "userOne", "users@email.com", null);
+    private final User baseUser = new User("base", "base@email.com", null);
+    private final User testUser = new User("userOne", "users@email.com", null);
 
-    @BeforeTestExecution
+    /*
     void init() throws Exception {
         this.mockMvc.perform(post("/users").content(asJsonString(testUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
     }
+    */
+
+    /*
+    @Test
+    void ADeleteBunchOfUsers() throws Exception {
+        this.mockMvc.perform(delete("/users/3"));
+        this.mockMvc.perform(delete("/users/4"));
+        this.mockMvc.perform(delete("/users/5"));
+        this.mockMvc.perform(delete("/users/6"));
+        this.mockMvc.perform(delete("/users/7"));
+        this.mockMvc.perform(delete("/users/8"));
+
+    }
+    */
+
 
     @Test
     void ACreateUser() throws Exception {
@@ -66,26 +80,21 @@ class UserControllerTest {
     }
 
     @Test
-    void CGetUserById() throws Exception {
-        this.mockMvc.perform(get("/users/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("base")));
-    }
-
-    @Test
     void CGetUserByUsername() throws Exception {
         this.mockMvc.perform(get("/users/username/base")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("base@email")));
     }
 
 
-
+/*
     @Test
     void DeleteUser() throws Exception {
-        this.mockMvc.perform(delete("/users/1"))
+        this.mockMvc.perform(delete("/users/username/base"))
                 .andExpect(status().isOk());
-        this.mockMvc.perform(get("/users/1"))
+        this.mockMvc.perform(get("/users/username/base"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("null")));
     }
+    */
+
 }

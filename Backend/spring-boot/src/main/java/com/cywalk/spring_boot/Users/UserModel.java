@@ -45,4 +45,12 @@ public class UserModel {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "secretKey=" + secretKey +
+                ", user=" + user +
+                '}';
+    }
 }

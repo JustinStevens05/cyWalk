@@ -9,16 +9,14 @@ import java.util.List;
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
   private String username;
+
   private String email;
 
   @OneToMany
   private List<Location> locations;
 
-  public User(long id, String username, String email, List<Location> locations) {
-    this.id = id;
+  public User(String username, String email, List<Location> locations) {
     this.username = username;
     this.email = email;
     this.locations = locations;
@@ -26,14 +24,6 @@ public class User {
 
   public User() {
 
-  }
-
-  public long getId() {
-    return id;
-  }
-
-  public void setId(long id) {
-    this.id = id;
   }
 
   public String getUsername() {
@@ -60,7 +50,14 @@ public class User {
     this.locations = steps;
   }
 
-
+  @Override
+  public String toString() {
+    return "User{" +
+            ", username='" + username + '\'' +
+            ", email='" + email + '\'' +
+            ", locations=" + locations +
+            '}';
+  }
 }
 
 

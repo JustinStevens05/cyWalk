@@ -2,6 +2,8 @@ package com.cywalk.spring_boot.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,15 +17,12 @@ public class UserService {
     @Autowired
     private UserModelRepository userModelRepository;
 
+    @Autowired
+    private UserRequestRepository userRequestRepository;
+
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    public UserService() {
-
-    }
-
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
-    }
+    public UserService() {}
 
     public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
@@ -33,30 +32,28 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * delete a user based on the id
-     *
-     * @param id delete the user from the repository
-     */
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUserByName(String name) {
+        userRepository.deleteByUsername(name);
     }
 
     /**
      * generates an authentication key that the front end should keep track of for.
      * This will return -1 if the id does now work
      *
-     * @param id the User key in the entity
+     * @param username the User key in the entity
      * @return a valid auth key
      */
-    public Optional<Long> getAuthKey(Long id) {
-        Optional<User> userResult = userRepository.findById(id);
+    public Optional<Long> generateAuthKey(String username) {
+        Optional<User> userResult = userRepository.findByUsername(username);
         if (userResult.isPresent()) {
+            // make a user model which tracks the User
            UserModel model = new UserModel(userResult.get());
+           userModelRepository.save(model);
+            // return the key to be used the rest of the time
            return Optional.of(model.getSecretKey());
         }
         else {
-            logger.warn("User not found in repository. id: {}", id);
+            logger.warn("somehow could not find user in the User Table. Tried: {}", username);
             return Optional.empty();
         }
     }
@@ -78,6 +75,46 @@ public class UserService {
         }
         else {
             logger.warn("key did not find a value. key passed in: {}", key);
+            return Optional.empty();
+        }
+    }
+
+
+    /**
+     * Login a user
+     * @param request the username password combination
+     * @return a key to be used throughout the session until the user logs out
+     */
+    public Optional<Long> login(UserRequest request) {
+        Optional<UserRequest> userRequest = userRequestRepository.findByUsername(request.getUsername());
+        if (userRequest.isPresent()) {
+            if (userRequest.get().getPassword().equals(request.getPassword())) {
+                // return temporary key
+                return generateAuthKey(request.getUsername());
+                // no need to log info for else case as generate auth key already does this
+            }
+            else {
+                logger.warn("Password incorrect for user. Tried: User: {}; Password: {}", request.getUsername(),request.getPassword());
+            }
+        }
+        else {
+            logger.warn("User not found. Tried: User: {}; Password: {}", request.getUsername(),request.getPassword());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Should be run at the start of all requests that ask for user specific data.
+     * @param loginKey the login key returned when logging in by {@link #login(UserRequest)}
+     * @return the corresponding user if it exists. Handle with Optional
+     */
+    public Optional<User> getUserFromLoginKey(long loginKey) {
+        Optional<UserModel> userModelResult = userModelRepository.findBySecretKey(loginKey);
+        if (userModelResult.isPresent()) {
+            return Optional.of(userModelResult.get().getUser());
+        }
+        else {
+            logger.info("could not find a user with login key: {}", loginKey);
             return Optional.empty();
         }
     }
