@@ -37,7 +37,7 @@ public class LocationDay {
      * The people who took traveled took this route
      */
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "people_username")
     private People people;
 
     public LocalDate getDate() {

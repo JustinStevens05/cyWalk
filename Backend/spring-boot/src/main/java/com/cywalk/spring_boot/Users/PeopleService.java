@@ -23,6 +23,10 @@ public class PeopleService {
     public PeopleService() {}
 
     public Optional<People> getUserByUsername(String username) {
+        if (peopleRepository.findByUsername(username).isPresent()) {
+            logger.warn("issue username already in use");
+            return Optional.empty();
+        }
         return peopleRepository.findByUsername(username);
     }
 

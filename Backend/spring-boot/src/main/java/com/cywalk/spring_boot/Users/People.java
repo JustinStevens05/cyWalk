@@ -1,6 +1,6 @@
 package com.cywalk.spring_boot.Users;
 
-import com.cywalk.spring_boot.Locations.Location;
+import com.cywalk.spring_boot.LocationDays.LocationDay;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,9 +14,9 @@ public class People {
   private String email;
 
   @OneToMany
-  private List<Location> locations;
+  private List<LocationDay> locations;
 
-  public People(String username, String email, List<Location> locations) {
+  public People(String username, String email, List<LocationDay> locations) {
     this.username = username;
     this.email = email;
     this.locations = locations;
@@ -42,11 +42,11 @@ public class People {
     this.email = email;
   }
 
-  public List<Location> getLocations() {
+  public List<LocationDay> getLocations() {
     return locations;
   }
 
-  public void setLocations(List<Location> steps) {
+  public void setLocations(List<LocationDay> steps) {
     this.locations = steps;
   }
 
