@@ -5,6 +5,7 @@ import com.cywalk.spring_boot.Users.People;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,12 @@ public class LocationDay {
     @ManyToOne
     @JoinColumn(name = "people_username")
     private People people;
+
+    public LocationDay(LocalDate date) {
+        this.date = date;
+        totalDistance = 0;
+        locations = new ArrayList<>();
+    }
 
     public LocalDate getDate() {
         return date;

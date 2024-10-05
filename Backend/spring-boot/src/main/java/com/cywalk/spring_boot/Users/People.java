@@ -50,6 +50,10 @@ public class People {
     this.locations = steps;
   }
 
+  public void addLocation(LocationDay newLocation) {
+    this.locations.add(newLocation);
+  }
+
   @Override
   public String toString() {
     return "People{" +

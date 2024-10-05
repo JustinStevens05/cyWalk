@@ -104,20 +104,4 @@ public class PeopleService {
         }
         return Optional.empty();
     }
-
-    /**
-     * Should be run at the start of all requests that ask for user specific data.
-     * @param loginKey the login key returned when logging in by {@link #login(UserRequest)}
-     * @return the corresponding user if it exists. Handle with Optional
-     */
-    public Optional<People> getUserFromLoginKey(long loginKey) {
-        Optional<UserModel> userModelResult = userModelRepository.findBySecretKey(loginKey);
-        if (userModelResult.isPresent()) {
-            return Optional.of(userModelResult.get().getUser());
-        }
-        else {
-            logger.info("could not find a user with login key: {}", loginKey);
-            return Optional.empty();
-        }
-    }
 }

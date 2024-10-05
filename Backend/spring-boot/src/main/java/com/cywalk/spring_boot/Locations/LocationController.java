@@ -22,6 +22,7 @@ public class LocationController {
     public Optional<Location> createLocation(@PathVariable Long key, @RequestBody Location step) {
         Optional<People> user = peopleService.getUserFromKey(key);
         if (user.isPresent()) {
+            user.addLocation();
             return Optional.ofNullable(locationService.saveLocation(key, step));
         }
         else {
