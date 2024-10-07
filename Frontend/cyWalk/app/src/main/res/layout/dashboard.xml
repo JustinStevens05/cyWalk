@@ -55,7 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@color/cywalkRed"
+        app:menu="@menu/bottom_navbar"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:itemBackground="@drawable/bottom_navbar_selector"
         />
 
 </RelativeLayout>

@@ -3,18 +3,22 @@
 
     <item
         android:id="@+id/nav_dashboard"
-        android:title="DASHBOARD" />
+        android:title="DASHBOARD"
+        android:icon="@drawable/ic_dashboard_foreground" />
 
     <item
         android:id="@+id/nav_goals"
-        android:title="GOALS" />
+        android:title="GOALS"
+        android:icon="@drawable/ic_goals_foreground"/>
 
     <item
         android:id="@+id/nav_social"
-        android:title="SOCIAL" />
+        android:title="SOCIAL"
+        android:icon="@drawable/ic_social_foreground"/>
 
     <item
         android:id="@+id/nav_profile"
-        android:title="PROFILE" />
+        android:title="PROFILE"
+        android:icon="@drawable/ic_profile_foreground"/>
 
 </menu>
