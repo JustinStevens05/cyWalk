@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,10 @@ public class PeopleService {
         return peopleRepository.save(people);
     }
 
+    /**
+     * Delete a user in the database based off of the passed in username
+     * @param name the username of the user to delete
+     */
     public void deleteUserByName(String name) {
         peopleRepository.deleteByUsername(name);
     }
@@ -103,5 +108,9 @@ public class PeopleService {
             logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
         }
         return Optional.empty();
+    }
+
+    public List<People> getAllPeople() {
+        return peopleRepository.findAll();
     }
 }

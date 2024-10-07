@@ -47,6 +47,10 @@ public class LocationDay {
         locations = new ArrayList<>();
     }
 
+    public LocationDay() {
+
+    }
+
     public LocalDate getDate() {
         return date;
     }

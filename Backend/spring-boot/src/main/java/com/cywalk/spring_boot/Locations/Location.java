@@ -15,6 +15,15 @@ public class Location {
 
     private LocalTime time;
 
+    public Location() {
+
+    }
+
+    public Location(Point coordinates) {
+        this.coordinates = coordinates;
+        time = LocalTime.now();
+    }
+
     public Point getCoordinates() {
         return coordinates;
     }
