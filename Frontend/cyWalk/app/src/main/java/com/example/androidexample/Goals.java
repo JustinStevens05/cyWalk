@@ -33,7 +33,6 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 0;
     private final int dailyGoal = 10000;
     private final int weeklyGoal = 70000;
-    private String username;
     private Button socialButton;
 
     private static String URL_JSON_OBJECT = null;
@@ -49,9 +48,8 @@ public class Goals extends AppCompatActivity {
         daily_bar = findViewById(R.id.dailyprogressBar);
         weekly_bar = findViewById(R.id.weeklyprogressBar);
 
-        Bundle extras = getIntent().getExtras();
-        username = extras.getString("USERNAME");
-        URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=" + username;
+
+        URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
 
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override

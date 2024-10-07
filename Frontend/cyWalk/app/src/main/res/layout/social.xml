@@ -19,7 +19,7 @@
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/black"
-        android:textSize="50sp" />
+        android:textSize="25dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

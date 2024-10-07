@@ -34,7 +34,7 @@ public class Login extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
 
                 /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Goals.class);
+                Intent intent = new Intent(Login.this, Social.class);
                 intent.putExtra("USERNAME", username);
                 intent.putExtra("PASSWORD", password);
                 startActivity(intent);
