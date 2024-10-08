@@ -4,15 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
-    private Button loginButton;         // define login button variable
+    private TextView errorMsg;
+    private Button loginButton;    // define login button variable
+    private static String URL_JSON_OBJECT = null;
+    private String userKey = "ckugel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +40,7 @@ public class Login extends AppCompatActivity {
         usernameEditText = findViewById(R.id.login_username_edt);
         passwordEditText = findViewById(R.id.login_password_edt);
         loginButton = findViewById(R.id.login_login_btn);
+        errorMsg = findViewById(R.id.errorMsg);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -31,14 +49,66 @@ public class Login extends AppCompatActivity {
 
                 /* grab strings from user inputs */
                 String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+
+                URL_JSON_OBJECT = "http://10.0.2.2:8080/users/username/"+username;
+
+                makeJsonObjReq();
 
                 /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Social.class);
-                intent.putExtra("USERNAME", username);
-                intent.putExtra("PASSWORD", password);
-                startActivity(intent);
+                if(!userKey.isEmpty()) {
+                    Intent intent = new Intent(Login.this, Social.class);
+                    intent.putExtra("key", userKey);
+                    startActivity(intent);
+                } else {
+                    errorMsg.setText("Error invalid username/password");
+                }
             }
         });
+    }
+    private void makeJsonObjReq() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET,
+                URL_JSON_OBJECT,
+                null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            String key = response.getString("username");
+                            userKey = key;
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 }

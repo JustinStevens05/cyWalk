@@ -11,7 +11,7 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75sp"
-        android:background="#FB2525"
+        android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
         android:text="GOALS"
