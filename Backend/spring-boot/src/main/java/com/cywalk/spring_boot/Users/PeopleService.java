@@ -23,11 +23,15 @@ public class PeopleService {
 
     public PeopleService() {}
 
-    public Optional<People> getUserByUsername(String username) {
-        if (peopleRepository.findByUsername(username).isPresent()) {
+    public Optional<People> createUser(People user) {
+        if (peopleRepository.findByUsername(user.getUsername()).isPresent()) {
             logger.warn("issue username already in use");
             return Optional.empty();
         }
+        return Optional.of(peopleRepository.save(user));
+    }
+
+    public Optional<People> getUserByUsername(String username) {
         return peopleRepository.findByUsername(username);
     }
 
@@ -40,7 +44,9 @@ public class PeopleService {
      * @param name the username of the user to delete
      */
     public void deleteUserByName(String name) {
-        peopleRepository.deleteByUsername(name);
+        if (getUserByUsername(name).isPresent()) {
+            peopleRepository.deleteByUsername(name);
+        }
     }
 
     /**

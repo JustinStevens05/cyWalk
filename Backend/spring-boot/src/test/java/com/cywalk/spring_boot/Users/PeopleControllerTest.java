@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Users;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,20 +49,14 @@ class PeopleControllerTest {
     }
     */
 
-    /*
+    @Transactional
     @Test
-    void ADeleteBunchOfUsers() throws Exception {
-        this.mockMvc.perform(delete("/users/3"));
-        this.mockMvc.perform(delete("/users/4"));
-        this.mockMvc.perform(delete("/users/5"));
-        this.mockMvc.perform(delete("/users/6"));
-        this.mockMvc.perform(delete("/users/7"));
-        this.mockMvc.perform(delete("/users/8"));
-
+    void AAClearBase() throws Exception {
+        this.mockMvc.perform(delete("/users/username/base"))
+                .andExpect(status().isOk());
     }
-    */
 
-
+    @Transactional
     @Test
     void ACreateUser() throws Exception {
         this.mockMvc.perform(post("/users").content(asJsonString(basePeople))
@@ -71,20 +66,21 @@ class PeopleControllerTest {
                 .andExpect(content().string(containsString("base@email")));
     }
 
+    @Transactional
     @Test
     void contextLoads() {
         assertThat(controller).isNotNull();
         assertThat(mockMvc).isNotNull();
     }
-
+/*
+    @Transactional
     @Test
     void CGetUserByUsername() throws Exception {
         this.mockMvc.perform(get("/users/username/base")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("base@email")));
     }
-
-
-/*
+*/
+    @Transactional
     @Test
     void DeleteUser() throws Exception {
         this.mockMvc.perform(delete("/users/username/base"))
@@ -93,6 +89,6 @@ class PeopleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("null")));
     }
-    */
+
 
 }

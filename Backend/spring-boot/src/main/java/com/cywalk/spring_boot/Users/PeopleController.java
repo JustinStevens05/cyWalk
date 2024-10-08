@@ -24,8 +24,8 @@ public class PeopleController {
     }
 
     @PostMapping
-    public People createUser(@RequestBody People people) {
-        return peopleService.saveUser(people);
+    public Optional<People> createUser(@RequestBody People people) {
+        return peopleService.createUser(people);
     }
 
     @GetMapping("/{id}")

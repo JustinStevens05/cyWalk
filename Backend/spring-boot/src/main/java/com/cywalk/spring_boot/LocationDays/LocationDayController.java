@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("{key}/locations")
+@RequestMapping("{key}/location")
 public class LocationDayController {
 
     @Autowired
