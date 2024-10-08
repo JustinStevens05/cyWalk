@@ -1,12 +1,9 @@
 package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.Users.User;
 import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;
-import org.hibernate.annotations.Type;
 
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -17,6 +14,15 @@ public class Location {
     private Point coordinates;
 
     private LocalTime time;
+
+    public Location() {
+
+    }
+
+    public Location(Point coordinates) {
+        this.coordinates = coordinates;
+        time = LocalTime.now();
+    }
 
     public Point getCoordinates() {
         return coordinates;

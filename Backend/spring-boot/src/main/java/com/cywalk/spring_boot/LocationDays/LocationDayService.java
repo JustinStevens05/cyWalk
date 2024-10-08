@@ -2,7 +2,7 @@ package com.cywalk.spring_boot.LocationDays;
 
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationService;
-import com.cywalk.spring_boot.Users.User;
+import com.cywalk.spring_boot.Users.People;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class LocationDayService {
         return locationDayRepository.findAll();
     }
 
-    public void addLocationToDayList(User userAdding, Location newLogged) {
+    public void addLocationToDayList(People peopleAdding, Location newLogged) {
         
     }
 

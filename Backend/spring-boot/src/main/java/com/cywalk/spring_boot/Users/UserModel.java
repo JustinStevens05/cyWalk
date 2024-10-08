@@ -1,9 +1,6 @@
 package com.cywalk.spring_boot.Users;
 
-import com.cywalk.spring_boot.Locations.Location;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class UserModel {
@@ -13,16 +10,16 @@ public class UserModel {
     private long secretKey;
 
     @ManyToOne
-    private User user;
+    private People people;
 
 
-    public UserModel(long secretKey, User user) {
+    public UserModel(long secretKey, People people) {
         this.secretKey = secretKey;
-        this.user = user;
+        this.people = people;
     }
 
-    public UserModel(User user) {
-        this.user = user;
+    public UserModel(People people) {
+        this.people = people;
     }
 
     public UserModel() {
@@ -38,19 +35,19 @@ public class UserModel {
         this.secretKey = secretKey;
     }
 
-    public User getUser() {
-        return user;
+    public People getUser() {
+        return people;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(People people) {
+        this.people = people;
     }
 
     @Override
     public String toString() {
         return "UserModel{" +
                 "secretKey=" + secretKey +
-                ", user=" + user +
+                ", people=" + people +
                 '}';
     }
 }

@@ -1,18 +1,17 @@
 package com.cywalk.spring_boot.LocationDays;
 
 import com.cywalk.spring_boot.Locations.Location;
-import com.cywalk.spring_boot.Users.User;
+import com.cywalk.spring_boot.Users.People;
 import jakarta.persistence.*;
-import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The total locations from the entire day.
  * Stores a list of recorded logged locations from throughout the day
- * Also store the total distance traveled by a user as calculated from the locations
+ * Also store the total distance traveled by a people as calculated from the locations
  */
 @Entity
 public class LocationDay {
@@ -36,11 +35,21 @@ public class LocationDay {
     private List<Location> locations;
 
     /**
-     * The user who took traveled took this route
+     * The people who took traveled took this route
      */
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "people_username")
+    private People people;
+
+    public LocationDay(LocalDate date) {
+        this.date = date;
+        totalDistance = 0;
+        locations = new ArrayList<>();
+    }
+
+    public LocationDay() {
+
+    }
 
     public LocalDate getDate() {
         return date;
@@ -50,12 +59,12 @@ public class LocationDay {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public People getUser() {
+        return people;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(People people) {
+        this.people = people;
     }
 
     public void setId(Long id) {

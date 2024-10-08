@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -22,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-class UserControllerTest {
+class PeopleControllerTest {
 
     @Autowired
-    private UserController controller;
+    private PeopleController controller;
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,12 +37,12 @@ class UserControllerTest {
         }
     }
 
-    private final User baseUser = new User("base", "base@email.com", null);
-    private final User testUser = new User("userOne", "users@email.com", null);
+    private final People basePeople = new People("base", "base@email.com", null);
+    private final People testPeople = new People("userOne", "users@email.com", null);
 
     /*
     void init() throws Exception {
-        this.mockMvc.perform(post("/users").content(asJsonString(testUser))
+        this.mockMvc.perform(post("/users").content(asJsonString(testPeople))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON));
     }
@@ -66,7 +64,7 @@ class UserControllerTest {
 
     @Test
     void ACreateUser() throws Exception {
-        this.mockMvc.perform(post("/users").content(asJsonString(baseUser))
+        this.mockMvc.perform(post("/users").content(asJsonString(basePeople))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

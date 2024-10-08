@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("{key}/locationDays")
+@RequestMapping("{key}/locations")
 public class LocationDayController {
 
     @Autowired
     private LocationDayService locationDayService;
 
-    @PostMapping
+    @PostMapping("/day")
     public LocationDay createLocation(@PathVariable String key, @RequestBody LocationDay locationDay) {
         return locationDayService.saveLocationDay(locationDay);
     }
@@ -23,7 +23,7 @@ public class LocationDayController {
         return locationDayService.getLocationDayById(id);
     }
 
-    @GetMapping
+    @GetMapping("/day")
     public List<LocationDay> getAllLocationDays(@PathVariable String key) {
         return locationDayService.getAllLocationDays();
     }

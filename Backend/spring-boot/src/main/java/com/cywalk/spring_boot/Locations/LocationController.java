@@ -1,5 +1,8 @@
 package com.cywalk.spring_boot.Locations;
 
+import com.cywalk.spring_boot.LocationDays.LocationDayService;
+import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,24 +16,30 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
 
-    @PostMapping
-    public Location createLocation(@PathVariable String key, @RequestBody Location step) {
-        return locationService.saveLocation(step);
+    @Autowired
+    private LocationDayService locationDayService;
+
+    @Autowired
+    private PeopleService peopleService;
+
+    @PostMapping("log")
+    public Optional<Location> createLocation(@PathVariable Long key, @RequestBody Location location) {
+        return locationService.saveLocation(key, location);
     }
 
     @GetMapping("/{id}")
-    public Optional<Location> getLocationById(@PathVariable String key, @PathVariable Long id) {
+    public Optional<Location> getLocationById(@PathVariable Long key, @PathVariable Long id) {
         return locationService.getLocationById(id);
     }
 
     @GetMapping
-    public List<Location> getAllLocations(@PathVariable String key) {
-        return locationService.getAllLocations();
+    public Optional<List<Location>> getAllLocations(@PathVariable Long key) {
+        return locationService.getAllLocationsOfUser(key);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLocation(@PathVariable String key, @PathVariable Long id) {
-        locationService.deleteLocation(id);
+    public void deleteLocation(@PathVariable Long key, @PathVariable Long id) {
+        locationService.deleteLocation(key, id);
     }
 }
 
