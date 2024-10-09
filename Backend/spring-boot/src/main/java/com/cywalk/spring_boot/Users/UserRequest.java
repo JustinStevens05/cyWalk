@@ -1,9 +1,6 @@
 package com.cywalk.spring_boot.Users;
 
-import com.cywalk.spring_boot.Locations.Location;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class UserRequest {

@@ -1,8 +1,7 @@
 package com.cywalk.spring_boot.Locations;
 
-import jakarta.persistence.*;
-import org.locationtech.jts.geom.Point;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 import java.time.LocalTime;
 
@@ -11,7 +10,9 @@ public class Location {
     @Id
     private Long id;
 
-    private Point coordinates;
+    private double latitude;
+    private double longitude;
+    private double elevation;
 
     private LocalTime time;
 
@@ -19,17 +20,36 @@ public class Location {
 
     }
 
-    public Location(Point coordinates) {
-        this.coordinates = coordinates;
-        time = LocalTime.now();
+    public Location(Long id, double latitude, double longitude, double elevation, LocalTime time) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.elevation = elevation;
+        this.time = time;
     }
 
-    public Point getCoordinates() {
-        return coordinates;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setCoordinates(Point coordinates) {
-        this.coordinates = coordinates;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getElevation() {
+        return elevation;
+    }
+
+    public void setElevation(double elevation) {
+        this.elevation = elevation;
     }
 
     public LocalTime getTime() {

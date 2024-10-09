@@ -29,9 +29,9 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
-  <dependencies>
-		<!-- The H2 database dependency. To be replaced with mongoDb for production -->
-	      <dependency> 
+	  <dependencies>
+			<!-- The H2 database dependency. To be replaced with mongoDb for production -->
+			  <dependency>
 		<groupId>com.h2database</groupId>
 		<artifactId>h2</artifactId>
 		<version>1.4.200</version>

@@ -20,10 +20,13 @@ If running locally then {url} = http://localhost:8080
  - key represents the session key from logging in
  - gets all of the locations for a given user as a list of Location objects
 
-**{url}/{key}/locations/total**
- - key represents the session key from loggin in
+**{url}/{key}/location/total**
+ - key represents the session key from logging in
  - gets the distance traveled today
 
+**{url}/{key}/location/day**
+ - key represents the session key from logging in
+ - gets a list of all the location days ascribed to a user. 
 
 # Post mappings
 TODO: SIGNUP MAPPING HERE \
@@ -49,15 +52,15 @@ We couldn't call it user technically but that is what it represents.
 
 ### Sending
 Data format (JSON): 
-{
-    "username": "REPLACE_WITH_THE_USERNAME",
-    "email": "REPLACE_WITH_THE_EMAIL"
+{ \
+    "username": "REPLACE_WITH_THE_USERNAME", \
+    "email": "REPLACE_WITH_THE_EMAIL" \
 }
 
 Example for the ckugel user:
-{
-    "username": "ckugel",
-    "email": "calebkugel1@gmail.com"
+{ \
+    "username": "ckugel", \
+    "email": "calebkugel1@gmail.com" \
 }
 
 ### Recieving
@@ -74,9 +77,10 @@ Data format (JSON):
 ## Location
 JSON: \
 { \
-    "id": "PRIMARY_KEY", // you cna ignore this \
-    "coordinates": "COORDINATE_POINT" // pretty sure there should be some sort of x, y, and z, \
-    "time": "TIME_DATA_WAS_LOGGED_AT", // in format: HH:mm::ss \
+    "latitude": LATITUDE_HERE, \
+    "longitude": LONGITUDE_HERE, \
+    "elevation" : ELEVATION,\
+    "timestamp": "TIME_DATA_WAS_LOGGED_AT", // in format: HH:mm::ss \
 }
 
 
@@ -85,18 +89,17 @@ This data type is meant to represent all of the logged locations over the course
 TODO: In the future we may add location sessions and then bundle location sessions into each location day. \
 JSON:
 { \
-    "id": PRIMARY_KEY, // you can pretty much ignore this \
     "date": "DATE", // in the format: "uuuu-MM-DD" \
     "totalDistance": TOTAL_DISTANCE_FOR_THE_DAY_AS_A_DOUBLE, \
-    "locations": [ LOCATION_1, LOCATION_2, ...LOCATION_N ] \
+    "locations": [ LOCATION_1, LOCATION_2, ... LOCATION_N ] \
 }
 
 
 ## User request
 JSON: 
-{
-    "username": "USERNAME_HERE",
-    "password": "PASSWORD_HERE"
+{ \
+    "username": "USERNAME_HERE", \
+    "password": "PASSWORD_HERE" \
 }
 
 

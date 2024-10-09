@@ -5,6 +5,10 @@ import com.cywalk.spring_boot.LocationDays.LocationDayRepository;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.cywalk.spring_boot.Users.UserRequest;
+import org.locationtech.jts.algorithm.PointLocation;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.operation.overlay.PointBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +80,7 @@ public class LocationService {
     public void deleteLocation(Long key, Long id) {
         locationRepository.deleteById(id);
     }
+
 
     public Optional<List<Location>> getAllLocationsOfUser(Long key) {
         Optional<People> userResult = personService.getUserFromKey(key);
