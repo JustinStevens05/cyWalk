@@ -34,6 +34,7 @@ public class Goals extends AppCompatActivity {
     private final int dailyGoal = 10000;
     private final int weeklyGoal = 70000;
     private Button socialButton;
+    private String key;
 
     private static String URL_JSON_OBJECT = null;
 
@@ -48,6 +49,9 @@ public class Goals extends AppCompatActivity {
         daily_bar = findViewById(R.id.dailyprogressBar);
         weekly_bar = findViewById(R.id.weeklyprogressBar);
 
+        Bundle extras = getIntent().getExtras();
+        key = extras.getString("key");
+
 
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
 
@@ -57,6 +61,7 @@ public class Goals extends AppCompatActivity {
 
                 /* when counter button is pressed, use intent to switch to Counter Activity */
                 Intent intent = new Intent(Goals.this, Social.class);
+                intent.putExtra("key", key);
                 startActivity(intent);
             }
         });

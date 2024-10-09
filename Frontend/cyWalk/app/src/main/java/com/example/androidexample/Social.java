@@ -32,7 +32,7 @@ public class Social extends AppCompatActivity {
     TextView title;
 
     private Button goalButton;
-    private String username = "ckugel";
+    private String key ="";
 
     private static String URL_JSON_OBJECT = null;
 
@@ -48,7 +48,10 @@ public class Social extends AppCompatActivity {
         myViewPagerAdapter = new myViewPagerAdapter(this);
         viewPager2.setAdapter(myViewPagerAdapter);
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/username/"+username;
+        Bundle extras = getIntent().getExtras();
+        key = extras.getString("key");
+
+        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/username/"+key;
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -80,6 +83,7 @@ public class Social extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(Social.this, Goals.class);
+                intent.putExtra("key", key);
                 startActivity(intent);
             }
         });
