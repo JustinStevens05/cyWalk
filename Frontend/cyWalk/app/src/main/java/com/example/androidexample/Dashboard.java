@@ -1,16 +1,24 @@
 package com.example.androidexample;
 
+import static androidx.constraintlayout.motion.widget.Debug.getLocation;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class Dashboard extends AppCompatActivity{
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
+
+    private GoogleMap gMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +27,11 @@ public class Dashboard extends AppCompatActivity{
 
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         botnav.setSelectedItemId(R.id.nav_dashboard);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+        mapFragment.getMapAsync(this);
+
+
 
         botnav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -39,5 +52,13 @@ public class Dashboard extends AppCompatActivity{
             }
             return false;
         });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gMap = googleMap;
+        LatLng coord = new LatLng(-34, 151);
+        gMap.addMarker(new MarkerOptions().position(coord).title("Coord Variable"));
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(coord));
     }
 }

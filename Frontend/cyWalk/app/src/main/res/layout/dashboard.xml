@@ -16,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="30dp"
         android:textColor="@color/cywalkRed"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
 
     <Button
@@ -42,7 +42,7 @@
         android:id="@+id/txt_daily_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15dp"
+        android:textSize="15sp"
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:textColor="@color/cywalkRed"
@@ -57,9 +57,19 @@
         android:layout_centerHorizontal="true"
         app:menu="@menu/bottom_navbar"
         app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="@drawable/bottom_navbar_selector"
+        app:itemTextColor="@drawable/bottom_navbar_text_selector"
         app:itemBackground="@drawable/bottom_navbar_selector"
         />
+    
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_start_manual_route"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_border"/>
 
 </RelativeLayout>
