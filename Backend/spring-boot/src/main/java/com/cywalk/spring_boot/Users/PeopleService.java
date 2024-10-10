@@ -2,6 +2,7 @@ package com.cywalk.spring_boot.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -98,12 +99,16 @@ public class PeopleService {
      * @param request the username password combination
      * @return a key to be used throughout the session until the user logs out
      */
-    public Key login(UserRequest request) {
+    public ResponseEntity<Key> login(UserRequest request) {
         Optional<UserRequest> userRequest = userRequestRepository.findByUsername(request.getUsername());
         if (userRequest.isPresent()) {
             if (userRequest.get().getPassword().equals(request.getPassword())) {
-                // return temporary key
-                return new Key(generateAuthKey(request.getUsername()));
+                // try and generate the key
+                Optional<Long> toReturn = generateAuthKey(request.getUsername());
+                if (toReturn.isPresent()) {
+                    // return temporary key
+                    return ResponseEntity.ok(new Key(toReturn.get()));
+                }
                 // no need to log info for else case as generate auth key already does this
             }
             else {
@@ -113,7 +118,7 @@ public class PeopleService {
         else {
             logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
         }
-        return new Key(Optional.empty());
+        return ResponseEntity.notFound().build();
     }
 
     public List<People> getAllPeople() {
