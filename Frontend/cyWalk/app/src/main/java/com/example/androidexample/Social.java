@@ -32,7 +32,7 @@ public class Social extends AppCompatActivity {
     TextView title;
 
     private Button goalButton;
-    private String key ="";
+    private String key;
 
     private static String URL_JSON_OBJECT = null;
 
@@ -51,7 +51,7 @@ public class Social extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/username/"+key;
+        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -104,7 +104,7 @@ public class Social extends AppCompatActivity {
                             String username = response.getString("username");
 
                             // Populate text views with the parsed data
-                            title.setText( username + "'S SOCIAL");
+                            title.setText(username + "'S SOCIAL");
 
                         } catch (JSONException e) {
                             e.printStackTrace();

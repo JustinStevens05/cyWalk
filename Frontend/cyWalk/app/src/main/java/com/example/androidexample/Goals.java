@@ -5,8 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,6 +33,7 @@ public class Goals extends AppCompatActivity {
 
     private TextView daily_step_disp;
     private TextView weekly_step_disp;
+    private TextView title;
     private ProgressBar daily_bar;
     private ProgressBar weekly_bar;
     private int dailyStepCount = 0;
@@ -34,6 +41,10 @@ public class Goals extends AppCompatActivity {
     private final int dailyGoal = 10000;
     private final int weeklyGoal = 70000;
     private Button socialButton;
+    private Button newGoalsButton;
+    private Button submitButton;
+    private EditText newGoal;
+    private LinearLayout newGoalLayout;
     private String key;
 
     private static String URL_JSON_OBJECT = null;
@@ -44,10 +55,15 @@ public class Goals extends AppCompatActivity {
         setContentView(R.layout.goals);
 
         socialButton = findViewById(R.id.socialBtn);
+        newGoalsButton = findViewById(R.id.setGoalsBtn);
+        newGoal = findViewById(R.id.new_goal);
+        submitButton =findViewById(R.id.submitBtn);
+        newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
         weekly_step_disp = findViewById(R.id.weeklySteps);
         daily_bar = findViewById(R.id.dailyprogressBar);
         weekly_bar = findViewById(R.id.weeklyprogressBar);
+        title = findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -63,6 +79,21 @@ public class Goals extends AppCompatActivity {
                 Intent intent = new Intent(Goals.this, Social.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
+            }
+        });
+
+        newGoalsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newGoalLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newGoal.setText("");
+                newGoalLayout.setVisibility(View.INVISIBLE);
             }
         });
 
