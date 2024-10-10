@@ -45,7 +45,7 @@ public class PeopleController {
      * @return the key to be used during the session
      */
     @PutMapping
-    public Optional<Long> login(@RequestBody UserRequest userRequest) {
+    public Key login(@RequestBody UserRequest userRequest) {
         return peopleService.login(userRequest);
     }
 }
