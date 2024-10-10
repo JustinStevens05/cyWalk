@@ -16,6 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -72,14 +74,14 @@ class PeopleControllerTest {
         assertThat(controller).isNotNull();
         assertThat(mockMvc).isNotNull();
     }
-/*
-    @Transactional
+
+    // @Transactional
     @Test
     void CGetUserByUsername() throws Exception {
-        this.mockMvc.perform(get("/users/username/base")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("base@email")));
+        this.mockMvc.perform(get("/users/username/ckugel")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(containsString("calebkugel1@gmail.com")));
     }
-*/
+
     @Transactional
     @Test
     void DeleteUser() throws Exception {

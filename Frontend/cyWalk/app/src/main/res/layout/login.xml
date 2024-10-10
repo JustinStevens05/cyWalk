@@ -32,6 +32,7 @@
         android:textColor="@color/cywalkRed">
     </TextView>
 
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -109,6 +110,5 @@
         </Button>
 
     </LinearLayout>
-
 
 </androidx.appcompat.widget.LinearLayoutCompat>

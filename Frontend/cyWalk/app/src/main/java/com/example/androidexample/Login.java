@@ -1,5 +1,7 @@
 package com.example.androidexample;
 
+import static java.lang.Double.isNaN;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,12 +17,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Login extends AppCompatActivity {
 
@@ -29,7 +33,9 @@ public class Login extends AppCompatActivity {
     private TextView errorMsg;
     private Button loginButton;    // define login button variable
     private static String URL_JSON_OBJECT = null;
-    private String userKey = "ckugel";
+    private String userKey = "";
+    private String username;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,36 +54,49 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
 
                 /* grab strings from user inputs */
-                String username = usernameEditText.getText().toString();
+                username = usernameEditText.getText().toString();
+                password = passwordEditText.getText().toString();
 
-                URL_JSON_OBJECT = "http://10.0.2.2:8080/users/username/"+username;
+                URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
 
-                makeJsonObjReq();
-
-                /* when login button is pressed, use intent to switch to Login Activity */
-                if(!userKey.isEmpty()) {
-                    Intent intent = new Intent(Login.this, Social.class);
-                    intent.putExtra("key", userKey);
-                    startActivity(intent);
-                } else {
-                    errorMsg.setText("Error invalid username/password");
+                try {
+                    makeJsonObjReq();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
     }
-    private void makeJsonObjReq() {
+    private void makeJsonObjReq() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("password", password);
+
+        final String requestBody = jsonObject.toString();
+
+        //errorMsg.setText(requestBody);
+
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.GET,
+                Request.Method.PUT,
                 URL_JSON_OBJECT,
-                null, // Pass null as the request body since it's a GET request
+                jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            String key = response.getString("username");
-                            userKey = key;
+                            userKey = response.getString("key");
+                            //extraMsg.setText("working " + userKey);
+                            if(!userKey.isEmpty()) {
+                                Intent intent = new Intent(Login.this, Social.class);
+                                intent.putExtra("key", userKey);
+                                //errorMsg.setText("success " + userKey);
+                                startActivity(intent);
+                            } else {
+                                //errorMsg.setText("failed " + userKey);
+                                errorMsg.setText("Error invalid username/password");
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();

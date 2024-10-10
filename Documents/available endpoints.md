@@ -12,7 +12,7 @@ If running locally then {url} = http://localhost:8080
  - {username} is simply a string of the name of the user
  - this will return the People object for a cooresponding user
 
-{url}/users/{id}
+{url}/users/{key}
  - gets a People object based off of their session key from logging in
 
 ## Location Operations

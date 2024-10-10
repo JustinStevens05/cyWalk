@@ -98,12 +98,12 @@ public class PeopleService {
      * @param request the username password combination
      * @return a key to be used throughout the session until the user logs out
      */
-    public Optional<Long> login(UserRequest request) {
+    public Key login(UserRequest request) {
         Optional<UserRequest> userRequest = userRequestRepository.findByUsername(request.getUsername());
         if (userRequest.isPresent()) {
             if (userRequest.get().getPassword().equals(request.getPassword())) {
                 // return temporary key
-                return generateAuthKey(request.getUsername());
+                return new Key(generateAuthKey(request.getUsername()));
                 // no need to log info for else case as generate auth key already does this
             }
             else {
@@ -113,7 +113,7 @@ public class PeopleService {
         else {
             logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
         }
-        return Optional.empty();
+        return new Key(Optional.empty());
     }
 
     public List<People> getAllPeople() {
