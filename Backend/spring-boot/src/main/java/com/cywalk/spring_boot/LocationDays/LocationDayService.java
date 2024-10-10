@@ -71,14 +71,16 @@ public class LocationDayService {
         locationDayRepository.deleteById(id);
     }
 
-    public double totalDistance(Long id) {
+    public LocationDay totalDistance(Long id) {
         LocationDay ld = locationDayRepository.getReferenceById(id);
         double distance = 0;
         List<Location> locations = ld.getLocations();
         for (int i = 1; i < locations.size(); i++) {
             distance += calculateDistance(locations.get(i - 1), locations.get(i));
         }
-        return distance;
+        ld.setTotalDistance(distance);
+        locationDayRepository.save(ld);
+        return ld;
     }
 
 

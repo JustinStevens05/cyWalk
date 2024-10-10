@@ -8,8 +8,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class LocationDayControllerTest {
 
+
+
     @BeforeEach
     void setUp() {
+
     }
 
     @AfterEach
@@ -18,21 +21,26 @@ class LocationDayControllerTest {
 
     @Test
     void createLocation() {
+
     }
 
     @Test
     void getStepById() {
+
     }
 
     @Test
     void getAllLocationDays() {
+
     }
 
     @Test
     void deleteLocationDay() {
+
     }
 
     @Test
     void getDistanceFromDay() {
+
     }
 }
