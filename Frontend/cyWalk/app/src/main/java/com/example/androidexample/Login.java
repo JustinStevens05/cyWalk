@@ -36,6 +36,7 @@ public class Login extends AppCompatActivity {
     private String userKey = "";
     private String username;
     private String password;
+    private Button signUpButton;        // define signup button variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class Login extends AppCompatActivity {
         passwordEditText = findViewById(R.id.login_password_edt);
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
+        signUpButton = findViewById(R.id.login_signup_btn);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +66,30 @@ public class Login extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+                /* when login button is pressed, use intent to switch to Login Activity */
+                Intent intent = new Intent(Login.this, Dashboard.class);
+                intent.putExtra("USERNAME", username);
+                intent.putExtra("PASSWORD", password);
+                startActivity(intent);
+            }
+        });
+
+        /* click listener on sign up button pressed */
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* grab strings from user inputs */
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+
+                //String requestBody = "{\"name\": \"", \"data\": {\"price\": 400, \"color\": \"Purple\"}}";
+
+                /* when sign up button is pressed, use intent to switch to Login Activity */
+                Intent intent = new Intent(Login.this, Dashboard.class);
+                intent.putExtra("USERNAME", username);
+                intent.putExtra("PASSWORD", password);
+                startActivity(intent);
             }
         });
     }

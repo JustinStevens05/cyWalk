@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".Goals">
 
     <EditText
         android:id="@+id/title"
@@ -153,6 +154,7 @@
             android:textColor="#777777"
             android:text="Edit Daily Goal"/>
 
+<<<<<<< HEAD
         <LinearLayout
             android:id="@+id/newGoalLayout"
             android:layout_width="wrap_content"
@@ -196,44 +198,21 @@
                 android:textSize="20sp"/>
         </LinearLayout>
     </LinearLayout>
+=======
+>>>>>>> navbar_experiments
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100sp"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/homeBtn"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#000000"
-            android:text="Home" />
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:menu="@menu/bottom_navbar"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@drawable/bottom_navbar_selector"
+            app:itemTextColor="@drawable/bottom_navbar_text_selector"
+            app:itemBackground="@drawable/bottom_navbar_selector"
+            />
 
-        <Button
-            android:id="@+id/goalsBtn"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#000000"
-            android:text="Goals" />
-
-        <Button
-            android:id="@+id/socialBtn"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#000000"
-            android:text="Social" />
-
-        <Button
-            android:id="@+id/profileBtn"
-            android:layout_width="0sp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#000000"
-            android:text="Profile" />
-
-    </LinearLayout>
 </RelativeLayout>
