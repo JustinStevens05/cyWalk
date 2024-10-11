@@ -5,28 +5,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,16 +39,19 @@ public class Goals extends AppCompatActivity {
     private ProgressBar weekly_bar;
     private int dailyStepCount = 0;
     private int weeklyStepCount = 0;
-    private final int dailyGoal = 10000;
-    private final int weeklyGoal = 70000;
+    private int dailyGoal = 10000;
+    private int weeklyGoal = 70000;
     private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
-    private EditText newGoal;
+    private EditText newDaily;
+    private EditText newWeekly;
     private LinearLayout newGoalLayout;
     private String key;
+    private String username;
 
     private static String URL_JSON_OBJECT = null;
+    private static String URL_NEW_GOALS = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,8 @@ public class Goals extends AppCompatActivity {
 
         socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
-        newGoal = findViewById(R.id.new_goal);
+        newDaily = findViewById(R.id.new_daily);
+        newWeekly = findViewById(R.id.new_weekly);
         submitButton =findViewById(R.id.submitBtn);
         newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
@@ -69,11 +73,17 @@ public class Goals extends AppCompatActivity {
         weekly_bar = findViewById(R.id.weeklyprogressBar);
         title = findViewById(R.id.title);
 
+        daily_bar.setMax(dailyGoal);
+        weekly_bar.setMax(weeklyGoal);
+
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        username = extras.getString("username");
+
 
 
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
+        URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
 
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,14 +106,30 @@ public class Goals extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newGoal.setText("");
+                //try {
+                //    setJsonObjStepGoals();
+                //} catch (JSONException e) {
+                //    throw new RuntimeException(e);
+                //}
+
+                dailyGoal = Integer.parseInt(newDaily.getText().toString());
+                weeklyGoal = Integer.parseInt(newWeekly.getText().toString());
+
+                daily_step_disp.setText(dailyStepCount + "/" + dailyGoal);
+                weekly_step_disp.setText(weeklyStepCount + "/" + weeklyGoal);
+
+                daily_bar.setMax(dailyGoal);
+                weekly_bar.setMax(weeklyGoal);
+
+                newDaily.setText("");
+                newWeekly.setText("");
                 newGoalLayout.setVisibility(View.INVISIBLE);
             }
         });
 
-        makeJsonObjReq();
+        getJsonObjStepGoals();
     }
-    private void makeJsonObjReq() {
+    private void getJsonObjStepGoals() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET,
                 URL_JSON_OBJECT,
@@ -158,5 +184,52 @@ public class Goals extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+    private void setJsonObjStepGoals() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("dailyGoal", newDaily.getText());
+        jsonObject.put("weeklyGoal", newWeekly.getText());
+        final String requestBody = jsonObject.toString();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_NEW_GOALS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("VOLLEY", response);
+                title.setText(response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VOLLEY", error.toString());
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                String responseString = "";
+                if (response != null) {
+                    responseString = String.valueOf(response.statusCode);
+                    // can get more details such as response.headers
+                }
+                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 }

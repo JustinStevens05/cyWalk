@@ -117,6 +117,7 @@ public class Login extends AppCompatActivity {
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Social.class);
                                 intent.putExtra("key", userKey);
+                                intent.putExtra("username",username);
                                 //errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             } else {
