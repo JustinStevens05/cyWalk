@@ -16,7 +16,7 @@ import java.util.Optional;
 @RequestMapping("/friends")
 public class FriendController {
     private static final Logger log = LoggerFactory.getLogger(FriendController.class);
-    
+
     @Autowired
     private PeopleService peopleService;
 
@@ -67,7 +67,14 @@ public class FriendController {
         if (userRequest.isPresent()) {
             Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
             if (userRequestingRequest.isPresent()) {
-
+               Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
+               if (fr.isPresent()) {
+                   friendService.approveFriendRequest(fr.get());
+                   return ResponseEntity.ok().build();
+               }
+               else {
+                   return ResponseEntity.badRequest().build();
+               }
             }
             else {
                 return ResponseEntity.badRequest().build();
@@ -103,14 +110,27 @@ public class FriendController {
     /**
      * deny a friend request
      * @param key User session key
-     * @param username
-     * @return
+     * @param username the username of the user
+     * @return Status codes of whether success or not
      */
     @DeleteMapping("/{key}/request/deny/{username}")
     public ResponseEntity<Void> denyFriendRequest(@PathVariable Long key, @PathVariable String username) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
         if (userRequest.isPresent()) {
-
+            Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
+            if (userRequestingRequest.isPresent()) {
+                Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
+                if (fr.isPresent()) {
+                    friendService.denyFriendRequest(fr.get());
+                    return ResponseEntity.ok().build();
+                }
+                else {
+                    return ResponseEntity.badRequest().build();
+                }
+            }
+            else {
+                return ResponseEntity.badRequest().build();
+            }
         }
         else {
             return ResponseEntity.badRequest().build();

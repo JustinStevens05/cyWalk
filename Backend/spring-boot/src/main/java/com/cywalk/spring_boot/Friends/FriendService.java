@@ -61,4 +61,14 @@ public class FriendService {
         friendRequestRepository.delete(fr);
         peopleService.saveUser(userGettingRequested);
     }
+
+    /**
+     * Literally just does the repository call
+     * @param user_requesting the user requesting the friend
+     * @param user_getting_requested the user getting requested
+     * @return the cooresponding friend request if it exists in the database
+     */
+    public Optional<FriendRequest> getFriendRequestFrom(People user_requesting, People user_getting_requested) {
+        return friendRequestRepository.findFriendRequestByUser_getting_requestedAndUser_requesting(user_getting_requested, user_requesting);
+    }
 }
