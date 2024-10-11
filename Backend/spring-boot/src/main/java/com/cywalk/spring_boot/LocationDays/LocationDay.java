@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 public class LocationDay {
     @Id
+    @GeneratedValue
     private Long id;
 
     /**
@@ -38,7 +39,7 @@ public class LocationDay {
      * The people who took traveled took this route
      */
     @ManyToOne
-    @JoinColumn(name = "people_username")
+    // @JoinColumn(name = "people_username")
     private People people;
 
     public LocationDay(LocalDate date) {

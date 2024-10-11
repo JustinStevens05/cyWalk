@@ -34,8 +34,8 @@ public class LocationDayController {
     }
 
     @GetMapping("/total")
-    public LocationDay getDistanceFromDay(@PathVariable String key) {
-        return locationDayService.totalDistance(Long.valueOf(key));
+    public LocationDay getDistanceFromDay(@PathVariable Long key) {
+        return locationDayService.totalDistance(key);
     }
 
 
