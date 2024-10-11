@@ -1,6 +1,8 @@
 package com.cywalk.spring_boot.Locations;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalTime;
@@ -8,6 +10,7 @@ import java.time.LocalTime;
 @Entity
 public class Location {
     @Id
+    @GeneratedValue
     private Long id;
 
     private double latitude;
@@ -66,5 +69,16 @@ public class Location {
 
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", elevation=" + elevation +
+                ", time=" + time +
+                '}';
     }
 }

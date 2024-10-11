@@ -3,6 +3,7 @@ package com.cywalk.spring_boot.LocationDays;
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationService;
 import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleService;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class LocationDayService {
     private LocationService locationService;
 
     Logger logger = LoggerFactory.getLogger(LocationDayService.class);
+    @Autowired
+    private PeopleService peopleService;
 
     public LocationDayService() {
 
@@ -72,7 +75,12 @@ public class LocationDayService {
     }
 
     public LocationDay totalDistance(Long id) {
-        LocationDay ld = locationDayRepository.getReferenceById(id);
+       /*
+        People person = peopleService.getUserFromKey(id).get();
+
+        LocationDay ld = person.getLocations().get(person.getLocations().size() - 1);
+*/
+        LocationDay ld = locationDayRepository.findById(id).get();
         double distance = 0;
         List<Location> locations = ld.getLocations();
         for (int i = 1; i < locations.size(); i++) {

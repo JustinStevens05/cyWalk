@@ -47,26 +47,37 @@ public class LocationService {
             location.setTime(LocalTime.now());
         }
 
+        location = locationRepository.save(location);
+
         Optional<People> personRequest = personService.getUserFromKey(key);
         if (personRequest.isEmpty()) {
             return Optional.empty();
         }
 
         List<LocationDay> currentLocationDays = personRequest.get().getLocations();
-        if ((currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
-            currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
+        if (!currentLocationDays.isEmpty()) {
+            if ((currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
+                currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
+            } else {
+                // make a new location day for the user because the most recent location day is not from today
+                LocationDay ld = new LocationDay(LocalDate.now());
+                ld.addLocation(location);
+                ld.setUser(personRequest.get());
+                LocationDay locationDay = locationDayRepository.save(ld);
+                personRequest.get().addLocation(locationDay);
+            }
         }
         else {
-           // make a new location day for the user because the most recent location day is not from today
             LocationDay ld = new LocationDay(LocalDate.now());
             ld.addLocation(location);
+            ld.setUser(personRequest.get());
             LocationDay locationDay = locationDayRepository.save(ld);
             personRequest.get().addLocation(locationDay);
         }
 
         personService.saveUser(personRequest.get());
 
-        return Optional.of(locationRepository.save(location));
+        return Optional.of(location);
     }
 
     public Optional<Location> getLocationById(Long id) {
