@@ -74,7 +74,7 @@ public class PeopleController {
      * @param key session key
      * @return a successful key
      */
-    @DeleteMapping("{key}")
+    @DeleteMapping("/logins/{key}")
     public ResponseEntity<Void> logoutAllOfUser(@PathVariable Long key) {
        ResponseEntity<List<UserModel>> result = getActiveSessions(key);
        if (result.getStatusCode().value() == 200) {
@@ -105,7 +105,7 @@ public class PeopleController {
      * @param key the session key from {@link #login(UserRequest)}
      * @return all the sessions of a user
      */
-    @GetMapping("{key}")
+    @GetMapping("/logins/{key}")
     public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable Long key) {
         Optional<UserModel> userRequest = userModelRepository.findBySecretKey(key);
         if (userRequest.isPresent()) {

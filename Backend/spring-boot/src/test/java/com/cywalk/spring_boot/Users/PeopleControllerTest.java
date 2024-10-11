@@ -68,6 +68,7 @@ class PeopleControllerTest {
 
     private final UserRequest basePersonRequest = new UserRequest("base", "password123");
 
+
     @Test
     void SignUpAndLoginAndLogout() throws Exception {
         if (peopleService.getUserByUsername("base").isPresent()) {
@@ -102,6 +103,8 @@ class PeopleControllerTest {
         ).andExpect(status().isOk());
 
     }
+
+
 
 /*
     @Transactional
