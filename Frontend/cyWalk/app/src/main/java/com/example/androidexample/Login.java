@@ -1,6 +1,5 @@
 package com.example.androidexample;
 
-import static com.example.androidexample.Dashboard.URL_STRING_REQ;
 import static java.lang.Double.isNaN;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,15 +16,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -87,17 +83,7 @@ public class Login extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
-
-                try {
-                    JSONObject jsonBody = new JSONObject();
-
-                    jsonBody.put("username", username);
-                    jsonBody.put("password", password);
-                    makeStringReqWithBody(jsonBody);
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                //String requestBody = "{\"name\": \"", \"data\": {\"price\": 400, \"color\": \"Purple\"}}";
 
                 /* when sign up button is pressed, use intent to switch to Login Activity */
                 Intent intent = new Intent(Login.this, Dashboard.class);
@@ -107,68 +93,6 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-
-    // For posting username and password
-    private void makeStringReqWithBody(JSONObject jsonBody) {
-
-        final String mRequestBody = jsonBody.toString();
-
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST, URL_STRING_REQ,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Handle the successful response here
-                        Log.d("Volley Response", response);
-                        // msgResponse.setText(response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle any errors that occur during the request
-                        Log.e("Volley Error", error.toString());
-                        // msgResponse.setText(error.toString());
-                    }
-                }
-        ) {
-
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.d("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                    return null;
-                }
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
-
-        // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-    }
-
     private void makeJsonObjReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -179,7 +103,9 @@ public class Login extends AppCompatActivity {
         //errorMsg.setText(requestBody);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.PUT, URL_JSON_OBJECT, jsonObject,
+                Request.Method.PUT,
+                URL_JSON_OBJECT,
+                jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

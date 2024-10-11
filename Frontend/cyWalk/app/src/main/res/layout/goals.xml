@@ -154,6 +154,7 @@
             android:textColor="#777777"
             android:text="Edit Daily Goal"/>
 
+<<<<<<< HEAD
         <LinearLayout
             android:id="@+id/newGoalLayout"
             android:layout_width="wrap_content"
@@ -197,6 +198,9 @@
                 android:textSize="20sp"/>
         </LinearLayout>
     </LinearLayout>
+=======
+>>>>>>> navbar_experiments
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"

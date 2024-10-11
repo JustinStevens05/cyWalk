@@ -18,11 +18,14 @@ public class StepGoalService {
 
     public StepGoal setStepGoal(String username, StepGoal stepGoal) {
         Optional<People> peopleOpt = peopleRepository.findById(username);
-        if (peopleOpt.isPresent()) {
+        if (peopleOpt.isPresent() && (stepGoal.getDailyGoal() >= 0) && (stepGoal.getWeeklyGoal() >= 0)) {
+            if(getStepGoal(username).isPresent()) {
+                deleteStepGoal(username);
+            }
             stepGoal.setPeople(peopleOpt.get());
             return stepGoalRepository.save(stepGoal);
         }
-        return null; // Consider throwing an exception instead for better error handling
+        return null;
     }
 
 
