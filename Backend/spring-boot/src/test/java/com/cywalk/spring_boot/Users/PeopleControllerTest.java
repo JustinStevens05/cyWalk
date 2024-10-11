@@ -66,13 +66,13 @@ class PeopleControllerTest {
     }
     */
 
-    private final UserRequest basePersonRequest = new UserRequest("base", "password123");
+    private final UserRequest basePersonRequest = new UserRequest("userOne", "password123");
 
-
+    @Transactional
     @Test
     void SignUpAndLoginAndLogout() throws Exception {
-        if (peopleService.getUserByUsername("base").isPresent()) {
-            peopleService.deleteUserByName("base");
+        if (peopleService.getUserByUsername("userOne").isPresent()) {
+            peopleService.deleteUserByName("userOne");
         }
 
         // try to sign up
@@ -95,7 +95,7 @@ class PeopleControllerTest {
         // test if the get worked
         this.mockMvc.perform(
                 get("/users/" + key)
-        ).andExpect(status().isOk()).andExpect(content().string(containsString("base@email")));
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("userOne")));
 
         // test delete
         this.mockMvc.perform(
