@@ -61,10 +61,10 @@ public class Goals extends AppCompatActivity {
         //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         //botnav.setSelectedItemId(R.id.nav_goals);
 
-        socialButton = findViewById(R.id.socialBtn);
+        // socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
-        newDaily = findViewById(R.id.new_daily);
-        newWeekly = findViewById(R.id.new_weekly);
+        //newDaily = findViewById(R.id.new_daily);
+        //newWeekly = findViewById(R.id.new_weekly);
         submitButton =findViewById(R.id.submitBtn);
         newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
