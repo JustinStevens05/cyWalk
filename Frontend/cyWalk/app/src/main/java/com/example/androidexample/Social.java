@@ -33,6 +33,7 @@ public class Social extends AppCompatActivity {
 
     private Button goalButton;
     private String key;
+    private String username;
 
     private static String URL_JSON_OBJECT = null;
 
@@ -84,6 +85,7 @@ public class Social extends AppCompatActivity {
 
                 Intent intent = new Intent(Social.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("username",username);
                 startActivity(intent);
             }
         });
@@ -101,7 +103,7 @@ public class Social extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            String username = response.getString("username");
+                            username = response.getString("username");
 
                             // Populate text views with the parsed data
                             title.setText(username + "'S SOCIAL");

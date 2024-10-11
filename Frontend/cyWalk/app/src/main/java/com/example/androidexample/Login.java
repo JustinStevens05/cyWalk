@@ -66,30 +66,6 @@ public class Login extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Dashboard.class);
-                intent.putExtra("USERNAME", username);
-                intent.putExtra("PASSWORD", password);
-                startActivity(intent);
-            }
-        });
-
-        /* click listener on sign up button pressed */
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* grab strings from user inputs */
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-
-                //String requestBody = "{\"name\": \"", \"data\": {\"price\": 400, \"color\": \"Purple\"}}";
-
-                /* when sign up button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Dashboard.class);
-                intent.putExtra("USERNAME", username);
-                intent.putExtra("PASSWORD", password);
-                startActivity(intent);
             }
         });
     }
