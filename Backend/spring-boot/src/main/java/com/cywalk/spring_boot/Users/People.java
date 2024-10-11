@@ -2,7 +2,7 @@ package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.LocationDays.LocationDay;
 import jakarta.persistence.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,19 +13,27 @@ public class People {
 
   private String email;
 
-  @OneToMany
-  private List<LocationDay> locations;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<LocationDay> locations = new ArrayList<>(); // Initialized to an empty list
 
+  // Constructors
   public People(String username, String email, List<LocationDay> locations) {
     this.username = username;
     this.email = email;
-    this.locations = locations;
+    if (locations != null) {
+      this.locations = locations;
+    } else {
+      this.locations = new ArrayList<>();
+    }
   }
 
   public People() {
-
+    // No need to initialize locations here as it's already initialized above
   }
 
+  // Getters and Setters
+
+  // Username
   public String getUsername() {
     return username;
   }
@@ -34,6 +42,7 @@ public class People {
     this.username = username;
   }
 
+  // Email
   public String getEmail() {
     return email;
   }
@@ -42,12 +51,17 @@ public class People {
     this.email = email;
   }
 
+  // Locations
   public List<LocationDay> getLocations() {
     return locations;
   }
 
-  public void setLocations(List<LocationDay> steps) {
-    this.locations = steps;
+  public void setLocations(List<LocationDay> locations) {
+    if (locations != null) {
+      this.locations = locations;
+    } else {
+      this.locations = new ArrayList<>();
+    }
   }
 
   public void addLocation(LocationDay newLocation) {
@@ -57,12 +71,9 @@ public class People {
   @Override
   public String toString() {
     return "People{" +
-            ", username='" + username + '\'' +
+            "username='" + username + '\'' +
             ", email='" + email + '\'' +
             ", locations=" + locations +
             '}';
   }
 }
-
-
-

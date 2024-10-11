@@ -1,6 +1,6 @@
 # SignUpController API Documentation
 
-Welcome to the **SignUpController** API documentation. This guide provides detailed information about the endpoints available in the `SignUpController`, including the structure of the requests and the expected responses. This will help you effectively integrate and interact with the Sign-Up functionalities of the application using tools like Insomnia.
+Welcome to the **SignUpController** API documentation. This guide provides detailed information about the endpoints available in the `SignUpController`, including the structure of the requests and the expected responses. This will help you effectively integrate and interact with the sign-up functionalities of the application using tools like Insomnia or Postman.
 
 ## Table of Contents
 
@@ -21,7 +21,7 @@ Welcome to the **SignUpController** API documentation. This guide provides detai
 
 The `SignUpController` is responsible for handling user registration and related operations within the application. It provides endpoints to:
 
-- **Register a new user**: Create a new user account with necessary details.
+- **Register a new user**: Create a new user account with the necessary details.
 - **Check username availability**: Verify if a desired username is available for registration.
 
 ## Base URL
@@ -32,7 +32,7 @@ All endpoints related to the `SignUpController` are prefixed with:
 /signup
 ```
 
-**Example:** If your server is running on `http://localhost:8080`, the base URL for Sign-Up endpoints would be `http://localhost:8080/signup`.
+**Example:** If your server is running on `http://localhost:8080`, the base URL for sign-up endpoints would be `http://localhost:8080/signup`.
 
 ## Endpoints
 
@@ -46,85 +46,49 @@ POST /signup
 
 **Description:**
 
-Registers a new user in the system by creating a `People` entity with the provided details.
+Registers a new user in the system by providing a username and password.
 
 **Request Body:**
 
-The request should contain a JSON object representing the user to be registered. Below is the structure of the expected JSON:
+The request should contain a JSON object with the following structure:
 
 ```json
 {
   "username": "string",
-  "email": "string",
-  "locations": [
-    {
-      // LocationDay object structure
-      // Example:
-      "locationId": 1,
-      "date": "2024-10-09",
-      "details": "Visited the central park."
-    }
-    // ... more LocationDay objects
-  ]
+  "password": "string"
 }
 ```
 
 **Fields:**
 
-- `username` (String, **Required**): The unique username for the user.
-- `email` (String, **Required**): The user's email address.
-- `locations` (Array of `LocationDay` objects, *Optional*): A list of location entries associated with the user.
-
-**LocationDay Object Structure:**
-
-Each object in the `locations` array should follow the structure defined by the `LocationDay` entity. Ensure that all required fields for `LocationDay` are provided.
-
-**Example Request Body:**
-
-```json
-{
-  "username": "john_doe",
-  "email": "john.doe@example.com",
-  "locations": [
-    {
-      "locationId": 101,
-      "date": "2024-10-01",
-      "details": "Visited the museum."
-    },
-    {
-      "locationId": 102,
-      "date": "2024-10-05",
-      "details": "Went hiking in the mountains."
-    }
-  ]
-}
-```
+- `username` (String, **Required**): The desired username for the user.
+- `password` (String, **Required**): The password for the user.
 
 **Successful Response:**
 
 - **Status Code:** `200 OK`
-- **Body:** Returns the created `People` object with all its details.
+- **Body:** Returns a JSON object containing the username and an authentication key.
 
 ```json
 {
   "username": "john_doe",
-  "email": "john.doe@example.com",
-  "locations": [
-    {
-      "locationId": 101,
-      "date": "2024-10-01",
-      "details": "Visited the museum."
-    },
-    {
-      "locationId": 102,
-      "date": "2024-10-05",
-      "details": "Went hiking in the mountains."
-    }
-  ]
+  "key": 12345
 }
 ```
 
 **Error Responses:**
+
+- **Status Code:** `400 Bad Request`
+
+  **Condition:** Missing `username` or `password` in the request body.
+
+  **Body:**
+
+  ```json
+  {
+    "message": "Username and password are required."
+  }
+  ```
 
 - **Status Code:** `409 Conflict`
 
@@ -134,27 +98,31 @@ Each object in the `locations` array should follow the structure defined by the 
 
   ```json
   {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 409,
-    "error": "Conflict",
-    "message": "Username already in use.",
-    "path": "/signup"
+    "message": "Username already in use."
   }
   ```
 
 - **Status Code:** `400 Bad Request`
 
-  **Condition:** The request body is malformed or missing required fields.
+  **Condition:** Failed to create the user.
 
   **Body:**
 
   ```json
   {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Validation failed for object='people'. Error count: 1",
-    "path": "/signup"
+    "message": "Failed to create user."
+  }
+  ```
+
+- **Status Code:** `500 Internal Server Error`
+
+  **Condition:** Failed to generate authentication key.
+
+  **Body:**
+
+  ```json
+  {
+    "message": "Failed to generate authentication key."
   }
   ```
 
@@ -187,7 +155,7 @@ GET /signup/check-username/john_doe
 
 ```json
 {
-  "available": false
+  "available": true
 }
 ```
 
@@ -200,33 +168,13 @@ GET /signup/check-username/john_doe
 
 - **Status Code:** `400 Bad Request`
 
-  **Condition:** The `username` provided is invalid (e.g., contains prohibited characters).
+  **Condition:** Missing `username` path parameter.
 
   **Body:**
 
   ```json
   {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Invalid username format.",
-    "path": "/signup/check-username/john_doe"
-  }
-  ```
-
-- **Status Code:** `404 Not Found`
-
-  **Condition:** The endpoint is accessed incorrectly or the username parameter is missing.
-
-  **Body:**
-
-  ```json
-  {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 404,
-    "error": "Not Found",
-    "message": "Endpoint not found.",
-    "path": "/signup/check-username/"
+    "message": "Username parameter is required."
   }
   ```
 
@@ -234,82 +182,88 @@ GET /signup/check-username/john_doe
 
 ### Register User Request
 
-| Field      | Type       | Description                        | Required |
-|------------|------------|------------------------------------|----------|
-| username   | String     | Unique username for the user       | Yes      |
-| email      | String     | User's email address               | Yes      |
-| locations  | Array      | List of associated `LocationDay` objects | No       |
+| Field    | Type   | Description                   | Required |
+|----------|--------|-------------------------------|----------|
+| username | String | Desired username for the user | Yes      |
+| password | String | Password for the user         | Yes      |
 
 **Example:**
 
 ```json
 {
   "username": "jane_doe",
-  "email": "jane.doe@example.com",
-  "locations": [
-    {
-      "locationId": 201,
-      "date": "2024-09-15",
-      "details": "Attended a concert."
-    }
-  ]
+  "password": "securePassword123"
 }
 ```
 
-### Check Username Availability Request
+### Register User Response
 
-**Path Parameter:**
+**Successful Response:**
 
-- `username` (String): The username to check.
-
-**Example:**
-
-```
-/signup/check-username/jane_doe
-```
-
-**Response Body:**
-
-| Field      | Type    | Description                         |
-|------------|---------|-------------------------------------|
-| available  | Boolean | `true` if available, `false` otherwise |
+| Field    | Type    | Description                         |
+|----------|---------|-------------------------------------|
+| username | String  | The username of the newly created user |
+| key      | Number  | Authentication key for the user     |
 
 **Example:**
 
 ```json
 {
-  "available": true
+  "username": "jane_doe",
+  "key": 67890
+}
+```
+
+### Check Username Availability Request
+
+No request body is needed. The `username` is provided as a path parameter.
+
+**Example:**
+
+```
+GET /signup/check-username/jane_doe
+```
+
+### Check Username Availability Response
+
+| Field     | Type    | Description                            |
+|-----------|---------|----------------------------------------|
+| available | Boolean | `true` if available, `false` otherwise |
+
+**Example:**
+
+```json
+{
+  "available": false
 }
 ```
 
 ## Error Handling
 
-The `SignUpController` follows standard HTTP status codes to indicate the success or failure of an API request. Below are common status codes you might encounter:
+The `SignUpController` uses standard HTTP status codes to indicate the success or failure of an API request. Below are common status codes you might encounter:
 
 - **200 OK**: The request was successful.
-- **201 Created**: A new resource has been successfully created. *(Not used in current endpoints but recommended for POST requests)*
-- **400 Bad Request**: The request was invalid or cannot be served. This could be due to malformed JSON, missing required fields, or invalid data formats.
+- **400 Bad Request**: The request was invalid or cannot be served. This could be due to missing required fields.
 - **409 Conflict**: The request could not be completed due to a conflict with the current state of the target resource, such as attempting to register a username that already exists.
-- **404 Not Found**: The requested resource could not be found.
 - **500 Internal Server Error**: An unexpected error occurred on the server side.
 
 **Error Response Structure:**
 
 ```json
 {
-  "timestamp": "2024-10-09T12:34:56.789Z",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Detailed error message.",
-  "path": "/signup"
+  "message": "Detailed error message."
 }
 ```
 
-- `timestamp`: The date and time when the error occurred.
-- `status`: The HTTP status code.
-- `error`: A brief description of the error.
 - `message`: A detailed message explaining the error.
-- `path`: The endpoint path that was accessed.
 
+## Notes
 
+- The `email` field is currently set to a placeholder value in the code (`"placeholder@gmail.com"`) and is not required in the request body.
+- The `authKey` is a numerical value generated upon successful user creation.
+- Ensure that the `username` and `password` fields are not empty and meet any additional validation criteria your application may have.
+- The `PeopleService` and related classes (`People`, `UserRequest`, `Key`) are assumed to be properly defined in your application and handle the business logic accordingly.
 
+---
+
+Feel free to reach out if you have any questions or need further assistance with integrating these endpoints into your application.
