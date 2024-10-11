@@ -56,16 +56,6 @@ The request should contain a JSON object representing the user to be registered.
 {
   "username": "string",
   "email": "string",
-  "locations": [
-    {
-      // LocationDay object structure
-      // Example:
-      "locationId": 1,
-      "date": "2024-10-09",
-      "details": "Visited the central park."
-    }
-    // ... more LocationDay objects
-  ]
 }
 ```
 
@@ -73,32 +63,8 @@ The request should contain a JSON object representing the user to be registered.
 
 - `username` (String, **Required**): The unique username for the user.
 - `email` (String, **Required**): The user's email address.
-- `locations` (Array of `LocationDay` objects, *Optional*): A list of location entries associated with the user.
 
-**LocationDay Object Structure:**
 
-Each object in the `locations` array should follow the structure defined by the `LocationDay` entity. Ensure that all required fields for `LocationDay` are provided.
-
-**Example Request Body:**
-
-```json
-{
-  "username": "john_doe",
-  "email": "john.doe@example.com",
-  "locations": [
-    {
-      "locationId": 101,
-      "date": "2024-10-01",
-      "details": "Visited the museum."
-    },
-    {
-      "locationId": 102,
-      "date": "2024-10-05",
-      "details": "Went hiking in the mountains."
-    }
-  ]
-}
-```
 
 **Successful Response:**
 
@@ -109,18 +75,7 @@ Each object in the `locations` array should follow the structure defined by the 
 {
   "username": "john_doe",
   "email": "john.doe@example.com",
-  "locations": [
-    {
-      "locationId": 101,
-      "date": "2024-10-01",
-      "details": "Visited the museum."
-    },
-    {
-      "locationId": 102,
-      "date": "2024-10-05",
-      "details": "Went hiking in the mountains."
-    }
-  ]
+  "key": 1232
 }
 ```
 
@@ -134,29 +89,10 @@ Each object in the `locations` array should follow the structure defined by the 
 
   ```json
   {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 409,
-    "error": "Conflict",
-    "message": "Username already in use.",
-    "path": "/signup"
+    "message": "Username already in use."
   }
   ```
 
-- **Status Code:** `400 Bad Request`
-
-  **Condition:** The request body is malformed or missing required fields.
-
-  **Body:**
-
-  ```json
-  {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Validation failed for object='people'. Error count: 1",
-    "path": "/signup"
-  }
-  ```
 
 ### 2. Check Username Availability
 
@@ -196,25 +132,10 @@ GET /signup/check-username/john_doe
 - `true`: The username is available.
 - `false`: The username is already taken.
 
-**Error Responses:**
 
-- **Status Code:** `400 Bad Request`
 
-  **Condition:** The `username` provided is invalid (e.g., contains prohibited characters).
 
-  **Body:**
-
-  ```json
-  {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "Invalid username format.",
-    "path": "/signup/check-username/john_doe"
-  }
-  ```
-
-- **Status Code:** `404 Not Found`
+**Status Code:** `404 Not Found`
 
   **Condition:** The endpoint is accessed incorrectly or the username parameter is missing.
 
@@ -222,8 +143,6 @@ GET /signup/check-username/john_doe
 
   ```json
   {
-    "timestamp": "2024-10-09T12:34:56.789Z",
-    "status": 404,
     "error": "Not Found",
     "message": "Endpoint not found.",
     "path": "/signup/check-username/"

@@ -29,6 +29,12 @@ public class SignUpController {
 
 
 
+        if ((user.getUsername().length() == 0) || (user.getEmail().length() < 2) || !(user.getEmail().contains("@"))) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Failed to create user.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
         if (peopleService.getUserByUsername(user.getUsername()).isPresent()) {
 
             Map<String, String> errorResponse = new HashMap<>();
