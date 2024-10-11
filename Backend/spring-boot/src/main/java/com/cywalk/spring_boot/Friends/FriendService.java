@@ -3,7 +3,6 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class FriendService {
      * @return true if the request was sent. false if it already existed
      */
     public boolean requestToFriend(People userRequesting, People userGettingRequested) {
-        Optional<FriendRequest> fr = friendRequestRepository.findFriendRequestByUser_getting_requestedAndUser_requesting(userGettingRequested, userRequesting);
+        Optional<FriendRequest> fr = getFriendRequestFrom(userRequesting, userGettingRequested);
         if (fr.isPresent()) {
             return false;
         }
@@ -41,9 +40,9 @@ public class FriendService {
      */
     public void approveFriendRequest(FriendRequest fr) {
         // assume it exists
-        People userGettingRequested = fr.getUser_getting_requested();
+        People userGettingRequested = fr.getPeopleGettingRequested();
         userGettingRequested.clearFriendRequest(fr);
-        People userRequesting = fr.getUser_requesting();
+        People userRequesting = fr.getPeopleRequesting();
         userRequesting.addFriend(userGettingRequested);
         userGettingRequested.addFriend(userRequesting);
         friendRequestRepository.delete(fr);
@@ -56,7 +55,7 @@ public class FriendService {
      * @param fr the friend request
      */
     public void denyFriendRequest(FriendRequest fr) {
-        People userGettingRequested = fr.getUser_requesting();
+        People userGettingRequested = fr.getPeopleRequesting();
         userGettingRequested.clearFriendRequest(fr);
         friendRequestRepository.delete(fr);
         peopleService.saveUser(userGettingRequested);
@@ -69,6 +68,6 @@ public class FriendService {
      * @return the cooresponding friend request if it exists in the database
      */
     public Optional<FriendRequest> getFriendRequestFrom(People user_requesting, People user_getting_requested) {
-        return friendRequestRepository.findFriendRequestByUser_getting_requestedAndUser_requesting(user_getting_requested, user_requesting);
+        return friendRequestRepository.findByPeopleRequestingAndPeopleGettingRequested(user_requesting, user_getting_requested);
     }
 }

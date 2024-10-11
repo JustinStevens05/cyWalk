@@ -11,16 +11,16 @@ public class FriendRequest {
     private Long requestID;
 
     @ManyToOne
-    private People user_requesting;
+    private People peopleRequesting;
     @ManyToOne
-    private People user_getting_requested;
+    private People peopleGettingRequested;
 
     public FriendRequest() {
     }
 
-    public FriendRequest(People user_requesting, People user_getting_requested) {
-        this.user_requesting = user_requesting;
-        this.user_getting_requested = user_getting_requested;
+    public FriendRequest(People PeopleRequesting, People peopleGettingRequested) {
+        this.peopleRequesting = PeopleRequesting;
+        this.peopleGettingRequested = peopleGettingRequested;
     }
 
     public Long getRequestID() {
@@ -31,20 +31,20 @@ public class FriendRequest {
         this.requestID = requestID;
     }
 
-    public People getUser_requesting() {
-        return user_requesting;
+    public People getPeopleRequesting() {
+        return peopleRequesting;
     }
 
-    public void setUser_requesting(People user_requesting) {
-        this.user_requesting = user_requesting;
+    public void setPeopleRequesting(People user_requesting) {
+        this.peopleRequesting = user_requesting;
     }
 
-    public People getUser_getting_requested() {
-        return user_getting_requested;
+    public People getPeopleGettingRequested() {
+        return peopleGettingRequested;
     }
 
-    public void setUser_getting_requested(People user_getting_requested) {
-        this.user_getting_requested = user_getting_requested;
+    public void setPeopleGettingRequested(People user_getting_requested) {
+        this.peopleGettingRequested = user_getting_requested;
     }
 
     @Override
@@ -64,8 +64,8 @@ public class FriendRequest {
     public String toString() {
         return "FriendRequest{" +
                 "requestID=" + requestID +
-                ", user_requesting=" + user_requesting +
-                ", user_getting_requested=" + user_getting_requested +
+                ", user_requesting=" + peopleRequesting +
+                ", user_getting_requested=" + peopleGettingRequested +
                 '}';
     }
 }
