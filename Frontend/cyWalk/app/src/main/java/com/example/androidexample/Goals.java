@@ -41,7 +41,7 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 0;
     private int dailyGoal = 10000;
     private int weeklyGoal = 70000;
-    private Button socialButton;
+    //private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
     private EditText newDaily;
@@ -61,7 +61,7 @@ public class Goals extends AppCompatActivity {
         //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         //botnav.setSelectedItemId(R.id.nav_goals);
 
-        socialButton = findViewById(R.id.socialBtn);
+        //socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
@@ -85,16 +85,16 @@ public class Goals extends AppCompatActivity {
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
         URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
 
-        socialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when counter button is pressed, use intent to switch to Counter Activity */
-                Intent intent = new Intent(Goals.this, Social.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
-            }
-        });
+//        socialButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                /* when counter button is pressed, use intent to switch to Counter Activity */
+//                Intent intent = new Intent(Goals.this, Social.class);
+//                intent.putExtra("key", key);
+//                startActivity(intent);
+//            }
+//        });
 
         newGoalsButton.setOnClickListener(new View.OnClickListener() {
             @Override
