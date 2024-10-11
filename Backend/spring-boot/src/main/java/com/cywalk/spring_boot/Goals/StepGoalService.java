@@ -25,7 +25,7 @@ public class StepGoalService {
             stepGoal.setPeople(peopleOpt.get());
             return stepGoalRepository.save(stepGoal);
         }
-        return null; // Consider throwing an exception instead for better error handling
+        return null;
     }
 
 
