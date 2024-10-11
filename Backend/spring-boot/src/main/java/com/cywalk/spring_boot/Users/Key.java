@@ -3,9 +3,9 @@ package com.cywalk.spring_boot.Users;
 import java.util.Optional;
 
 public class Key {
-    private Optional<Long> key;
+    private long key;
 
-    public Key(Optional<Long> key) {
+    public Key(long key) {
         this.key = key;
     }
 
@@ -13,11 +13,11 @@ public class Key {
 
     }
 
-    public Optional<Long> getKey() {
+    public Long getKey() {
         return key;
     }
 
     public void setKey(Long key) {
-        this.key = Optional.of(key);
+        this.key = key;
     }
 }
