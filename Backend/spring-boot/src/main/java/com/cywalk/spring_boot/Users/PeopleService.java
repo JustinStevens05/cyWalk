@@ -25,10 +25,14 @@ public class PeopleService {
 
     public Optional<People> createUser(People user) {
         if (peopleRepository.findByUsername(user.getUsername()).isPresent()) {
-            logger.warn("issue username already in use");
+            logger.warn("Issue: username already in use");
             return Optional.empty();
         }
         return Optional.of(peopleRepository.save(user));
+    }
+
+    public void saveUserRequest(UserRequest userRequest) {
+        userRequestRepository.save(userRequest);
     }
 
     public Optional<People> getUserByUsername(String username) {
