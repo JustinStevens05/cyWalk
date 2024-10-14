@@ -31,8 +31,9 @@ public class Login extends AppCompatActivity {
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
-    private Button loginButton;    // define login button variable
+    private Button loginButton;         // define login button variable
     private static String URL_JSON_OBJECT = null;
+    private static String URL_JSON_OBJECT_SIGNUP = "http://10.0.2.2:8080/signup";
     private String userKey = "";
     private String username;
     private String password;
@@ -66,16 +67,12 @@ public class Login extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                /* when login button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Dashboard.class);
-                intent.putExtra("USERNAME", username);
-                intent.putExtra("PASSWORD", password);
-                startActivity(intent);
             }
         });
 
         /* click listener on sign up button pressed */
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        // Sign up is post
+        signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -83,10 +80,16 @@ public class Login extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                //String requestBody = "{\"name\": \"", \"data\": {\"price\": 400, \"color\": \"Purple\"}}";
+                URL_JSON_OBJECT = "http://10.0.2.2:8080/signup";
 
-                /* when sign up button is pressed, use intent to switch to Login Activity */
-                Intent intent = new Intent(Login.this, Dashboard.class);
+                try {
+                    makeJsonObjReq();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                /* when sign up button is pressed, use intent to switch to Dashboard Activity */
+                Intent intent = new Intent(Login.this, Login.class);
                 intent.putExtra("USERNAME", username);
                 intent.putExtra("PASSWORD", password);
                 startActivity(intent);
@@ -102,22 +105,22 @@ public class Login extends AppCompatActivity {
 
         //errorMsg.setText(requestBody);
 
+        URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.PUT,
-                URL_JSON_OBJECT,
-                jsonObject,
+                Request.Method.PUT, URL_JSON_OBJECT, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
+                        // errorMsg.setText(response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
-                            //extraMsg.setText("working " + userKey);
+                            userKey = (response.getString("key"));
+                            errorMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
-                                Intent intent = new Intent(Login.this, Social.class);
+                                Intent intent = new Intent(Login.this, Dashboard.class);
                                 intent.putExtra("key", userKey);
-                                //errorMsg.setText("success " + userKey);
+                                errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
@@ -156,4 +159,6 @@ public class Login extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
+
+
 }
