@@ -112,15 +112,14 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
-                        // errorMsg.setText(response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = (response.getString("key"));
-                            errorMsg.setText("working " + userKey);
+                            userKey = response.getString("key");
+                            //extraMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
                                 intent.putExtra("key", userKey);
-                                errorMsg.setText("success " + userKey);
+                                // errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
@@ -159,6 +158,4 @@ public class Login extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
-
-
 }
