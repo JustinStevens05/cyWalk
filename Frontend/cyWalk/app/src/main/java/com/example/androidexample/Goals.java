@@ -190,8 +190,8 @@ public class Goals extends AppCompatActivity {
         jsonObject.put("dailyGoal", Integer.parseInt(newDaily.getText().toString()));
         jsonObject.put("weeklyGoal", Integer.parseInt(newWeekly.getText().toString()));
         final String requestBody = jsonObject.toString();
-        title.setText(requestBody);
-        title.setTextSize(10);
+        //title.setText(requestBody);
+        //title.setTextSize(10);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.POST,
