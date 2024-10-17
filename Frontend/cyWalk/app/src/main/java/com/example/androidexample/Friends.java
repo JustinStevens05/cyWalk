@@ -24,15 +24,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Social extends AppCompatActivity {
+public class Friends extends AppCompatActivity {
 
-    TabLayout tabLayout;
-    ViewPager2 viewPager2;
-    myViewPagerAdapter myViewPagerAdapter;
-    TextView title;
-
-    private Button goalButton;
-    private Button friendsButton;
+    private Button backButton;
     private String key;
     private String username;
 
@@ -41,67 +35,24 @@ public class Social extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.social);
-        goalButton = findViewById(R.id.goalsBtn);
-        friendsButton = findViewById(R.id.friendsButton);
-        title = findViewById(R.id.title);
-
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager2 = findViewById(R.id.viewPager);
-        myViewPagerAdapter = new myViewPagerAdapter(this);
-        viewPager2.setAdapter(myViewPagerAdapter);
+        setContentView(R.layout.friends);
+        backButton = findViewById(R.id.returnButton);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        //URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
-            }
-        });
-
-        goalButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("username",username);
-                startActivity(intent);
-            }
-        });
-
-        friendsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Social.this, Friends.class);
+                Intent intent = new Intent(Friends.this, Social.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
             }
         });
 
-        makeJsonObjReq();
+        //makeJsonObjReq();
     }
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -115,9 +66,6 @@ public class Social extends AppCompatActivity {
                         try {
                             // Parse JSON object data
                             username = response.getString("username");
-
-                            // Populate text views with the parsed data
-                            title.setText(username + "'S SOCIAL");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
