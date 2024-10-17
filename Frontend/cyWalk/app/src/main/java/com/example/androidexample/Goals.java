@@ -41,7 +41,7 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 0;
     private int dailyGoal = 10000;
     private int weeklyGoal = 70000;
-    //private Button socialButton;
+    // private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
     private EditText newDaily;
@@ -61,7 +61,7 @@ public class Goals extends AppCompatActivity {
         //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         //botnav.setSelectedItemId(R.id.nav_goals);
 
-        //socialButton = findViewById(R.id.socialBtn);
+        // socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);

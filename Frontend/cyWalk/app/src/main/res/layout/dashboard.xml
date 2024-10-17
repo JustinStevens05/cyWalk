@@ -14,10 +14,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="30dp"
+        android:layout_margin="20dp"
         android:textColor="@color/cywalkRed"
         android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
+
+    <TextView
+        android:id="@+id/txt_response"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/txt_greeting"
+        android:text="Response text"
+        android:textColor="@color/cywalkRed"/>
 
     <Button
         android:id="@+id/btn_start_manual_route"
@@ -47,7 +56,7 @@
         android:layout_margin="20dp"
         android:textColor="@color/cywalkRed"
         android:layout_below="@id/txt_greeting"
-        android:text="Daily Distance \n { DAILY_DISTANCE }" />
+        android:text="Daily Distance: \n ----------------------" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

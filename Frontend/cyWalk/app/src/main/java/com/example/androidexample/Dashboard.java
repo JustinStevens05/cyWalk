@@ -17,12 +17,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -43,16 +45,27 @@ import java.util.Map;
 
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
 
-    public static final String URL_STRING_REQ = "http://localhost:8080/202/locations/createLocation"; // delete the 202
+    public static String URL_STRING_REQ;
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap gMap;
-    Location currentLocation;
+    private static String key;
+    private String totalDistance;
+    private String URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+    TextView txt_daily_distance;
+    String username;
+    String dailyDistance;
+    TextView txt_greeting;
+    TextView txt_response;
+    // Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);             // link to Main activity XML
+        txt_daily_distance = findViewById(R.id.txt_daily_distance);
+        txt_greeting = findViewById(R.id.txt_greeting);
+        txt_response = findViewById(R.id.txt_response);
 
         // GOOGLE MAP FRAGMENT
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
@@ -63,25 +76,41 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         botnav.setSelectedItemId(R.id.nav_dashboard);
 
+        Bundle extras = getIntent().getExtras();
+        key = extras.getString("key");
+        txt_response.setText("Key: " + key);
+        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
+
         botnav.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_dashboard:
                     return true;
                 case R.id.nav_goals:
-                    startActivity(new Intent(getApplicationContext(), Goals.class));
+                    Intent intent = new Intent(getApplicationContext(), Goals.class);
+                    intent.putExtra("key", key);
+                    startActivity(intent);
+                    //startActivity(new Intent(getApplicationContext(), Goals.class));
                     finish();
                     return true;
                 case R.id.nav_social:
-                    startActivity(new Intent(getApplicationContext(), Social.class));
+                    intent = new Intent(Dashboard.this, Social.class);
+                    intent.putExtra("key", key);
+                    startActivity(intent);
+                    //startActivity(new Intent(getApplicationContext(), Social.class));
                     finish();
                     return true;
                 case R.id.nav_profile:
-                    startActivity(new Intent(getApplicationContext(), Profile.class));
+                    intent = new Intent(Dashboard.this, Profile.class);
+                    intent.putExtra("key", key);
+                    startActivity(intent);
+                    //startActivity(new Intent(getApplicationContext(), Profile.class));
                     finish();
                     return true;
             }
             return false;
         });
+        makeJsonObjReq();
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -98,22 +127,17 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Marker");
                 gMap.addMarker(markerOptions);
                 gMap.moveCamera(CameraUpdateFactory.newLatLng(markerCoords));
-
+                JSONObject jsonObject = new JSONObject();
                 try {
-                    // fields should match the attributes of the User Object at:
-                    // https://git.las.iastate.edu/cs309/tutorials/-/blob/springboot_unit2_1_onetoone/springboot_example/src/main/java/onetoone/Users/User.java
-                    JSONObject jsonBody = new JSONObject();
-
-                    jsonBody.put("latitude", markerCoords.latitude);
-                    jsonBody.put("longitude", markerCoords.longitude);
-                    jsonBody.put("elevation", 0);
-                    makeStringReqWithBody(jsonBody);
+                    jsonObject.put("latitude", markerCoords.latitude);
+                    jsonObject.put("longitude", markerCoords.longitude);
+                    jsonObject.put("elevation", 0);
+                    // URL_JSON_OBJECT_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
+                    makeStringReqWithBody(jsonObject);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
             }
-
-
         });
     }
 
@@ -121,6 +145,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     private void makeStringReqWithBody(JSONObject jsonBody) {
         final String mRequestBody = jsonBody.toString();
 
+        URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST, URL_STRING_REQ,
                 new Response.Listener<String>() {
@@ -129,6 +154,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                         // Handle the successful response here
                         Log.d("Volley Response", response);
                         // msgResponse.setText(response.toString());
+
+                        txt_daily_distance.setText(response.toString());
                     }
                 },
                 new Response.ErrorListener() {
@@ -145,7 +172,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
             public String getBodyContentType() {
                 return "application/json; charset=utf-8";
             }
-
             @Override
             public byte[] getBody() throws AuthFailureError {
                 try {
@@ -155,7 +181,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                     return null;
                 }
             }
-
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -163,7 +188,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
 //                headers.put("Content-Type", "application/json");
                 return headers;
             }
-
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
@@ -172,7 +196,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                 return params;
             }
         };
-
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
@@ -180,29 +203,36 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     /**
      * Sends a string request [GET] without a body.
      */
-    private void makeStringReq() {
-
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.GET, URL_STRING_REQ,
-                new Response.Listener<String>() {
+    private void makeJsonObjReq() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        // Handle the successful response here
-                        Log.d("Volley Response", response);
-                        // msgResponse.setText(response.toString());
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            username = response.getString("username");
+                            // key = response.getString("key");
+
+                            // Populate text views with the parsed data
+                            txt_greeting.setText(username);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle any errors that occur during the request
                         Log.e("Volley Error", error.toString());
                     }
                 }
         ) {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
 //                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
 //                headers.put("Content-Type", "application/json");
                 return headers;
@@ -210,7 +240,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
 
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
+                Map<String, String> params = new HashMap<String, String>();
 //                params.put("param1", "value1");
 //                params.put("param2", "value2");
                 return params;
@@ -218,8 +248,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         };
 
         // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-    }
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    };
+
 
 }
 
