@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 public class LocationDay {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**

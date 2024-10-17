@@ -1,13 +1,14 @@
 package com.cywalk.spring_boot.LocationDays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("{key}/location")
+@RequestMapping("/{key}/location")
 public class LocationDayController {
 
     @Autowired
@@ -28,14 +29,19 @@ public class LocationDayController {
         return locationDayService.getAllLocationDays();
     }
 
+    @GetMapping("/today")
+    public Optional<LocationDay> getLocationsFromToday(@PathVariable String key) {
+        return locationDayService.getTodaysLocation(Long.valueOf(key));
+    }
+
     @DeleteMapping("/{id}")
     public void deleteLocationDay(@PathVariable String key, @PathVariable Long id) {
         locationDayService.deleteLocationDay(id);
     }
 
     @GetMapping("/total")
-    public LocationDay getDistanceFromDay(@PathVariable String key) {
-        return locationDayService.totalDistance(Long.valueOf(key));
+    public Optional<LocationDay> getDistanceFromDay(@PathVariable String key) {
+        return locationDayService.totalDistanceFromUser(Long.valueOf(key));
     }
 
 

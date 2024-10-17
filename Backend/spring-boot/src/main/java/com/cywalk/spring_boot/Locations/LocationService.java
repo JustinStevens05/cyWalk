@@ -43,9 +43,11 @@ public class LocationService {
      * @return the location that was added if it was successful. returns {@link Optional#empty()} if there was an issue
      */
     public Optional<Location> saveLocation(Long key, Location location) {
-        if (location.getTime() == null) {
+       /*if (location.getTime() == null) {
             location.setTime(LocalTime.now());
         }
+        */
+
 
         Optional<People> personRequest = personService.getUserFromKey(key);
         if (personRequest.isEmpty()) {
@@ -53,20 +55,21 @@ public class LocationService {
         }
 
         List<LocationDay> currentLocationDays = personRequest.get().getLocations();
-        if ((currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
+        if (!currentLocationDays.isEmpty() && (currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
             currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
         }
         else {
            // make a new location day for the user because the most recent location day is not from today
             LocationDay ld = new LocationDay(LocalDate.now());
+            location = locationRepository.save(location);
             ld.addLocation(location);
-            LocationDay locationDay = locationDayRepository.save(ld);
-            personRequest.get().addLocation(locationDay);
+            ld = locationDayRepository.save(ld);
+            personRequest.get().addLocation(ld);
         }
 
         personService.saveUser(personRequest.get());
 
-        return Optional.of(locationRepository.save(location));
+        return Optional.of(location);
     }
 
     public Optional<Location> getLocationById(Long id) {

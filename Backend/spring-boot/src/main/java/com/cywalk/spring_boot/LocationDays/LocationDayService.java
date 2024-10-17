@@ -3,6 +3,7 @@ package com.cywalk.spring_boot.LocationDays;
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationService;
 import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleService;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class LocationDayService {
 
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private PeopleService peopleService;
 
     Logger logger = LoggerFactory.getLogger(LocationDayService.class);
 
@@ -71,7 +75,26 @@ public class LocationDayService {
         locationDayRepository.deleteById(id);
     }
 
-    public LocationDay totalDistance(Long id) {
+    public Optional<LocationDay> getTodaysLocation(Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isPresent()) {
+            int index = peopleResult.get().getLocations().size() - 1;
+            if (index > -1) {
+                return Optional.of(peopleResult.get().getLocations().get(index));
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<LocationDay> totalDistanceFromUser(Long key) {
+        Optional<LocationDay> locationResult = getTodaysLocation(key);
+        if (locationResult.isPresent()) {
+            return getTodaysLocation(locationResult.get().getId());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<LocationDay> totalDistance(Long id) {
         LocationDay ld = locationDayRepository.getReferenceById(id);
         double distance = 0;
         List<Location> locations = ld.getLocations();
@@ -79,8 +102,7 @@ public class LocationDayService {
             distance += calculateDistance(locations.get(i - 1), locations.get(i));
         }
         ld.setTotalDistance(distance);
-        locationDayRepository.save(ld);
-        return ld;
+        return Optional.of(locationDayRepository.save(ld));
     }
 
 

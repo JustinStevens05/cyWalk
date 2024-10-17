@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("{key}/locations")
+@RequestMapping("/{key}/locations")
 public class LocationController {
 
     @Autowired
@@ -22,7 +22,7 @@ public class LocationController {
     @Autowired
     private PeopleService peopleService;
 
-    @PostMapping("log")
+    @PostMapping("/log")
     public Optional<Location> createLocation(@PathVariable Long key, @RequestBody Location location) {
         return locationService.saveLocation(key, location);
     }
