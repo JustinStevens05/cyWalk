@@ -92,17 +92,10 @@ class LocationDayControllerTest {
         }
 
         // try to sign up
-        this.mockMvc.perform(
+        MvcResult result = this.mockMvc.perform(
                 post("/signup")
                 .content(asJsonString(basePersonRequest))
                 .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
-
-        // try to login
-        MvcResult result = this.mockMvc.perform(
-                put("/users")
-                        .content(asJsonString(basePersonRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
         String resultAsString = result.getResponse().getContentAsString();
