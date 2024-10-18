@@ -89,7 +89,7 @@ public class LocationDayService {
     public Optional<LocationDay> totalDistanceFromUser(Long key) {
         Optional<LocationDay> locationResult = getTodaysLocation(key);
         if (locationResult.isPresent()) {
-            return getTodaysLocation(locationResult.get().getId());
+            return totalDistance(locationResult.get().getId());
         }
         return Optional.empty();
     }

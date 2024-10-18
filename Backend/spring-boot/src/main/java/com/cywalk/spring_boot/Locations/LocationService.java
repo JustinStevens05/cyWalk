@@ -48,6 +48,8 @@ public class LocationService {
         }
         */
 
+        location = locationRepository.save(location);
+
 
         Optional<People> personRequest = personService.getUserFromKey(key);
         if (personRequest.isEmpty()) {
@@ -61,7 +63,6 @@ public class LocationService {
         else {
            // make a new location day for the user because the most recent location day is not from today
             LocationDay ld = new LocationDay(LocalDate.now());
-            location = locationRepository.save(location);
             ld.addLocation(location);
             ld = locationDayRepository.save(ld);
             personRequest.get().addLocation(ld);

@@ -100,6 +100,7 @@ class LocationDayControllerTest {
 
         String resultAsString = result.getResponse().getContentAsString();
         long key = asKeyFromString(resultAsString);
+        System.out.println(key);
 
         // now log the key
         this.mockMvc.perform(
