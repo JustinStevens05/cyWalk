@@ -43,11 +43,13 @@ public class LocationService {
      * @return the location that was added if it was successful. returns {@link Optional#empty()} if there was an issue
      */
     public Optional<Location> saveLocation(Long key, Location location) {
-        if (location.getTime() == null) {
+       /*if (location.getTime() == null) {
             location.setTime(LocalTime.now());
         }
+        */
 
         location = locationRepository.save(location);
+
 
         Optional<People> personRequest = personService.getUserFromKey(key);
         if (personRequest.isEmpty()) {
@@ -55,24 +57,15 @@ public class LocationService {
         }
 
         List<LocationDay> currentLocationDays = personRequest.get().getLocations();
-        if (!currentLocationDays.isEmpty()) {
-            if ((currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
-                currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
-            } else {
-                // make a new location day for the user because the most recent location day is not from today
-                LocationDay ld = new LocationDay(LocalDate.now());
-                ld.addLocation(location);
-                ld.setUser(personRequest.get());
-                LocationDay locationDay = locationDayRepository.save(ld);
-                personRequest.get().addLocation(locationDay);
-            }
+        if (!currentLocationDays.isEmpty() && (currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
+            currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
         }
         else {
+           // make a new location day for the user because the most recent location day is not from today
             LocationDay ld = new LocationDay(LocalDate.now());
             ld.addLocation(location);
-            ld.setUser(personRequest.get());
-            LocationDay locationDay = locationDayRepository.save(ld);
-            personRequest.get().addLocation(locationDay);
+            ld = locationDayRepository.save(ld);
+            personRequest.get().addLocation(ld);
         }
 
         personService.saveUser(personRequest.get());

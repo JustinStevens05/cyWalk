@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Entity
 public class Location {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private double latitude;
@@ -25,6 +25,13 @@ public class Location {
 
     public Location(Long id, double latitude, double longitude, double elevation, LocalTime time) {
         this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.elevation = elevation;
+        this.time = time;
+    }
+
+    public Location(double latitude, double longitude, double elevation, LocalTime time) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.elevation = elevation;
@@ -63,22 +70,12 @@ public class Location {
         this.time = time;
     }
 
+
     public void setId(Long id) {
         this.id = id;
     }
 
     public Long getId() {
         return id;
-    }
-
-    @Override
-    public String toString() {
-        return "Location{" +
-                "id=" + id +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", elevation=" + elevation +
-                ", time=" + time +
-                '}';
     }
 }
