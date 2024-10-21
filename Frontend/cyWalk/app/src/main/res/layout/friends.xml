@@ -27,8 +27,16 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Friends"
+            android:textColor="@color/black"
+            android:textSize="40dp"
+            android:layout_margin="5dp"/>
 
         <TableLayout
+            android:id="@+id/friendsTable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
@@ -39,19 +47,9 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Hello World"
+                    android:text="You currently have no friends\ntry adding some below"
                     android:textColor="@color/black"
-                    android:textSize="25dp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Hello World the second"
-                    android:textColor="@color/black"
-                    android:textSize="25dp"/>
+                    android:textSize="20dp"/>
             </TableRow>
         </TableLayout>
 
@@ -60,7 +58,16 @@
             android:layout_height="5sp"
             android:background="@android:color/black"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pending Requests"
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            android:layout_margin="5dp"/>
+
         <TableLayout
+            android:id="@+id/requestsTable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp">
@@ -71,9 +78,9 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Hello World but Pending"
+                    android:text="Currently no pending requests"
                     android:textColor="@color/black"
-                    android:textSize="25dp"/>
+                    android:textSize="20dp"/>
             </TableRow>
         </TableLayout>
 

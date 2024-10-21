@@ -105,7 +105,6 @@ public class Login extends AppCompatActivity {
 
         //errorMsg.setText(requestBody);
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.PUT, URL_JSON_OBJECT, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -119,7 +118,7 @@ public class Login extends AppCompatActivity {
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
                                 intent.putExtra("key", userKey);
-                                // errorMsg.setText("success " + userKey);
+                                errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
