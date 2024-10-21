@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Friends;
 
 import com.cywalk.spring_boot.Users.People;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -8,11 +9,14 @@ import java.util.Objects;
 @Entity
 public class FriendRequest {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestID;
 
     @ManyToOne
+    // @JoinColumn(name = "people_pendingFriendRequests")
     private People peopleRequesting;
     @ManyToOne
+    @JoinColumn(name = "people_pending_friend_requests")
     private People peopleGettingRequested;
 
     public FriendRequest() {

@@ -5,6 +5,7 @@ import com.cywalk.spring_boot.Users.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -28,7 +29,9 @@ public class FriendService {
             return false;
         }
         FriendRequest fr2 = new FriendRequest(userRequesting, userGettingRequested);
-
+        if (userGettingRequested.getPendingFriendRequests() == null) {
+            userGettingRequested.setPendingFriendRequests(new ArrayList<>());
+        }
         userGettingRequested.addFriendRequest(friendRequestRepository.save(fr2));
 
         return true;
