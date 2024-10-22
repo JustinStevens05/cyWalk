@@ -97,16 +97,25 @@ class FriendControllerTest {
 
         // now we can actually friend another user
         // test user (userOne) trys to friend base user (base)
+
+
         this.mockMvc.perform(
                 post("/friends/" + keyTest + "/request/base")
         ).andExpect(status().isOk());
 
         // check if we have a waiting friend request
-        /*
+
+        MvcResult result = this.mockMvc.perform(
+                get("/friends/all")
+        ).andExpect(status().isOk()).andReturn();
+
+        System.out.println("\n\n"  + result.getResponse().getContentAsString() + "\n");
+
+
         this.mockMvc.perform(
                 get("/friends/requests/" + keyBase)
-        ).andExpect(status().isOk()).andExpect(content().string(containsString("test")));
-        */
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("base")));
+
 
 
         // defer

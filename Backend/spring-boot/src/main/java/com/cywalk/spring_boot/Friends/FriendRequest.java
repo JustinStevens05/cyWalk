@@ -37,6 +37,12 @@ public class FriendRequest {
         this.receiver = receiver;
     }
 
+    public FriendRequest(People userRequesting, People userGettingRequested, FriendRequestStatus friendRequestStatus) {
+        this.sender = userRequesting;
+        this.receiver = userGettingRequested;
+        this.status = friendRequestStatus;
+    }
+
     public Long getRequestID() {
         return requestID;
     }

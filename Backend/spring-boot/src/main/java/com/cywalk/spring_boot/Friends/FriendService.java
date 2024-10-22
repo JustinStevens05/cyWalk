@@ -33,7 +33,7 @@ public class FriendService {
         if (fr.isPresent()) {
             return false;
         }
-        FriendRequest fr2 = new FriendRequest(userRequesting, userGettingRequested);
+        FriendRequest fr2 = new FriendRequest(userRequesting, userGettingRequested, FriendRequestStatus.PENDING);
         friendRequestRepository.save(fr2);
         return true;
     }
@@ -45,6 +45,10 @@ public class FriendService {
             return Optional.empty();
         }
         return Optional.of(friendRequestRepository.findByReceiverAndStatus(peopleRequest.get(), FriendRequestStatus.PENDING));
+    }
+
+    public List<FriendRequest> getAllRequests() {
+        return friendRequestRepository.findAll();
     }
 
 

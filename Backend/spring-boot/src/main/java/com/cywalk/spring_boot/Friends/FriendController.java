@@ -106,6 +106,11 @@ public class FriendController {
         return ResponseEntity.of(friendService.getPendingFriendRequests(key));
     }
 
+    @GetMapping("/all")
+    public List<FriendRequest> getAllRequests() {
+        return friendService.getAllRequests();
+    }
+
     /**
      * deny a friend request
      * @param key User session key
