@@ -7,6 +7,60 @@
     android:background="@color/white"
     tools:context=".Profile">
 
+    <TextView
+        android:id="@+id/profile_txt_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="{ USERNAME }"
+        android:textColor="@color/cywalkRed"
+        android:layout_marginTop="25dp"
+        android:textSize="30dp">
+    </TextView>
+
+    <ImageView
+        android:id="@+id/profile_img_avatar"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_border"
+        android:layout_below="@+id/profile_txt_username"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/default_avatar">
+    </ImageView>
+
+    <Button
+        android:id="@+id/profile_btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/cywalkRed"
+        android:layout_below="@+id/profile_img_avatar"
+        android:layout_marginTop="25dp"
+        android:text="Log Out" />
+
+    <Button
+        android:id="@+id/profile_btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@color/cywalkRed"
+        android:layout_below="@id/profile_btn_logout"
+        android:layout_marginTop="25dp"
+        android:text="Start New Route" />
+
+    <Button
+        android:id="@+id/profile_btn_addfriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomNavigation"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/btn_style"
+        android:text="Add Friend"
+        />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         app:itemIconTint="@color/cywalkRed"
@@ -18,5 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+
 
 </RelativeLayout>

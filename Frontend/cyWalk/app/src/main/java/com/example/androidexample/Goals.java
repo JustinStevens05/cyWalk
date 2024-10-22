@@ -76,8 +76,43 @@ public class Goals extends AppCompatActivity {
         daily_bar.setMax(dailyGoal);
         weekly_bar.setMax(weeklyGoal);
 
+        // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_dashboard);
+        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setOnItemSelectedListener(item -> {
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_dashboard) {
+                intent = new Intent(Goals.this, Dashboard.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_goals) {
+                intent = new Intent(Goals.this, Goals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_social) {
+                intent = new Intent(Goals.this, Social.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
+                intent = new Intent(Goals.this, Profile.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
 
 
 

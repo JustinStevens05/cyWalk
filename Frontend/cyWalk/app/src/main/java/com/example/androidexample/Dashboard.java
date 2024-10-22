@@ -72,43 +72,48 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         mapFragment.getMapAsync(this);
 
-        // NAVIGATION BAR
-        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_dashboard);
-
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
 
+        // NAVIGATION BAR
+        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_social);
         botnav.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.nav_dashboard:
-                    return true;
-                case R.id.nav_goals:
-                    Intent intent = new Intent(getApplicationContext(), Goals.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Goals.class));
-                    finish();
-                    return true;
-                case R.id.nav_social:
-                    intent = new Intent(Dashboard.this, Social.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Social.class));
-                    finish();
-                    return true;
-                case R.id.nav_profile:
-                    intent = new Intent(Dashboard.this, Profile.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Profile.class));
-                    finish();
-                    return true;
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_dashboard) {
+                intent = new Intent(Dashboard.this, Dashboard.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
             }
-            return false;
+            else if (item.getItemId() == R.id.nav_goals) {
+                intent = new Intent(Dashboard.this, Goals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_social) {
+                intent = new Intent(Dashboard.this, Social.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
+                intent = new Intent(Dashboard.this, Profile.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
+            }
         });
         makeJsonObjReq();
     }
