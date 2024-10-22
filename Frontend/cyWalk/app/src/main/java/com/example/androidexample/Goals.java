@@ -76,12 +76,14 @@ public class Goals extends AppCompatActivity {
         daily_bar.setMax(dailyGoal);
         weekly_bar.setMax(weeklyGoal);
 
+        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_dashboard);
+
+
+
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         username = extras.getString("username");
-
-
-
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
         URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
 

@@ -9,9 +9,9 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        app:itemBackground="@drawable/bottom_navbar_selector"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="@color/cywalkRed"
+        app:itemBackground="@color/white"
+        app:itemIconSize="50dp"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navbar"
         android:layout_width="match_parent"

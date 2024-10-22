@@ -41,7 +41,7 @@ public class Social extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.social);
-        goalButton = findViewById(R.id.goalsBtn);
+        // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
 
         tabLayout = findViewById(R.id.tabLayout);
