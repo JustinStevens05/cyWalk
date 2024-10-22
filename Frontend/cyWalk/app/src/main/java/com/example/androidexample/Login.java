@@ -63,7 +63,7 @@ public class Login extends AppCompatActivity {
                 URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
 
                 try {
-                    makeJsonObjReq();
+                    makeLoginReq();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -83,20 +83,14 @@ public class Login extends AppCompatActivity {
                 URL_JSON_OBJECT = "http://10.0.2.2:8080/signup";
 
                 try {
-                    makeJsonObjReq();
+                    makeSignUpReq();;
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
-                /* when sign up button is pressed, use intent to switch to Dashboard Activity */
-                Intent intent = new Intent(Login.this, Login.class);
-                intent.putExtra("USERNAME", username);
-                intent.putExtra("PASSWORD", password);
-                startActivity(intent);
             }
         });
     }
-    private void makeJsonObjReq() throws JSONException {
+    private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
         jsonObject.put("password", password);
@@ -118,7 +112,7 @@ public class Login extends AppCompatActivity {
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
                                 intent.putExtra("key", userKey);
-                                errorMsg.setText("success " + userKey);
+                                //errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
@@ -134,6 +128,66 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                        errorMsg.setText("an error has occured please try again later");
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void makeSignUpReq() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("username", username);
+        jsonObject.put("password", password);
+
+        //final String requestBody = jsonObject.toString();
+        //errorMsg.setText(requestBody);
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST, URL_JSON_OBJECT, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            userKey = response.getString("key");
+                            //extraMsg.setText("working " + userKey);
+                            if(!userKey.isEmpty()) {
+                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                intent.putExtra("key", userKey);
+                                //errorMsg.setText("success " + userKey);
+                                startActivity(intent);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        errorMsg.setText("an error has occured please try again later");
                     }
                 }
         ) {
