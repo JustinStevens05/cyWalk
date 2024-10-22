@@ -2,10 +2,13 @@ package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Friends.FriendRequest;
 import com.cywalk.spring_boot.Friends.FriendService;
+import com.cywalk.spring_boot.Friends.Friends;
 import com.cywalk.spring_boot.LocationDays.LocationDay;
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class People {
@@ -15,11 +18,11 @@ public class People {
 
   private String email;
 
-  @OneToMany
-  private List<FriendRequest> pendingFriendRequests;
+  @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+  private Set<FriendRequest> sentRequests = new HashSet<>();
 
-  @ManyToMany
-  private List<People> friends;
+  @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+  private Set<FriendRequest> receivedRequests = new HashSet<>();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<LocationDay> locations = new ArrayList<>(); // Initialized to an empty list
