@@ -1,7 +1,6 @@
 package com.cywalk.spring_boot.Friends;
 
 import com.cywalk.spring_boot.Users.People;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -13,18 +12,29 @@ public class FriendRequest {
     private Long requestID;
 
     @ManyToOne
-    // @JoinColumn(name = "people_pendingFriendRequests")
-    private People peopleRequesting;
+    @JoinColumn(name = "sender_id")
+    private People sender;
     @ManyToOne
-    @JoinColumn(name = "people_pending_friend_requests")
-    private People peopleGettingRequested;
+    @JoinColumn(name = "receiver_id")
+    private People receiver;
+
+
+    @Enumerated(EnumType.ORDINAL)
+    FriendRequestStatus status;
 
     public FriendRequest() {
     }
 
-    public FriendRequest(People PeopleRequesting, People peopleGettingRequested) {
-        this.peopleRequesting = PeopleRequesting;
-        this.peopleGettingRequested = peopleGettingRequested;
+    public FriendRequest(Long requestID, People sender, People receiver, FriendRequestStatus status) {
+        this.requestID = requestID;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.status = status;
+    }
+
+    public FriendRequest(People sender, People receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
     }
 
     public Long getRequestID() {
@@ -35,20 +45,28 @@ public class FriendRequest {
         this.requestID = requestID;
     }
 
-    public People getPeopleRequesting() {
-        return peopleRequesting;
+    public People getSender() {
+        return sender;
     }
 
-    public void setPeopleRequesting(People user_requesting) {
-        this.peopleRequesting = user_requesting;
+    public void setSender(People user_requesting) {
+        this.sender = user_requesting;
     }
 
-    public People getPeopleGettingRequested() {
-        return peopleGettingRequested;
+    public People getReceiver() {
+        return receiver;
     }
 
-    public void setPeopleGettingRequested(People user_getting_requested) {
-        this.peopleGettingRequested = user_getting_requested;
+    public FriendRequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(FriendRequestStatus status) {
+        this.status = status;
+    }
+
+    public void setReceiver(People user_getting_requested) {
+        this.receiver = user_getting_requested;
     }
 
     @Override
@@ -68,8 +86,8 @@ public class FriendRequest {
     public String toString() {
         return "FriendRequest{" +
                 "requestID=" + requestID +
-                ", user_requesting=" + peopleRequesting +
-                ", user_getting_requested=" + peopleGettingRequested +
+                ", user_requesting=" + sender +
+                ", user_getting_requested=" + receiver +
                 '}';
     }
 }

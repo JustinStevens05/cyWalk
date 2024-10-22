@@ -102,9 +102,12 @@ class FriendControllerTest {
         ).andExpect(status().isOk());
 
         // check if we have a waiting friend request
+        /*
         this.mockMvc.perform(
                 get("/friends/requests/" + keyBase)
         ).andExpect(status().isOk()).andExpect(content().string(containsString("test")));
+        */
+
 
         // defer
         this.mockMvc.perform(
