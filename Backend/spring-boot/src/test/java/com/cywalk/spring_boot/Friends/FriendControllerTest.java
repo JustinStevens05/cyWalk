@@ -18,12 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -105,17 +104,31 @@ class FriendControllerTest {
 
         // check if we have a waiting friend request
 
-        MvcResult result = this.mockMvc.perform(
+        this.mockMvc.perform(
                 get("/friends/all")
-        ).andExpect(status().isOk()).andReturn();
-
-        System.out.println("\n\n"  + result.getResponse().getContentAsString() + "\n");
+        ).andExpect(status().isOk());
 
 
         this.mockMvc.perform(
                 get("/friends/requests/" + keyBase)
-        ).andExpect(status().isOk()).andExpect(content().string(containsString("base")));
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("userOne")));
 
+
+	    this.mockMvc.perform(
+	        put("/friends/" + keyBase + "/request/approve/userOne")
+    	).andExpect(status().isOk());
+
+        this.mockMvc.perform(
+                get("/friends/requests/" + keyBase)
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("[]")));
+
+        this.mockMvc.perform(
+                get("/friends/" + keyBase)
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("userOne")));
+
+        this.mockMvc.perform(
+                get("/friends/" + keyTest)
+        ).andExpect(status().isOk()).andExpect(content().string(containsString("base")));
 
 
         // defer

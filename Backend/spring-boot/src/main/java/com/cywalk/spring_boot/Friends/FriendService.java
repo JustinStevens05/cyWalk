@@ -71,10 +71,10 @@ public class FriendService {
         }
         People user2 = person2Request.get();
         People user = peopleRequest.get();
-        Optional<FriendRequest> requestOption = friendRequestRepository.findBySenderAndReceiver(user, user2);
+        Optional<FriendRequest> requestOption = friendRequestRepository.findBySenderAndReceiver(user2, user);
 
         if (requestOption.isEmpty()) {
-            log.warn("friend request did not exist from: {} to: {}", user.getUsername(), user2.getUsername());
+            log.warn("friend request did not exist from: {} to: {}", user2.getUsername(), user.getUsername());
             return false;
         }
 
@@ -102,10 +102,10 @@ public class FriendService {
         }
         People user2 = person2Request.get();
         People user = peopleRequest.get();
-        Optional<FriendRequest> requestOption = friendRequestRepository.findBySenderAndReceiver(user, user2);
+        Optional<FriendRequest> requestOption = friendRequestRepository.findBySenderAndReceiver(user2, user);
 
         if (requestOption.isEmpty()) {
-            log.warn("friend request did not exist from: {} to: {}", user.getUsername(), user2.getUsername());
+            log.warn("friend request did not exist from: {} to: {}", user2.getUsername(), user.getUsername());
             return false;
         }
 
