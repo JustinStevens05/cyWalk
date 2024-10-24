@@ -32,8 +32,8 @@ public class Login extends AppCompatActivity {
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
     private Button loginButton;         // define login button variable
-    private static String URL_JSON_OBJECT = null;
-    private static String URL_JSON_OBJECT_SIGNUP = "http://10.0.2.2:8080/signup";
+    private static String URL_LOGIN = "http://10.0.2.2:8080/users";
+    private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
     private String userKey = "";
     private String username;
     private String password;
@@ -60,8 +60,6 @@ public class Login extends AppCompatActivity {
                 username = usernameEditText.getText().toString();
                 password = passwordEditText.getText().toString();
 
-                URL_JSON_OBJECT = "http://10.0.2.2:8080/users";
-
                 try {
                     makeLoginReq();
                 } catch (JSONException e) {
@@ -79,8 +77,6 @@ public class Login extends AppCompatActivity {
                 /* grab strings from user inputs */
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-
-                URL_JSON_OBJECT = "http://10.0.2.2:8080/signup";
 
                 try {
                     makeSignUpReq();;
@@ -100,7 +96,7 @@ public class Login extends AppCompatActivity {
         //errorMsg.setText(requestBody);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.PUT, URL_JSON_OBJECT, jsonObject,
+                Request.Method.PUT, URL_LOGIN, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -162,7 +158,7 @@ public class Login extends AppCompatActivity {
         //errorMsg.setText(requestBody);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.POST, URL_JSON_OBJECT, jsonObject,
+                Request.Method.POST, URL_SIGNUP, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

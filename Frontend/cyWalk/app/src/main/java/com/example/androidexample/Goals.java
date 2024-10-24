@@ -44,6 +44,7 @@ public class Goals extends AppCompatActivity {
     // private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
+    private Button newPlanButton;
     private EditText newDaily;
     private EditText newWeekly;
     private LinearLayout newGoalLayout;
@@ -66,6 +67,7 @@ public class Goals extends AppCompatActivity {
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
         submitButton =findViewById(R.id.submitBtn);
+        newPlanButton = findViewById(R.id.newPlanBtn);
         newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
         weekly_step_disp = findViewById(R.id.weeklySteps);
@@ -95,6 +97,15 @@ public class Goals extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
+
+        newPlanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
 
         newGoalsButton.setOnClickListener(new View.OnClickListener() {
             @Override
