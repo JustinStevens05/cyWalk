@@ -51,7 +51,7 @@ public class ChatActivity extends AppCompatActivity implements WebSocketListener
          */
         runOnUiThread(() -> {
             String s = msgTv.getText().toString();
-            msgTv.setText(s + "\n"+message);
+            msgTv.setText(s/* + "\n"*/+message);
         });
     }
 
