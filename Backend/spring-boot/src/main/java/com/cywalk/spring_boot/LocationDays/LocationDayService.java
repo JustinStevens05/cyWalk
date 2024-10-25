@@ -25,10 +25,12 @@ public class LocationDayService {
     @Autowired
     private LocationService locationService;
 
-    Logger logger = LoggerFactory.getLogger(LocationDayService.class);
     @Autowired
     private PeopleService peopleService;
 
+
+    Logger logger = LoggerFactory.getLogger(LocationDayService.class);
+    
     public LocationDayService() {
 
     }
@@ -74,21 +76,34 @@ public class LocationDayService {
         locationDayRepository.deleteById(id);
     }
 
-    public LocationDay totalDistance(Long id) {
-       /*
-        People person = peopleService.getUserFromKey(id).get();
+    public Optional<LocationDay> getTodaysLocation(Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isPresent()) {
+            int index = peopleResult.get().getLocations().size() - 1;
+            if (index > -1) {
+                return Optional.of(peopleResult.get().getLocations().get(index));
+            }
+        }
+        return Optional.empty();
+    }
 
-        LocationDay ld = person.getLocations().get(person.getLocations().size() - 1);
-*/
-        LocationDay ld = locationDayRepository.findById(id).get();
+    public Optional<LocationDay> totalDistanceFromUser(Long key) {
+        Optional<LocationDay> locationResult = getTodaysLocation(key);
+        if (locationResult.isPresent()) {
+            return totalDistance(locationResult.get().getId());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<LocationDay> totalDistance(Long id) {
+        LocationDay ld = locationDayRepository.getReferenceById(id);
         double distance = 0;
         List<Location> locations = ld.getLocations();
         for (int i = 1; i < locations.size(); i++) {
             distance += calculateDistance(locations.get(i - 1), locations.get(i));
         }
         ld.setTotalDistance(distance);
-        locationDayRepository.save(ld);
-        return ld;
+        return Optional.of(locationDayRepository.save(ld));
     }
 
 

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("{key}/locations")
+@RequestMapping("/{key}/locations")
 public class LocationController {
 
     @Autowired
