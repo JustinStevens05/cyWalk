@@ -58,8 +58,8 @@ public class Goals extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.goals);
 
-        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_goals);
+        //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        //botnav.setSelectedItemId(R.id.nav_goals);
 
         socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
@@ -106,11 +106,11 @@ public class Goals extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //try {
-                //    setJsonObjStepGoals();
-                //} catch (JSONException e) {
-                //    throw new RuntimeException(e);
-                //}
+                try {
+                    setJsonObjStepGoals();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
 
                 dailyGoal = Integer.parseInt(newDaily.getText().toString());
                 weeklyGoal = Integer.parseInt(newWeekly.getText().toString());
@@ -187,49 +187,48 @@ public class Goals extends AppCompatActivity {
     }
     private void setJsonObjStepGoals() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("dailyGoal", newDaily.getText());
-        jsonObject.put("weeklyGoal", newWeekly.getText());
+        jsonObject.put("dailyGoal", Integer.parseInt(newDaily.getText().toString()));
+        jsonObject.put("weeklyGoal", Integer.parseInt(newWeekly.getText().toString()));
         final String requestBody = jsonObject.toString();
+        title.setText(requestBody);
+        title.setTextSize(10);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_NEW_GOALS, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("VOLLEY", response);
-                title.setText(response.toString());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("VOLLEY", error.toString());
-            }
-        }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST,
+                URL_NEW_GOALS,
+                jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
 
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return requestBody == null ? null : requestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
-                    return null;
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
                 }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
             }
 
             @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                String responseString = "";
-                if (response != null) {
-                    responseString = String.valueOf(response.statusCode);
-                    // can get more details such as response.headers
-                }
-                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
             }
         };
 
         // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 }

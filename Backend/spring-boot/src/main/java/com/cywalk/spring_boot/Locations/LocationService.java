@@ -12,7 +12,6 @@ import org.locationtech.jts.operation.overlay.PointBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ public class LocationService {
 
         location = locationRepository.save(location);
 
-
         Optional<People> personRequest = personService.getUserFromKey(key);
         if (personRequest.isEmpty()) {
             return Optional.empty();
@@ -61,7 +59,6 @@ public class LocationService {
             currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
         }
         else {
-           // make a new location day for the user because the most recent location day is not from today
             LocationDay ld = new LocationDay(LocalDate.now());
             ld.addLocation(location);
             ld = locationDayRepository.save(ld);

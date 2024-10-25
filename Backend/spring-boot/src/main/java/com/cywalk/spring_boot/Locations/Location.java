@@ -78,4 +78,15 @@ public class Location {
     public Long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "id=" + id +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", elevation=" + elevation +
+                ", time=" + time +
+                '}';
+    }
 }

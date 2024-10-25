@@ -49,8 +49,6 @@ public class SignUpController {
         Optional<People> createdUser = peopleService.createUser(user);
 
         if (createdUser.isPresent()) {
-
-
             peopleService.saveUserRequest(userRequest);
 
             Optional<Long> authKey = peopleService.generateAuthKey(user.getUsername());
