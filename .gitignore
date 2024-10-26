@@ -26,6 +26,9 @@ misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
+# git merge tools
+*.orig
+
 # Keystore files
 *.jks
 *.keystore
