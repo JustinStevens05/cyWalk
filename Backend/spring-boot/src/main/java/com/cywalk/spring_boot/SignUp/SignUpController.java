@@ -29,7 +29,7 @@ public class SignUpController {
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
 
         if (userRequest.getUsername() == null || userRequest.getUsername().isEmpty()
-                || userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
+                ||  userRequest.getPassword().isEmpty() || userRequest.getPassword() == null) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Username and password are required.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -59,12 +59,12 @@ public class SignUpController {
                 return ResponseEntity.ok(responseBody);
             } else {
                 Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("message", "Failed to generate authentication key.");
+                errorResponse.put("message", "Can't Gen Key!");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
             }
         } else {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Failed to create user.");
+            errorResponse.put("message", "User wasn't created.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
