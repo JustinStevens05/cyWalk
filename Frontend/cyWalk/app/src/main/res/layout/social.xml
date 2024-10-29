@@ -68,7 +68,7 @@
         android:background="@color/white"
         android:text="Friends"
         android:textColor="@color/black"
-<!--        android:layout_above="@id/navBar"-->
+        android:layout_above="@id/bottomNavigation"
         android:layout_alignParentRight="true"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
