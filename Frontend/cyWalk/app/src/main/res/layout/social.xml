@@ -63,16 +63,14 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
+        app:itemIconTint="@color/cywalkRed"
+        app:itemBackground="@color/white"
+        app:itemIconSize="50dp"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        app:menu="@menu/bottom_navbar"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/cywalkRed"
-        app:itemBackground="@color/white"
-        android:icon="@drawable/bottom_navbar_selector"
-        app:itemIconSize="50dp"
-        />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

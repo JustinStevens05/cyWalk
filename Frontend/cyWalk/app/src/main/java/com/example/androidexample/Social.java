@@ -32,7 +32,6 @@ public class Social extends AppCompatActivity {
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
 
-    private Button goalButton;
     private String key;
     private String username;
 
@@ -92,8 +91,6 @@ public class Social extends AppCompatActivity {
         });
         makeJsonObjReq();
 
-
-
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -121,16 +118,16 @@ public class Social extends AppCompatActivity {
             }
         });
 
-        goalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("username",username);
-                startActivity(intent);
-            }
-        });
+//        goalButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent = new Intent(Social.this, Goals.class);
+//                intent.putExtra("key", key);
+//                intent.putExtra("username",username);
+//                startActivity(intent);
+//            }
+//        });
 
         makeJsonObjReq();
     }

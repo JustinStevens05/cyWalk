@@ -12,21 +12,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class Profile extends AppCompatActivity {
 
     private static String key;
-    TextView txt_response;
+    //TextView txt_response;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);             // link to Main activity XML
+        setContentView(R.layout.profile);             // link to Main activity XML
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        txt_response.setText("Key: " + key);
+        //txt_response.setText("Key: " + key);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setSelectedItemId(R.id.nav_profile);
         botnav.setOnItemSelectedListener(item -> {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
