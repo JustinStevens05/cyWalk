@@ -1,36 +1,27 @@
-package com.example.demo.entity;
+package com.example.demo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
 
 @Entity
 public class Image {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; // Changed from int to Long for consistency with JpaRepository
-
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO) // GenerationType.IDENTITY
+    private int id;
     private String filePath;
-
-    @Column(length = 500)
-    private String description; // New field for image description
 
     public Image() {}
 
-    public Image(String filePath, String description) {
-        this.filePath = filePath;
-        this.description = description;
-    }
-
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    // No setter for id since it's auto-generated
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getFilePath() {
         return filePath;
@@ -38,13 +29,5 @@ public class Image {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }
