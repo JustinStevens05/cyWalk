@@ -18,14 +18,20 @@ public class LeaderboardService {
     @Autowired
     private StepsRepository stepsRepository;
 
+    @Autowired
+    private LeaderboardWebSocketController leaderboardWebSocketController;
+
+    private List<LeaderboardEntry> currentLeaderboard = new ArrayList<>();
+
     public List<LeaderboardEntry> getLeaderboard() {
         List<People> users = peopleRepository.findAll();
-
         Map<String, Integer> userStepsMap = new HashMap<>();
 
         for (People user : users) {
             List<Steps> stepsList = stepsRepository.findByUserUsername(user.getUsername());
-            int totalSteps = stepsList.stream().mapToInt(Steps::getAmountOfSteps).sum();
+            int totalSteps = stepsList.stream()
+                    .mapToInt(Steps::getAmountOfSteps)
+                    .sum();
             userStepsMap.put(user.getUsername(), totalSteps);
         }
 
@@ -38,8 +44,13 @@ public class LeaderboardService {
         int rank = 1;
         for (LeaderboardEntry entry : leaderboard) {
             entry.setRank(rank++);
+            entry.setLeaderboardId(0);
+        }
 
-            entry.setLeaderboardId(1);
+        if (!leaderboard.equals(currentLeaderboard)) {
+            currentLeaderboard = leaderboard;
+            LeaderboardUpdate update = new LeaderboardUpdate(currentLeaderboard);
+            leaderboardWebSocketController.sendLeaderboardUpdate(update);
         }
 
         return leaderboard;
