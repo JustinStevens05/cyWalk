@@ -28,8 +28,9 @@ public class LocationDayService {
     @Autowired
     private PeopleService peopleService;
 
-    Logger logger = LoggerFactory.getLogger(LocationDayService.class);
 
+    Logger logger = LoggerFactory.getLogger(LocationDayService.class);
+    
     public LocationDayService() {
 
     }
