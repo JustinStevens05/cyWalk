@@ -48,6 +48,15 @@
         android:text="Start New Route" />
 
     <TextView
+        android:id="@+id/txt_coords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_start_manual_route"
+        android:text="[ Latitude ][ Longitude ]"
+        android:textColor="@color/cywalkRed"/>
+
+    <TextView
         android:id="@+id/txt_daily_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,9 +75,10 @@
         android:layout_centerHorizontal="true"
         app:menu="@menu/bottom_navbar"
         app:labelVisibilityMode="labeled"
-        app:itemIconTint="@drawable/bottom_navbar_selector"
-        app:itemTextColor="@drawable/bottom_navbar_text_selector"
-        app:itemBackground="@drawable/bottom_navbar_selector"
+        app:itemIconTint="@color/cywalkRed"
+        app:itemBackground="@color/white"
+        android:icon="@drawable/bottom_navbar_selector"
+        app:itemIconSize="50dp"
         />
     
     <androidx.fragment.app.FragmentContainerView

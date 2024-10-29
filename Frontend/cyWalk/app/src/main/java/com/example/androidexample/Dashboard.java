@@ -1,23 +1,17 @@
 package com.example.androidexample;
 
-
-import static androidx.constraintlayout.motion.widget.Debug.getLocation;
-import static androidx.core.location.LocationManagerCompat.getCurrentLocation;
-
-import static java.time.LocalTime.now;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -56,25 +50,20 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     String dailyDistance;
     TextView txt_greeting;
     TextView txt_response;
-    // Location currentLocation;
+    TextView txt_coords;
+    Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);             // link to Main activity XML
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
         txt_response = findViewById(R.id.txt_response);
-
-        // GOOGLE MAP FRAGMENT
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+        txt_coords = findViewById(R.id.txt_coords);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        mapFragment.getMapAsync(this);
-
-        // NAVIGATION BAR
-        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_dashboard);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -82,47 +71,99 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
 
+        // NAVIGATION BAR
+        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_social);
         botnav.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.nav_dashboard:
-                    return true;
-                case R.id.nav_goals:
-                    Intent intent = new Intent(getApplicationContext(), Goals.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Goals.class));
-                    finish();
-                    return true;
-                case R.id.nav_social:
-                    intent = new Intent(Dashboard.this, Social.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Social.class));
-                    finish();
-                    return true;
-                case R.id.nav_profile:
-                    intent = new Intent(Dashboard.this, Profile.class);
-                    intent.putExtra("key", key);
-                    startActivity(intent);
-                    //startActivity(new Intent(getApplicationContext(), Profile.class));
-                    finish();
-                    return true;
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_dashboard) {
+                intent = new Intent(Dashboard.this, Dashboard.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
             }
-            return false;
+            else if (item.getItemId() == R.id.nav_goals) {
+                intent = new Intent(Dashboard.this, Goals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_social) {
+                intent = new Intent(Dashboard.this, Social.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
+                intent = new Intent(Dashboard.this, Profile.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
+            }
         });
         makeJsonObjReq();
+        getLastLocation();
     }
+
+    private void getLastLocation() {
+        // if permissions not already granted, request permissions
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+            return;
+        }
+        else {
+            txt_coords.setText("Permissions enabled");
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+              if (location != null) {
+                  currentLocation = location;
+                  txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
+                  SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+                  mapFragment.getMapAsync(Dashboard.this);
+              }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == FINE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            }
+            else {
+                Toast.makeText(this, "Location permission is disabled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        LatLng currentCoords = new LatLng(50, 50);
+        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
         gMap.addMarker(new MarkerOptions().position(currentCoords).title("Current Location"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
 
         gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
-                gMap = googleMap;
                 LatLng markerCoords = new LatLng(50, 50);
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Marker");
                 gMap.addMarker(markerOptions);
