@@ -9,8 +9,13 @@ import java.util.Optional;
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, String> {
     Optional<FriendRequest> findByRequestID(Long id);
 
-    List<FriendRequest> findAllByPeopleRequesting(People peopleRequesting);
-    List<FriendRequest> findAllByPeopleGettingRequested(People peopleGettingRequested);
+    List<FriendRequest> findAllBySender(People peopleRequesting);
+    List<FriendRequest> findAllByReceiver(People peopleGettingRequested);
 
-    Optional<FriendRequest> findByPeopleRequestingAndPeopleGettingRequested(People peopleRequesting, People peopleGettingRequested);
+    Optional<FriendRequest> findBySenderAndReceiver(People peopleRequesting, People peopleGettingRequested);
+    List<FriendRequest> findByReceiverAndStatus(People receiver, FriendRequestStatus status);
+
+    Optional<FriendRequest> findByReceiverAndSender(People receiver, People requester);
+    List<FriendRequest> findByReceiverOrSenderAndStatus(People receiver, People requester, FriendRequestStatus status);
+
 }

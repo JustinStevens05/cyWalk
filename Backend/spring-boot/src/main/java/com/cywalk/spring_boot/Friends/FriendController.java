@@ -69,7 +69,7 @@ public class FriendController {
             if (userRequestingRequest.isPresent()) {
                Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                if (fr.isPresent()) {
-                   friendService.approveFriendRequest(fr.get());
+                   friendService.approveFriendRequest(key, username);
                    return ResponseEntity.ok().build();
                }
                else {
@@ -93,7 +93,7 @@ public class FriendController {
     @GetMapping("/{key}")
     public ResponseEntity<List<People>> getFriends(@PathVariable Long key) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
-        return userRequest.map(people -> ResponseEntity.ok(people.getFriends())).orElseGet(() -> ResponseEntity.badRequest().build());
+        return userRequest.map(people -> ResponseEntity.ok(friendService.getFriends(people))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     /**
@@ -103,8 +103,12 @@ public class FriendController {
      */
     @GetMapping("/requests/{key}")
     public ResponseEntity<List<FriendRequest>> getFriendRequests(@PathVariable Long key) {
-        Optional<People> userRequest = peopleService.getUserFromKey(key);
-        return userRequest.map(people -> ResponseEntity.ok(people.getPendingFriendRequests())).orElseGet(() -> ResponseEntity.badRequest().build());
+        return ResponseEntity.of(friendService.getPendingFriendRequests(key));
+    }
+
+    @GetMapping("/all")
+    public List<FriendRequest> getAllRequests() {
+        return friendService.getAllRequests();
     }
 
     /**
@@ -121,7 +125,7 @@ public class FriendController {
             if (userRequestingRequest.isPresent()) {
                 Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                 if (fr.isPresent()) {
-                    friendService.denyFriendRequest(fr.get());
+                    friendService.denyFriendRequest(key, username);
                     return ResponseEntity.ok().build();
                 }
                 else {

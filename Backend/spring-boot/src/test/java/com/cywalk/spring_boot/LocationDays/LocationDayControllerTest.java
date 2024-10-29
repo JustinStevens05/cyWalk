@@ -108,10 +108,16 @@ class LocationDayControllerTest {
         this.mockMvc.perform(
                 post("/" + key + "/locations/log").content(asJsonString(Beardshear)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
-        MvcResult result1 =  this.mockMvc.perform(
+        this.mockMvc.perform(
                 get("/" + key + "/location/total")
         ).andExpect(status().isOk())
-                .andExpect(content().string(containsString("93"))).andReturn();
+                .andExpect(content().string(containsString("93")));
+
+        this.mockMvc.perform(
+                delete("/users/" + key)
+        ).andExpect(status().isOk());
+
+
 
        //  System.out.println(result1.getResponse().getContentAsString());
     }

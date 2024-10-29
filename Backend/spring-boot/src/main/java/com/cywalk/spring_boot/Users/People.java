@@ -1,11 +1,12 @@
 package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Friends.FriendRequest;
-import com.cywalk.spring_boot.Friends.FriendService;
 import com.cywalk.spring_boot.LocationDays.LocationDay;
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class People {
@@ -15,11 +16,11 @@ public class People {
 
   private String email;
 
-  @OneToMany
-  private List<FriendRequest> pendingFriendRequests;
+  @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+  private Set<FriendRequest> sentRequests = new HashSet<>();
 
-  @ManyToMany
-  private List<People> friends;
+  @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+  private Set<FriendRequest> receivedRequests = new HashSet<>();
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<LocationDay> locations = new ArrayList<>(); // Initialized to an empty list
@@ -72,36 +73,20 @@ public class People {
     }
   }
 
-  public List<FriendRequest> getPendingFriendRequests() {
-    return pendingFriendRequests;
-  }
-
-  public void setPendingFriendRequests(List<FriendRequest> pendingFriendRequests) {
-    this.pendingFriendRequests = pendingFriendRequests;
-  }
-
   public void addLocation(LocationDay newLocation) {
     this.locations.add(newLocation);
   }
 
-  public void addFriendRequest(FriendRequest newFr) {
-    this.pendingFriendRequests.add(newFr);
+  public Set<FriendRequest> getSentRequests() {
+    return sentRequests;
   }
 
-  public void clearFriendRequest(FriendRequest fr) {
-    this.pendingFriendRequests.remove(fr);
+  public void setSentRequests(Set<FriendRequest> sentRequests) {
+    this.sentRequests = sentRequests;
   }
 
-  public List<People> getFriends() {
-    return friends;
-  }
-
-  public void setFriends(List<People> friends) {
-    this.friends = friends;
-  }
-
-  public void addFriend(People friend) {
-    friends.add(friend);
+  public Set<FriendRequest> getReceivedRequests() {
+    return receivedRequests;
   }
 
   @Override
@@ -109,9 +94,14 @@ public class People {
     return "People{" +
             "username='" + username + '\'' +
             ", email='" + email + '\'' +
-            ", pendingFriendRequests=" + pendingFriendRequests +
-            ", friends=" + friends +
+            ", sentRequests=" + sentRequests +
+            ", receivedRequests=" + receivedRequests +
             ", locations=" + locations +
             '}';
   }
+
+  public void setReceivedRequests(Set<FriendRequest> receivedRequests) {
+    this.receivedRequests = receivedRequests;
+  }
+
 }
