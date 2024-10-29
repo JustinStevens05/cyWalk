@@ -48,6 +48,15 @@
         android:text="Start New Route" />
 
     <TextView
+        android:id="@+id/txt_coords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btn_start_manual_route"
+        android:text="[ Latitude ][ Longitude ]"
+        android:textColor="@color/cywalkRed"/>
+
+    <TextView
         android:id="@+id/txt_daily_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
