@@ -54,7 +54,17 @@ public class LocationService {
             return Optional.empty();
         }
 
-        List<LocationDay> currentLocationDays = personRequest.get().getLocations();
+       return appendLocation(personRequest.get(), location);
+    }
+
+    /**
+     * appends a location to today's locations for a user
+     * @param people the user's username retrieved via key
+     * @param location the reported location of the user
+     * @return Optional.empty() is we could not add the location, otherwise we return the location saved into the database
+     */
+    public Optional<Location> appendLocation(People people, Location location) {
+        List<LocationDay> currentLocationDays = people.getLocations();
         if (!currentLocationDays.isEmpty() && (currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
             currentLocationDays.get(currentLocationDays.size() - 1).addLocation(location);
         }
@@ -62,10 +72,10 @@ public class LocationService {
             LocationDay ld = new LocationDay(LocalDate.now());
             ld.addLocation(location);
             ld = locationDayRepository.save(ld);
-            personRequest.get().addLocation(ld);
+            people.addLocation(ld);
         }
 
-        personService.saveUser(personRequest.get());
+        personService.saveUser(people);
 
         return Optional.of(location);
     }

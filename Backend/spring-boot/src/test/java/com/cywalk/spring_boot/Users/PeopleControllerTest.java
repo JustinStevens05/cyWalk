@@ -131,6 +131,7 @@ class PeopleControllerTest {
     void contextLoads() {
         assertThat(controller).isNotNull();
         assertThat(mockMvc).isNotNull();
+        assertThat(peopleService).isNotNull();
     }
 /*
     // @Transactional

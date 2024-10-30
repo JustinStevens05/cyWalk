@@ -2,6 +2,7 @@ package com.cywalk.spring_boot.Locations;
 
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
@@ -10,23 +11,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @ServerEndpoint("/location/sessions/{key}")
-public class LocationSessionController {
+public class LocationSessionController extends TextWebSocketHandler {
 
-    public static long asLocationFromString(String json) {
+    public static Location asLocationFromString(String json) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
-            return new Location(mapper.readTree(json).get("latitude").asLong(), ); //TOD: add matching constructor
+            JsonNode ms = mapper.readTree(json);
+            return new Location(ms.get("latitude").asLong(), ms.get("longitude").asLong(), ms.get("elevation").asLong(), null); //TOD: add matching constructor
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error(e.toString());
         }
+        return null;
     }
 
     private static LocationService locationService;
@@ -67,8 +72,17 @@ public class LocationSessionController {
             logger.error("On message was called despite the fact that no user matches the current session");
         }
         else {
-            // try message into Location
-
+            Optional<People> personResult = peopleService.getUserByUsername(username);
+            if (personResult.isEmpty()) {
+                logger.error("the username is in the map, however not in the database??");
+            }
+            else {
+                // try message into Location
+                Location location = asLocationFromString(message);
+                if (location != null) {
+                    locationService.appendLocation(personResult.get(), location);
+                }
+            }
         }
     }
 
