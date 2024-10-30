@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONException;
@@ -31,7 +32,6 @@ public class Social extends AppCompatActivity {
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
 
-    private Button goalButton;
     private String key;
     private String username;
 
@@ -41,7 +41,7 @@ public class Social extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.social);
-        goalButton = findViewById(R.id.goalsBtn);
+        // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
 
         tabLayout = findViewById(R.id.tabLayout);
@@ -51,6 +51,45 @@ public class Social extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+
+        // NAVIGATION BAR
+        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setOnItemSelectedListener(item -> {
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_dashboard) {
+                intent = new Intent(Social.this, Dashboard.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_goals) {
+                intent = new Intent(Social.this, Goals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_social) {
+                intent = new Intent(Social.this, Social.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
+                intent = new Intent(Social.this, Profile.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        makeJsonObjReq();
 
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
 
@@ -79,24 +118,22 @@ public class Social extends AppCompatActivity {
             }
         });
 
-        goalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("username",username);
-                startActivity(intent);
-            }
-        });
+//        goalButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent = new Intent(Social.this, Goals.class);
+//                intent.putExtra("key", key);
+//                intent.putExtra("username",username);
+//                startActivity(intent);
+//            }
+//        });
 
         makeJsonObjReq();
     }
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.GET,
-                URL_JSON_OBJECT,
-                null, // Pass null as the request body since it's a GET request
+                Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

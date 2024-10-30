@@ -154,7 +154,6 @@
             android:textColor="#777777"
             android:text="Edit Daily Goal"/>
 
-<<<<<<< HEAD
         <LinearLayout
             android:id="@+id/newGoalLayout"
             android:layout_width="wrap_content"
@@ -170,7 +169,33 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/popUpTitle"
+                    android:id="@+id/newDailyTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textColor="@color/black"
+                    android:text="New Daily Goal"/>
+
+                <EditText
+                    android:id="@+id/new_daily"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:textColor="@color/black"
+                    android:padding="5dp"
+                    android:background="@drawable/text_border"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/newWeeklyGoal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
@@ -178,7 +203,7 @@
                     android:text="Input your new Goal"/>
 
                 <EditText
-                    android:id="@+id/new_goal"
+                    android:id="@+id/new_weekly"
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:textColor="@color/black"
@@ -198,8 +223,6 @@
                 android:textSize="20sp"/>
         </LinearLayout>
     </LinearLayout>
-=======
->>>>>>> navbar_experiments
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -210,9 +233,9 @@
             android:layout_centerHorizontal="true"
             app:menu="@menu/bottom_navbar"
             app:labelVisibilityMode="labeled"
-            app:itemIconTint="@drawable/bottom_navbar_selector"
-            app:itemTextColor="@drawable/bottom_navbar_text_selector"
-            app:itemBackground="@drawable/bottom_navbar_selector"
+            app:itemIconTint="@color/cywalkRed"
+            app:itemBackground="@color/white"
+            app:itemIconSize="50dp"
             />
 
 </RelativeLayout>

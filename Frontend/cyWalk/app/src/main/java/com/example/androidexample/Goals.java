@@ -41,7 +41,7 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 0;
     private int dailyGoal = 10000;
     private int weeklyGoal = 70000;
-    private Button socialButton;
+    // private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
     private EditText newDaily;
@@ -61,7 +61,7 @@ public class Goals extends AppCompatActivity {
         //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         //botnav.setSelectedItemId(R.id.nav_goals);
 
-        socialButton = findViewById(R.id.socialBtn);
+        // socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
@@ -76,25 +76,62 @@ public class Goals extends AppCompatActivity {
         daily_bar.setMax(dailyGoal);
         weekly_bar.setMax(weeklyGoal);
 
+        // NAVIGATION BAR
+        BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setOnItemSelectedListener(item -> {
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_dashboard) {
+                intent = new Intent(Goals.this, Dashboard.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_goals) {
+                intent = new Intent(Goals.this, Goals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_social) {
+                intent = new Intent(Goals.this, Social.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else if (item.getItemId() == R.id.nav_profile) {
+                intent = new Intent(Goals.this, Profile.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+
+
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         username = extras.getString("username");
-
-
-
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
         URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
 
-        socialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /* when counter button is pressed, use intent to switch to Counter Activity */
-                Intent intent = new Intent(Goals.this, Social.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
-            }
-        });
+//        socialButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                /* when counter button is pressed, use intent to switch to Counter Activity */
+//                Intent intent = new Intent(Goals.this, Social.class);
+//                intent.putExtra("key", key);
+//                startActivity(intent);
+//            }
+//        });
 
         newGoalsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,8 +227,8 @@ public class Goals extends AppCompatActivity {
         jsonObject.put("dailyGoal", Integer.parseInt(newDaily.getText().toString()));
         jsonObject.put("weeklyGoal", Integer.parseInt(newWeekly.getText().toString()));
         final String requestBody = jsonObject.toString();
-        title.setText(requestBody);
-        title.setTextSize(10);
+        //title.setText(requestBody);
+        //title.setTextSize(10);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.POST,
