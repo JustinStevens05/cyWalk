@@ -40,8 +40,12 @@ public class LocationDayController {
     }
 
     @GetMapping("/total")
-    public Optional<LocationDay> getDistanceFromDay(@PathVariable Long key) {
-        return locationDayService.totalDistanceFromUser(key);
+    public Double getDistanceFromDay(@PathVariable Long key) {
+        Optional<LocationDay> ldResult = locationDayService.totalDistanceFromUser(key);
+        if (ldResult.isEmpty()) {
+            return 0d;
+        }
+        return ldResult.get().getTotalDistance();
     }
 
 
