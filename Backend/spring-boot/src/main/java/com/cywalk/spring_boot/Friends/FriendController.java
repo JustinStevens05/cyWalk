@@ -32,7 +32,7 @@ public class FriendController {
      * @return status
      */
     @PostMapping("/{key}/request/{username}")
-    public ResponseEntity<Void> requestToFriend(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> requestToFriend(@PathVariable Long key, @PathVariable String username) {
         Optional<People> sessionRequest = peopleService.getUserFromKey(key);
         if (sessionRequest.isPresent()) {
             Optional<People> peopleRequest = peopleService.getUserByUsername(username);
@@ -44,7 +44,7 @@ public class FriendController {
                 }
                 else {
                     // supposed to denote duplicate already exists
-                    return ResponseEntity.status(409).build();
+                    return ResponseEntity.of(Optional.of("[]"));
                 }
             } else {
                 return ResponseEntity.notFound().build();
