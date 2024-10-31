@@ -61,6 +61,16 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/friendsButton"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:text="Friends"
+        android:textColor="@color/black"
+        android:layout_above="@id/bottomNavigation"
+        android:layout_alignParentRight="true"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         app:itemIconTint="@color/cywalkRed"
