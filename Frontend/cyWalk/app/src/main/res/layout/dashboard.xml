@@ -84,11 +84,11 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_below="@id/txt_coords"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/btn_start_manual_route"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/custom_border"/>
+
+        />
 
 </RelativeLayout>
