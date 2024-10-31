@@ -30,6 +30,9 @@
             android:name=".Goals"
             android:exported="false"/>
         <activity
+            android:name=".OrganizationLookUp"
+            android:exported="false"/>
+        <activity
             android:name=".Login"
             android:exported="true">
             <intent-filter>
@@ -40,6 +43,9 @@
         <activity
             android:name=".Profile"
             android:exported="false"/>
+        <activity
+            android:name=".Friends"
+            android:exported="false" />
 
         <meta-data
             android:name = "com.google.android.geo.API_KEY"

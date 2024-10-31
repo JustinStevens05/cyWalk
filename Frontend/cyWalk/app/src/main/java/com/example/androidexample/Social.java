@@ -32,6 +32,8 @@ public class Social extends AppCompatActivity {
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
 
+    private Button goalButton;
+    private Button friendsButton;
     private String key;
     private String username;
 
@@ -41,6 +43,7 @@ public class Social extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.social);
+        friendsButton = findViewById(R.id.friendsButton);
         // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
 
@@ -128,6 +131,15 @@ public class Social extends AppCompatActivity {
 //                startActivity(intent);
 //            }
 //        });
+
+        friendsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Social.this, Friends.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
 
         makeJsonObjReq();
     }
