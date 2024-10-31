@@ -47,7 +47,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     private String URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
     TextView txt_daily_distance;
     String username;
-    String dailyDistance;
     TextView txt_greeting;
     TextView txt_response;
     TextView txt_coords;
@@ -58,11 +57,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);             // link to Main activity XML
+        setContentView(R.layout.dashboard);                             // link to Main activity XML
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
-        txt_response = findViewById(R.id.txt_response);
-        txt_coords = findViewById(R.id.txt_coords);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         Bundle extras = getIntent().getExtras();
@@ -129,12 +126,12 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-              if (location != null) {
-                  currentLocation = location;
-                  txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
-                  SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
-                  mapFragment.getMapAsync(Dashboard.this);
-              }
+                if (location != null) {
+                    currentLocation = location;
+                    txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+                    mapFragment.getMapAsync(Dashboard.this);
+                }
             }
         });
     }
@@ -188,7 +185,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
 
         URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
-                Request.Method.POST, URL_STRING_REQ,
+                Request.Method.GET, URL_STRING_REQ,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

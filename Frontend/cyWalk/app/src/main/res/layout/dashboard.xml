@@ -19,25 +19,6 @@
         android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
 
-    <TextView
-        android:id="@+id/txt_response"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/txt_greeting"
-        android:text="Response text"
-        android:textColor="@color/cywalkRed"/>
-
-    <Button
-        android:id="@+id/btn_start_manual_route"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@id/btn_start_auto_route"
-        android:text="Log Previous Distance" />
-
     <Button
         android:id="@+id/btn_start_auto_route"
         android:layout_width="wrap_content"
@@ -46,15 +27,6 @@
         android:backgroundTint="@color/cywalkRed"
         android:layout_below="@id/txt_daily_distance"
         android:text="Start New Route" />
-
-    <TextView
-        android:id="@+id/txt_coords"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/btn_start_manual_route"
-        android:text="[ Latitude ][ Longitude ]"
-        android:textColor="@color/cywalkRed"/>
 
     <TextView
         android:id="@+id/txt_daily_distance"
@@ -84,9 +56,8 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_below="@id/txt_coords"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
 
         />
