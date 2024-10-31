@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -35,6 +36,9 @@ import java.util.Objects;
 public class Friends extends AppCompatActivity {
 
     private Button backButton;
+    private Button friendsSubmitButton;
+    private EditText friendUsername;
+    private TextView newFriendTitle;
     private String key;
     private JSONArray friends;
     private JSONArray pendingRequests;
@@ -43,14 +47,20 @@ public class Friends extends AppCompatActivity {
 
     private static String URL_JSON_FRIENDS = null;
     private static String URL_JSON_PENDING = null;
+    private static String URL_NEW_FRIEND = null;
+
+    private String newFriendUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.friends);
         backButton = findViewById(R.id.returnButton);
+        friendsSubmitButton = findViewById(R.id.friendSubmitBtn);
         friendTable = findViewById(R.id.friendsTable);
         requestsTable = findViewById(R.id.requestsTable);
+        friendUsername = findViewById(R.id.friendUsername);
+        newFriendTitle = findViewById(R.id.newFriendTile);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -65,6 +75,16 @@ public class Friends extends AppCompatActivity {
                 Intent intent = new Intent(Friends.this, Social.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
+            }
+        });
+
+        friendsSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                newFriendUsername = friendUsername.getText().toString();
+                URL_NEW_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/requests/" + newFriendUsername;
+
+                makeFriendRequest();
             }
         });
 
@@ -180,6 +200,48 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void makeFriendRequest() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST,
+                URL_NEW_FRIEND,
+                null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        newFriendTitle.setText("Request sent successfully would you like to add another friend");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        newFriendTitle.setText(URL_NEW_FRIEND);
+                        //newFriendTitle.setText("couldn't find that user try again");
                     }
                 }
         ) {

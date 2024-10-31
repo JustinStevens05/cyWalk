@@ -75,8 +75,8 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
 
                 /* grab strings from user inputs */
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+                username = usernameEditText.getText().toString();
+                password = passwordEditText.getText().toString();
 
                 try {
                     makeSignUpReq();;
@@ -183,7 +183,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        errorMsg.setText("an error has occured please try again later");
+                        errorMsg.setText(error.toString());
                     }
                 }
         ) {

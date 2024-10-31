@@ -121,16 +121,16 @@ public class Social extends AppCompatActivity {
             }
         });
 
-        goalButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("username",username);
-                startActivity(intent);
-            }
-        });
+//        goalButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                Intent intent = new Intent(Social.this, Goals.class);
+//                intent.putExtra("key", key);
+//                intent.putExtra("username",username);
+//                startActivity(intent);
+//            }
+//        });
 
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -92,6 +92,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/newFriendTile"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="To add a friend enter thier username"
@@ -109,7 +110,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/usernameSubmitBtn"
+            android:id="@+id/friendSubmitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
