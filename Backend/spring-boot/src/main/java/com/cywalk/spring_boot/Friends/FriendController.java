@@ -62,7 +62,7 @@ public class FriendController {
      * @return status of how the approval went
      */
     @PutMapping("/{key}/request/approve/{username}")
-    public ResponseEntity<Void> approveFriendRequest(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> approveFriendRequest(@PathVariable Long key, @PathVariable String username) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
         if (userRequest.isPresent()) {
             Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
@@ -70,7 +70,7 @@ public class FriendController {
                Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                if (fr.isPresent()) {
                    friendService.approveFriendRequest(key, username);
-                   return ResponseEntity.ok().build();
+                   return ResponseEntity.of(Optional.of("[]"));
                }
                else {
                    return ResponseEntity.badRequest().build();
@@ -118,7 +118,7 @@ public class FriendController {
      * @return Status codes of whether success or not
      */
     @DeleteMapping("/{key}/request/deny/{username}")
-    public ResponseEntity<Void> denyFriendRequest(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> denyFriendRequest(@PathVariable Long key, @PathVariable String username) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
         if (userRequest.isPresent()) {
             Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
@@ -126,7 +126,7 @@ public class FriendController {
                 Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                 if (fr.isPresent()) {
                     friendService.denyFriendRequest(key, username);
-                    return ResponseEntity.ok().build();
+                    return ResponseEntity.of(Optional.of("[]"));
                 }
                 else {
                     return ResponseEntity.badRequest().build();
