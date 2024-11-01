@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Locations;
 
+import com.cywalk.spring_boot.LocationDays.LocationDayService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +27,7 @@ public class LocationSessionController extends TextWebSocketHandler {
     private static final Logger logger = LoggerFactory.getLogger(LocationSessionController.class);
     private static LocationService locationService;
     private static PeopleService peopleService;
+    private static LocationDayService locationDayService;
 
     private final Map<WebSocketSession, String> authenticatedPerson = new HashMap<>();
 
@@ -37,6 +39,11 @@ public class LocationSessionController extends TextWebSocketHandler {
     @Autowired
     public void setLocationService(LocationService ls) {
         locationService = ls;
+    }
+
+    @Autowired
+    public void setLocationDayService(LocationDayService ls) {
+        locationDayService = ls;
     }
 
     public static Location asLocationFromString(String json) {
@@ -95,6 +102,8 @@ public class LocationSessionController extends TextWebSocketHandler {
         if (location != null) {
             locationService.appendLocation(personResult.get(), location);
         }
+
+        session.sendMessage(new TextMessage(String.valueOf(locationDayService.totalDistanceFromUser(username).get().getTotalDistance())));
     }
 
     @Override
