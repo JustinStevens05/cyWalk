@@ -3,6 +3,7 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.mysql.cj.xdevapi.JsonArray;
 import org.slf4j.Logger;
@@ -26,6 +27,14 @@ public class FriendController {
     @Autowired
     private FriendService friendService;
 
+    public static String asJsonString(Object o) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(o);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * request to friend a user
@@ -111,20 +120,22 @@ public class FriendController {
         if (requestsResult.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        // ArrayList<String> usernames = new ArrayList<>(requestsResult.get().size());
-        StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
-        for (int i = 0; i < requestsResult.get().size() - 1; i++) {
-            FriendRequest fr = requestsResult.get().get(i);
-            resultingMessage.append("\"" + fr.getSender().getUsername() + "\",");
-            // usernames.add(fr.getSender().getUsername());
-        }
-        if (requestsResult.get().size() > 0) {
-            FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
-            resultingMessage.append("\"" + fr.getSender().getUsername() + "\"");
-        }
-        resultingMessage.append("]}");
 
-        return ResponseEntity.of(Optional.of(resultingMessage.toString()));
+        ArrayList<String> usernames = new ArrayList<>(requestsResult.get().size());
+
+        // StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
+        for (int i = 0; i < requestsResult.get().size(); i++) {
+            FriendRequest fr = requestsResult.get().get(i);
+           // resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"},");
+             usernames.add(fr.getSender().getUsername());
+        }
+        // if (requestsResult.get().size() > 0) {
+         //    FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
+         //    resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"}");
+       // }
+        // resultingMessage.append("]}");
+
+        return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
     @GetMapping("/all")
