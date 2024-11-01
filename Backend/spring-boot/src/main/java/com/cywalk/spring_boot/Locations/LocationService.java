@@ -5,6 +5,7 @@ import com.cywalk.spring_boot.LocationDays.LocationDayRepository;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.cywalk.spring_boot.Users.UserRequest;
+import jakarta.transaction.Transactional;
 import org.locationtech.jts.algorithm.PointLocation;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Point;
@@ -41,6 +42,7 @@ public class LocationService {
      * @param location the location to add
      * @return the location that was added if it was successful. returns {@link Optional#empty()} if there was an issue
      */
+    @Transactional
     public Optional<Location> saveLocation(Long key, Location location) {
        /*if (location.getTime() == null) {
             location.setTime(LocalTime.now());
@@ -63,6 +65,7 @@ public class LocationService {
      * @param location the reported location of the user
      * @return Optional.empty() is we could not add the location, otherwise we return the location saved into the database
      */
+    @Transactional
     public Optional<Location> appendLocation(People people, Location location) {
         List<LocationDay> currentLocationDays = people.getLocations();
         if (!currentLocationDays.isEmpty() && (currentLocationDays.get(currentLocationDays.size() - 1).getDate().isEqual(LocalDate.now()))) {
@@ -88,6 +91,7 @@ public class LocationService {
         return locationRepository.findAll();
     }
 
+    @Transactional
     public void deleteLocation(Long key, Long id) {
         locationRepository.deleteById(id);
     }
