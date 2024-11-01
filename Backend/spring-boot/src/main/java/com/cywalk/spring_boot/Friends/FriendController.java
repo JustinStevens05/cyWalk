@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,8 +103,18 @@ public class FriendController {
      * @return the current pending friend requests for the user
      */
     @GetMapping("/requests/{key}")
-    public ResponseEntity<List<FriendRequest>> getFriendRequests(@PathVariable Long key) {
-        return ResponseEntity.of(friendService.getPendingFriendRequests(key));
+    public ResponseEntity<String> getFriendRequests(@PathVariable Long key) {
+        Optional<List<FriendRequest>> requestsResult = friendService.getPendingFriendRequests(key);
+        if (requestsResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        // ArrayList<String> username;
+        StringBuilder resultingMessage = new StringBuilder("{ usernames: [");
+        for (FriendRequest fr : requestsResult.get()) {
+            resultingMessage.append(fr.getSender().getUsername() + ", ");
+        }
+        resultingMessage.append("]}");
+        return ResponseEntity.of(Optional.of(resultingMessage.toString()));
     }
 
     @GetMapping("/all")
