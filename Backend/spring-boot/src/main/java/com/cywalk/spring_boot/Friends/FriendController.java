@@ -3,6 +3,8 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.mysql.cj.xdevapi.JsonArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,15 +107,23 @@ public class FriendController {
     @GetMapping("/requests/{key}")
     public ResponseEntity<String> getFriendRequests(@PathVariable Long key) {
         Optional<List<FriendRequest>> requestsResult = friendService.getPendingFriendRequests(key);
+
         if (requestsResult.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        // ArrayList<String> username;
-        StringBuilder resultingMessage = new StringBuilder("{ usernames: [");
-        for (FriendRequest fr : requestsResult.get()) {
-            resultingMessage.append(fr.getSender().getUsername() + ", ");
+        // ArrayList<String> usernames = new ArrayList<>(requestsResult.get().size());
+        StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
+        for (int i = 0; i < requestsResult.get().size() - 1; i++) {
+            FriendRequest fr = requestsResult.get().get(i);
+            resultingMessage.append("\"" + fr.getSender().getUsername() + "\",");
+            // usernames.add(fr.getSender().getUsername());
+        }
+        if (requestsResult.get().size() > 0) {
+            FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
+            resultingMessage.append("\"" + fr.getSender().getUsername() + "\"");
         }
         resultingMessage.append("]}");
+
         return ResponseEntity.of(Optional.of(resultingMessage.toString()));
     }
 
