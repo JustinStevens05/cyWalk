@@ -26,7 +26,7 @@ public class People {
   @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
   private Set<FriendRequest> receivedRequests = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<LocationDay> locations = new ArrayList<>(); // Initialized to an empty list
 
   // Constructors
