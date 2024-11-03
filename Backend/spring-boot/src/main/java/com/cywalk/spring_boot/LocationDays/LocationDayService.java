@@ -81,6 +81,7 @@ public class LocationDayService {
         locationDayRepository.deleteById(id);
     }
 
+    @Transactional
     public Optional<LocationDay> getTodaysLocation(Long key) {
         Optional<People> peopleResult = peopleService.getUserFromKey(key);
         if (peopleResult.isPresent()) {
