@@ -103,9 +103,31 @@ public class FriendController {
      * @return the friends list of a user
      */
     @GetMapping("/{key}")
-    public ResponseEntity<List<People>> getFriends(@PathVariable Long key) {
-        Optional<People> userRequest = peopleService.getUserFromKey(key);
-        return userRequest.map(people -> ResponseEntity.ok(friendService.getFriends(people))).orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<String> getFriends(@PathVariable Long key) {
+	Optional<People> peopleResult = peopleService.getUserFromKey(key);
+	if (peopleResult.isEmpty()) {
+	    return ResponseEntity.badRequest().build();
+	}
+	List<People> friendsResult = friendService.getFriends(peopleResult.get()); 
+	if (friendsResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ArrayList<String> usernames = new ArrayList<>(friendsResult.size());
+
+        // StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
+        for (int i = 0; i < friendsResult.size(); i++) {
+            People person = friendsResult.get(i);
+           // resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"},");
+             usernames.add(person.getUsername());
+        }
+        // if (requestsResult.get().size() > 0) {
+         //    FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
+         //    resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"}");
+       // }
+        // resultingMessage.append("]}");
+
+        return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
     /**
