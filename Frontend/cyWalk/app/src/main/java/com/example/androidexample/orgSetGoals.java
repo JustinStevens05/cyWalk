@@ -28,6 +28,9 @@ import java.util.Map;
 
 public class orgSetGoals extends AppCompatActivity {
 
+    private Button usersButton;
+    private Button leaderboardButton;
+    private Button goalsButton;
     private Button profileButton;
     private String key;
 
@@ -40,13 +43,42 @@ public class orgSetGoals extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orgsetgoals);
+        usersButton = findViewById(R.id.usersButton);
+        leaderboardButton = findViewById(R.id.leaderboardButton);
+        goalsButton = findViewById(R.id.goalsButton);
         profileButton = findViewById(R.id.profileButton);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
+        //URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
 
+        usersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(orgSetGoals.this, orgUsers.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
+
+        leaderboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(orgSetGoals.this, orgLeaderboards.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
+
+        goalsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(orgSetGoals.this, orgSetGoals.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +89,7 @@ public class orgSetGoals extends AppCompatActivity {
             }
         });
 
-        setNewGoalReq();
+        //setNewGoalReq();
     }
     private void setNewGoalReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(

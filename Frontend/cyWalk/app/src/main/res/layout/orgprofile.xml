@@ -39,14 +39,52 @@
         android:layout_marginTop="25dp"
         android:text="Log Out" />
 
-    <Button
-        android:id="@+id/orgGoalButton"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/black"
-        android:text="Goals"
-        android:textColor="@color/white"
-        android:layout_alignParentBottom="true"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/usersButton"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/black"
+            android:text="Users"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/leaderboardButton"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/black"
+            android:text="Board"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/goalsButton"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/black"
+            android:text="Goals"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/profileButton"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:background="@color/black"
+            android:text="Profile"
+            android:textColor="@color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
 
 
 

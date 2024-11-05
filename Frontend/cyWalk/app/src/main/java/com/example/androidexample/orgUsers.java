@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,31 +12,30 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.android.volley.toolbox.JsonArrayRequest;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class OrgProfile extends AppCompatActivity {
+public class orgUsers extends AppCompatActivity {
 
-    private static String key;
-    private static String URL_JSON_OBJECT = null;
-    private String username;
     private Button usersButton;
     private Button leaderboardButton;
     private Button goalsButton;
     private Button profileButton;
-    TextView txt_username;
+    private String key;
 
+    private static String URL_SET_GOAL = null;
+
+    private String newFriendUsername;
+    private String acceptFriendUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.orgprofile);
+        setContentView(R.layout.orgusers);
         usersButton = findViewById(R.id.usersButton);
         leaderboardButton = findViewById(R.id.leaderboardButton);
         goalsButton = findViewById(R.id.goalsButton);
@@ -45,14 +43,13 @@ public class OrgProfile extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
-        txt_username = findViewById(R.id.profile_txt_username);
+
+        //URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
 
         usersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrgProfile.this, orgUsers.class);
+                Intent intent = new Intent(orgUsers.this, orgUsers.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
             }
@@ -61,7 +58,7 @@ public class OrgProfile extends AppCompatActivity {
         leaderboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrgProfile.this, orgLeaderboards.class);
+                Intent intent = new Intent(orgUsers.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
             }
@@ -70,7 +67,7 @@ public class OrgProfile extends AppCompatActivity {
         goalsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrgProfile.this, orgSetGoals.class);
+                Intent intent = new Intent(orgUsers.this, orgSetGoals.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
             }
@@ -79,29 +76,24 @@ public class OrgProfile extends AppCompatActivity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrgProfile.this, OrgProfile.class);
+                Intent intent = new Intent(orgUsers.this, OrgProfile.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
             }
         });
 
-        makeJsonObjReq();
+        //setNewGoalReq();
     }
-
-    private void makeJsonObjReq() {
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONObject>() {
+    private void setNewGoalReq() {
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
+                Request.Method.GET,
+                URL_SET_GOAL,
+                null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        try {
-                            // Parse JSON object data
-                            username = response.getString("username");
-                            txt_username.setText(username);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -129,6 +121,7 @@ public class OrgProfile extends AppCompatActivity {
         };
 
         // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
+
 }
