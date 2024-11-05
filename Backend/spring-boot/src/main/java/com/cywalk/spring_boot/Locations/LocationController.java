@@ -1,7 +1,5 @@
 package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.LocationDays.LocationDayService;
-import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +15,7 @@ public class LocationController {
     private LocationService locationService;
 
     @Autowired
-    private LocationDayService locationDayService;
-
-    @Autowired
     private PeopleService peopleService;
-
-    @PostMapping("/log")
-    public Optional<Location> createLocation(@PathVariable Long key, @RequestBody Location location) {
-        return locationService.saveLocation(key, location);
-    }
 
     @GetMapping("/{id}")
     public Optional<Location> getLocationById(@PathVariable Long key, @PathVariable Long id) {
@@ -40,6 +30,41 @@ public class LocationController {
     @DeleteMapping("/{id}")
     public void deleteLocation(@PathVariable Long key, @PathVariable Long id) {
         locationService.deleteLocation(key, id);
+    }
+
+    @PostMapping("/start")
+    public void startSession(@PathVariable Long key) {
+        locationService.startActivity(peopleService.getUserFromKey(key).get());
+    }
+
+    @PostMapping("/log")
+    public void logLocation(@PathVariable Long key, @RequestBody Location location) {
+        locationService.appendLocation(peopleService.getUserFromKey(key).get(), location);
+    }
+
+    @DeleteMapping("/end")
+    public void endSession(@PathVariable Long key) {
+        locationService.endSession(peopleService.getUserFromKey(key).get());
+    }
+
+    @PostMapping("/day")
+    public LocationDay createLocation(@PathVariable String key, @RequestBody LocationDay locationDay) {
+        return locationService.saveLocationDay(locationDay);
+    }
+
+    @GetMapping("/day")
+    public List<LocationDay> getAllLocationDays(@PathVariable String key) {
+        return locationService.getAllLocationDays();
+    }
+
+    @GetMapping("/today")
+    public Optional<LocationDay> getLocationsFromToday(@PathVariable String key) {
+        return locationService.getTodaysLocation(Long.valueOf(key));
+    }
+
+    @GetMapping("/total")
+    public Optional<LocationDay> getDistanceFromDay(@PathVariable Long key) {
+        return locationService.totalDistanceFromUser(key);
     }
 }
 

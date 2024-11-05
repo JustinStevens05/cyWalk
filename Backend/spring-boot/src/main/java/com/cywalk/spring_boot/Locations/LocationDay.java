@@ -1,12 +1,12 @@
-package com.cywalk.spring_boot.LocationDays;
+package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Users.People;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The total locations from the entire day.
@@ -33,7 +33,7 @@ public class LocationDay {
      * A list of keys to the location table in the database
      */
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Location> locations;
+    private List<LocationActivity> activities;
 
     /**
      * The people who took traveled took this route
@@ -45,7 +45,7 @@ public class LocationDay {
     public LocationDay(LocalDate date) {
         this.date = date;
         totalDistance = 0;
-        locations = new ArrayList<>();
+        activities = new ArrayList<>();
     }
 
     public LocationDay() {
@@ -84,15 +84,23 @@ public class LocationDay {
         this.totalDistance = totalDistance;
     }
 
-    public List<Location> getLocations() {
-        return locations;
+    public List<LocationActivity> getActivities() {
+        return activities;
     }
 
-    public void setLocations(List<Location> locations) {
-        this.locations = locations;
+    public void setActivities(List<LocationActivity> locations) {
+        this.activities = locations;
     }
 
-    public void addLocation(Location newLocation) {
-        this.locations.add(newLocation);
+    /**
+     * Returns the last activity or the current depending on it's state
+     * @return the most recent activity
+     */
+    public Optional<LocationActivity> getLastActivity() {
+        if (!activities.isEmpty()) {
+            return Optional.of(activities.get(activities.size() - 1));
+        }
+        return Optional.empty();
     }
+
 }

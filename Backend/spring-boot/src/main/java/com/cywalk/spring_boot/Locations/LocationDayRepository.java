@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.LocationDays;
+package com.cywalk.spring_boot.Locations;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

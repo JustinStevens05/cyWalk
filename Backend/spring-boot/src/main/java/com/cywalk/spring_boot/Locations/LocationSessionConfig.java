@@ -17,7 +17,7 @@ public class LocationSessionConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(locationSessionController, "/location/sessions")
+        registry.addHandler(locationSessionController, "/locations/sessions")
                 .setAllowedOrigins("*"); // Set allowed origins as needed
     }
 }

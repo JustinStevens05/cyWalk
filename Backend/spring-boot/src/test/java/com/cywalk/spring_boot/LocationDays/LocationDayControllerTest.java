@@ -42,9 +42,6 @@ class LocationDayControllerTest {
     private LocationController locationController;
 
     @Autowired
-    private LocationDayController locationDayController;
-
-    @Autowired
     PeopleService peopleService;
 
     @Autowired
@@ -105,6 +102,8 @@ class LocationDayControllerTest {
         long key = asKeyFromString(resultAsString);
         System.out.println(key);
 
+        this.mockMvc.perform(post("/" + key + "/locations/start")).andExpect(status().isOk());
+
         // now log the key
         this.mockMvc.perform(
                 post("/" + key + "/locations/log").content(asJsonString(Curtiss)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
@@ -112,14 +111,15 @@ class LocationDayControllerTest {
                 post("/" + key + "/locations/log").content(asJsonString(Beardshear)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
         this.mockMvc.perform(
-                get("/" + key + "/location/total")
+                get("/" + key + "/locations/total")
         ).andExpect(status().isOk())
                 .andExpect(content().string(containsString("93")));
+
+        this.mockMvc.perform(delete("/" + key + "/locations/end")).andExpect(status().isOk());
 
         this.mockMvc.perform(
                 delete("/users/" + key)
         ).andExpect(status().isOk());
-
 
 
        //  System.out.println(result1.getResponse().getContentAsString());
@@ -128,7 +128,6 @@ class LocationDayControllerTest {
     @Test
     void contextLoads() {
         assertThat(locationController).isNotNull();
-        assertThat(locationDayController).isNotNull();
         assertThat(peopleService).isNotNull();
         assertThat(mockMvc).isNotNull();
     }
