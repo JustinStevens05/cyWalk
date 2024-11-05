@@ -97,7 +97,7 @@ public class Friends extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 acceptFriendUsername = acceptedFriendUsername.getText().toString();
-                URL_ACCEPT_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/request/" + acceptFriendUsername;
+                URL_ACCEPT_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/request/approve/" + acceptFriendUsername;
 
                 makeFriendApproval();
             }
@@ -115,7 +115,7 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        newFriendTitle.setText(response.toString());
+                        //newFriendTitle.setText(response.toString());
 
                         if(response.length() > 0) {
                             friendTable.removeAllViews();
