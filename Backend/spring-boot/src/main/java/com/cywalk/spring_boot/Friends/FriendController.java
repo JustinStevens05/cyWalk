@@ -3,12 +3,16 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.mysql.cj.xdevapi.JsonArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +27,14 @@ public class FriendController {
     @Autowired
     private FriendService friendService;
 
+    public static String asJsonString(Object o) {
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsString(o);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     /**
      * request to friend a user
@@ -32,7 +44,7 @@ public class FriendController {
      * @return status
      */
     @PostMapping("/{key}/request/{username}")
-    public ResponseEntity<Void> requestToFriend(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> requestToFriend(@PathVariable Long key, @PathVariable String username) {
         Optional<People> sessionRequest = peopleService.getUserFromKey(key);
         if (sessionRequest.isPresent()) {
             Optional<People> peopleRequest = peopleService.getUserByUsername(username);
@@ -44,7 +56,7 @@ public class FriendController {
                 }
                 else {
                     // supposed to denote duplicate already exists
-                    return ResponseEntity.status(409).build();
+                    return ResponseEntity.of(Optional.of("[]"));
                 }
             } else {
                 return ResponseEntity.notFound().build();
@@ -62,7 +74,7 @@ public class FriendController {
      * @return status of how the approval went
      */
     @PutMapping("/{key}/request/approve/{username}")
-    public ResponseEntity<Void> approveFriendRequest(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> approveFriendRequest(@PathVariable Long key, @PathVariable String username) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
         if (userRequest.isPresent()) {
             Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
@@ -70,7 +82,7 @@ public class FriendController {
                Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                if (fr.isPresent()) {
                    friendService.approveFriendRequest(key, username);
-                   return ResponseEntity.ok().build();
+                   return ResponseEntity.of(Optional.of("[]"));
                }
                else {
                    return ResponseEntity.badRequest().build();
@@ -91,9 +103,31 @@ public class FriendController {
      * @return the friends list of a user
      */
     @GetMapping("/{key}")
-    public ResponseEntity<List<People>> getFriends(@PathVariable Long key) {
-        Optional<People> userRequest = peopleService.getUserFromKey(key);
-        return userRequest.map(people -> ResponseEntity.ok(friendService.getFriends(people))).orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<String> getFriends(@PathVariable Long key) {
+	Optional<People> peopleResult = peopleService.getUserFromKey(key);
+	if (peopleResult.isEmpty()) {
+	    return ResponseEntity.badRequest().build();
+	}
+	List<People> friendsResult = friendService.getFriends(peopleResult.get()); 
+	if (friendsResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ArrayList<String> usernames = new ArrayList<>(friendsResult.size());
+
+        // StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
+        for (int i = 0; i < friendsResult.size(); i++) {
+            People person = friendsResult.get(i);
+           // resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"},");
+             usernames.add(person.getUsername());
+        }
+        // if (requestsResult.get().size() > 0) {
+         //    FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
+         //    resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"}");
+       // }
+        // resultingMessage.append("]}");
+
+        return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
     /**
@@ -102,8 +136,28 @@ public class FriendController {
      * @return the current pending friend requests for the user
      */
     @GetMapping("/requests/{key}")
-    public ResponseEntity<List<FriendRequest>> getFriendRequests(@PathVariable Long key) {
-        return ResponseEntity.of(friendService.getPendingFriendRequests(key));
+    public ResponseEntity<String> getFriendRequests(@PathVariable Long key) {
+        Optional<List<FriendRequest>> requestsResult = friendService.getPendingFriendRequests(key);
+
+        if (requestsResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ArrayList<String> usernames = new ArrayList<>(requestsResult.get().size());
+
+        // StringBuilder resultingMessage = new StringBuilder("{\"usernames\":[");
+        for (int i = 0; i < requestsResult.get().size(); i++) {
+            FriendRequest fr = requestsResult.get().get(i);
+           // resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"},");
+             usernames.add(fr.getSender().getUsername());
+        }
+        // if (requestsResult.get().size() > 0) {
+         //    FriendRequest fr = requestsResult.get().get(requestsResult.get().size() - 1);
+         //    resultingMessage.append("{\"username\":\"" + fr.getSender().getUsername() + "\"}");
+       // }
+        // resultingMessage.append("]}");
+
+        return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
     @GetMapping("/all")
@@ -118,7 +172,7 @@ public class FriendController {
      * @return Status codes of whether success or not
      */
     @DeleteMapping("/{key}/request/deny/{username}")
-    public ResponseEntity<Void> denyFriendRequest(@PathVariable Long key, @PathVariable String username) {
+    public ResponseEntity<String> denyFriendRequest(@PathVariable Long key, @PathVariable String username) {
         Optional<People> userRequest = peopleService.getUserFromKey(key);
         if (userRequest.isPresent()) {
             Optional<People> userRequestingRequest = peopleService.getUserByUsername(username);
@@ -126,7 +180,7 @@ public class FriendController {
                 Optional<FriendRequest> fr = friendService.getFriendRequestFrom(userRequestingRequest.get(), userRequest.get());
                 if (fr.isPresent()) {
                     friendService.denyFriendRequest(key, username);
-                    return ResponseEntity.ok().build();
+                    return ResponseEntity.of(Optional.of("[]"));
                 }
                 else {
                     return ResponseEntity.badRequest().build();

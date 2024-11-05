@@ -47,7 +47,4 @@ public class LocationDayController {
         }
         return ldResult.get().getTotalDistance();
     }
-
-
 }
-

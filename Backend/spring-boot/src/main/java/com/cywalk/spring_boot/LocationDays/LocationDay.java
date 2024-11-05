@@ -32,7 +32,7 @@ public class LocationDay {
     /**
      * A list of keys to the location table in the database
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Location> locations;
 
     /**
