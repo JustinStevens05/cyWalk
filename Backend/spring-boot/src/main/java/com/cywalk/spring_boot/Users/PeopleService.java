@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Users;
 import com.cywalk.spring_boot.Friends.FriendRequest;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class PeopleService {
         return peopleRepository.findByUsername(username);
     }
 
+    @Transactional
     public People saveUser(People people) {
         return peopleRepository.save(people);
     }

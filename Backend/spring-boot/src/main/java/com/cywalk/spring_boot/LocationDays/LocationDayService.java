@@ -3,7 +3,9 @@ package com.cywalk.spring_boot.LocationDays;
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationService;
 import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Users.PeopleService;
+import jakarta.transaction.Transactional;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,10 @@ public class LocationDayService {
 
 
     Logger logger = LoggerFactory.getLogger(LocationDayService.class);
-    
+
+    @Autowired
+    private PeopleRepository peopleRepository;
+
     public LocationDayService() {
 
     }
@@ -76,17 +81,34 @@ public class LocationDayService {
         locationDayRepository.deleteById(id);
     }
 
+    @Transactional
     public Optional<LocationDay> getTodaysLocation(Long key) {
         Optional<People> peopleResult = peopleService.getUserFromKey(key);
         if (peopleResult.isPresent()) {
-            int index = peopleResult.get().getLocations().size() - 1;
-            if (index > -1) {
-                return Optional.of(peopleResult.get().getLocations().get(index));
-            }
+           return getTodaysLocation(peopleResult.get().getUsername());
         }
         return Optional.empty();
     }
 
+    @Transactional
+    public Optional<LocationDay> getTodaysLocation(String username) {
+        Optional<People> peopleResult = peopleRepository.findByUsername(username);
+        if (peopleResult.isEmpty()) {
+            logger.error("no user found in people table for: {}", username);
+            return Optional.empty();
+        }
+        else {
+            int index = peopleResult.get().getLocations().size() - 1;
+            if (index > -1) {
+                return Optional.of(peopleResult.get().getLocations().get(index));
+            }
+            else {
+                return Optional.empty();
+            }
+        }
+    }
+
+    @Transactional
     public Optional<LocationDay> totalDistanceFromUser(Long key) {
         Optional<LocationDay> locationResult = getTodaysLocation(key);
         if (locationResult.isPresent()) {
@@ -95,6 +117,16 @@ public class LocationDayService {
         return Optional.empty();
     }
 
+    @Transactional
+    public Optional<LocationDay> totalDistanceFromUser(String username) {
+        Optional<LocationDay> locationResult = getTodaysLocation(username);
+        if (locationResult.isPresent()) {
+            return totalDistance(locationResult.get().getId());
+        }
+        return Optional.empty();
+    }
+
+    @Transactional
     public Optional<LocationDay> totalDistance(Long id) {
         LocationDay ld = locationDayRepository.getReferenceById(id);
         double distance = 0;
