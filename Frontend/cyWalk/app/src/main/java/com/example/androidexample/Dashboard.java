@@ -79,6 +79,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
         URL_WS_SOCKET = "ws://10.0.2.2:8080/location/sessions?key="+key;
 
+        /* connect this activity to the websocket instance */
+        WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
+
         // Establish WebSocket connection and set listener
         WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
@@ -184,9 +187,19 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 LatLng markerCoords = new LatLng(50, 50);
+
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Marker");
                 gMap.moveCamera(CameraUpdateFactory.newLatLng(markerOptions.getPosition()));
                 // gMap.addMarker(markerOptions);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("latitude", markerOptions.getPosition().latitude);
+                    jsonObject.put("longitude", markerOptions.getPosition().longitude);
+                    jsonObject.put("elevation", 0);
+                    WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
