@@ -1,9 +1,5 @@
 package com.example.androidexample;
 
-import static java.lang.Double.isNaN;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,26 +8,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-public class Login extends AppCompatActivity {
+public class OrgLogin extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
-    private TextView orgSwitch;
     private Button loginButton;         // define login button variable
     private static String URL_LOGIN = "http://10.0.2.2:8080/users";
     private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
@@ -43,7 +38,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);            // link to Login activity XML
+        setContentView(R.layout.orglogin);            // link to Login activity XML
 
         /* initialize UI elements */
         usernameEditText = findViewById(R.id.login_username_edt);
@@ -51,7 +46,6 @@ public class Login extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
-        orgSwitch = findViewById(R.id.switchOrgView);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -87,15 +81,8 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-
-        orgSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Login.this, OrgLogin.class);
-                startActivity(intent);
-            }
-        });
     }
+
     private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -116,7 +103,7 @@ public class Login extends AppCompatActivity {
                             userKey = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
-                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
                                 intent.putExtra("key", userKey);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);
@@ -178,7 +165,7 @@ public class Login extends AppCompatActivity {
                             userKey = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
-                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
                                 intent.putExtra("key", userKey);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);

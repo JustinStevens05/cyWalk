@@ -43,7 +43,4 @@ public class LocationDayController {
     public Optional<LocationDay> getDistanceFromDay(@PathVariable Long key) {
         return locationDayService.totalDistanceFromUser(key);
     }
-
-
 }
-

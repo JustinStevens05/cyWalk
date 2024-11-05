@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import org.junit.jupiter.api.*;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalTime;
 
@@ -28,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -120,6 +123,14 @@ class LocationDayControllerTest {
 
 
        //  System.out.println(result1.getResponse().getContentAsString());
+    }
+
+    @Test
+    void contextLoads() {
+        assertThat(locationController).isNotNull();
+        assertThat(locationDayController).isNotNull();
+        assertThat(peopleService).isNotNull();
+        assertThat(mockMvc).isNotNull();
     }
 
 }
