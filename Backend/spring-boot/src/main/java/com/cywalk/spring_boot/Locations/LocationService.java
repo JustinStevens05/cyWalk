@@ -165,6 +165,7 @@ public class LocationService {
         return location;
     }
 
+    @Transactional
     public void sendLocationToFriends(People people, Location location) {
         List<People> friends = friendService.getFriends(people);
         for (People p : friends) {

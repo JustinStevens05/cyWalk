@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class FriendLocationController extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(FriendLocationController.class);
-    private static LocationService locationService;
     private static PeopleService peopleService;
     private static FriendService friendService;
 
@@ -34,11 +33,6 @@ public class FriendLocationController extends TextWebSocketHandler {
     @Autowired
     public void setPeopleService(PeopleService ps) {
         peopleService = ps;
-    }
-
-    @Autowired
-    public void setLocationService(LocationService ls) {
-        locationService = ls;
     }
 
     @Autowired
@@ -77,12 +71,15 @@ public class FriendLocationController extends TextWebSocketHandler {
                 logger.error("Could not open session with key: {}", key);
             } else {
                 authenticatedPerson.put(session, peopleResult.get().getUsername());
+                /*
                 List<People> friendsListPeople = friendService.getFriends(peopleResult.get());
                 ArrayList<String> friendsListNames = new ArrayList<>();
                 for (People friendsListPerson : friendsListPeople) {
                     friendsListNames.add(friendsListPerson.getUsername());
                 }
                 sessionToFriends.put(session, friendsListNames);
+                 */
+                userToSession.put(peopleResult.get().getUsername(), session);
             }
         } catch (Exception e) {
             logger.error("Error parsing key from URL: {}", e.getMessage());
@@ -95,8 +92,7 @@ public class FriendLocationController extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         String username = authenticatedPerson.remove(session);
-        // total up the final distance
-        locationService.endSession(username);
+        userToSession.remove(username);
     }
 
     @Override
