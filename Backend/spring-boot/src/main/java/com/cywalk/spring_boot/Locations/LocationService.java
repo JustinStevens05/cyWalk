@@ -1,5 +1,7 @@
 package com.cywalk.spring_boot.Locations;
 
+import com.cywalk.spring_boot.Friends.FriendLocationController;
+import com.cywalk.spring_boot.Friends.FriendService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Users.PeopleService;
@@ -32,7 +34,12 @@ public class LocationService {
     @Autowired
     private LocationActivityRepository locationActivityRepository;
 
+    @Autowired
+    private FriendLocationController friendLocationController;
+
     Logger logger = LoggerFactory.getLogger(LocationService.class);
+    @Autowired
+    private FriendService friendService;
 
     public LocationService() {
 
@@ -153,7 +160,16 @@ public class LocationService {
         la.addLocationToActivity(location);
         locationActivityRepository.save(la);
 
+        sendLocationToFriends(people, location);
+
         return location;
+    }
+
+    public void sendLocationToFriends(People people, Location location) {
+        List<People> friends = friendService.getFriends(people);
+        for (People p : friends) {
+            friendLocationController.sendLocation(location, people.getUsername(), p.getUsername());
+        }
     }
 
     public Optional<Location> getLocationById(Long id) {

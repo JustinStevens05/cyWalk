@@ -103,4 +103,53 @@ public class FriendLocationController extends TextWebSocketHandler {
     public void handleTransportError(WebSocketSession session, Throwable exception) {
         logger.error("WebSocket error: {}", exception.getMessage());
     }
+
+    /**
+     * Sends a location from a friend with a timestamp
+     * @param location the location of the friend
+     * @param user the user who owns the location
+     * @param friend the friend of said user
+     */
+    public void sendLocation(Location location, People user, People friend) {
+        sendLocation(location, user.getUsername(), friend.getUsername());
+    }
+
+    /**
+     * Sends a location from a friend with a timestamp
+     * @param location the location of the friend
+     * @param username the user who owns the location's username
+     * @param friendUsername the friend of the user's username
+     */
+    public void sendLocation(Location location, String username, String friendUsername) {
+        WebSocketSession session = userToSession.get(friendUsername);
+        if (session != null) {
+            // craft the location to send
+            FriendLocation fl;
+            if (location.getTime() == null) {
+                fl = new FriendLocation(username, location.getLatitude(), location.getLongitude());
+            }
+            else {
+                fl = new FriendLocation(username, location.getLatitude(), location.getLongitude(), location.getTime());
+            }
+            try {
+                sendFriendLocation(fl, session);
+            }
+            catch (IOException e) {
+                logger.error("encountered an io exception");
+                logger.error(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * sends a friend location over the session
+     * @param fl the friend location to send
+     * @param session the session to broadcast the data to
+     */
+    public void sendFriendLocation(FriendLocation fl, WebSocketSession session) throws IOException {
+        TextMessage tm = new TextMessage(
+                fl.toString()
+        );
+        session.sendMessage(tm);
+    }
 }
