@@ -28,7 +28,8 @@ public class FriendLocationController extends TextWebSocketHandler {
     private static FriendService friendService;
 
     private final Map<WebSocketSession, String> authenticatedPerson = new HashMap<>();
-    private final Map<WebSocketSession, List<String>> friends = new HashMap<>();
+    private final Map<WebSocketSession, List<String>> sessionToFriends = new HashMap<>();
+    private final Map<String, WebSocketSession> userToSession = new HashMap<>();
 
     @Autowired
     public void setPeopleService(PeopleService ps) {
@@ -81,35 +82,15 @@ public class FriendLocationController extends TextWebSocketHandler {
                 for (People friendsListPerson : friendsListPeople) {
                     friendsListNames.add(friendsListPerson.getUsername());
                 }
-                friends.put(session, friendsListNames);
+                sessionToFriends.put(session, friendsListNames);
             }
         } catch (Exception e) {
             logger.error("Error parsing key from URL: {}", e.getMessage());
         }
     }
 
-
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-        String username = authenticatedPerson.get(session);
-        if (username == null) {
-            logger.error("No user matches the current session");
-            return;
-        }
-
-        Optional<People> personResult = peopleService.getUserByUsername(username);
-        if (personResult.isEmpty()) {
-            logger.error("The username is in the map, but not in the database.");
-            return;
-        }
-
-        Location location = asLocationFromString(message.getPayload());
-        if (location != null) {
-            locationService.appendLocation(personResult.get(), location);
-        }
-
-        session.sendMessage(new TextMessage(String.valueOf(locationService.getCurrentActivity(username).getTotalDistance())));
-    }
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {}
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
