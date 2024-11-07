@@ -88,7 +88,7 @@ public class LocationActivity {
         this.locations.add(newLocation);
         // update distance here
         if (locations.size() > 1) {
-            totalDistance += LocationUtils.calculateDistance(locations.get(locations.size() - 1), newLocation);
+            totalDistance += LocationUtils.calculateDistance(locations.get(locations.size() - 2), newLocation);
         }
     }
 

@@ -84,14 +84,12 @@ public class LocationSessionController extends TextWebSocketHandler {
         String username = authenticatedPerson.get(session);
         if (username == null) {
             logger.error("No user matches the current session");
-            System.out.println("No user matches current session");
             return;
         }
 
         Optional<People> personResult = peopleService.getUserByUsername(username);
         if (personResult.isEmpty()) {
             logger.error("The username is in the map, but not in the database.");
-            System.out.println("the username is in the map, but no the databse");
             return;
         }
 
