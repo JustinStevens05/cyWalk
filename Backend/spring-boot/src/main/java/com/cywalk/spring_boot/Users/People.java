@@ -1,7 +1,7 @@
 package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Friends.FriendRequest;
-import com.cywalk.spring_boot.LocationDays.LocationDay;
+import com.cywalk.spring_boot.Locations.LocationDay;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;

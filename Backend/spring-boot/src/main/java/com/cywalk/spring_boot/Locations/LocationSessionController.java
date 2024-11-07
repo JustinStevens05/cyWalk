@@ -1,6 +1,5 @@
 package com.cywalk.spring_boot.Locations;
 
-import com.cywalk.spring_boot.LocationDays.LocationDayService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +26,6 @@ public class LocationSessionController extends TextWebSocketHandler {
     private static final Logger logger = LoggerFactory.getLogger(LocationSessionController.class);
     private static LocationService locationService;
     private static PeopleService peopleService;
-    private static LocationDayService locationDayService;
 
     private final Map<WebSocketSession, String> authenticatedPerson = new HashMap<>();
 
@@ -41,16 +39,11 @@ public class LocationSessionController extends TextWebSocketHandler {
         locationService = ls;
     }
 
-    @Autowired
-    public void setLocationDayService(LocationDayService ls) {
-        locationDayService = ls;
-    }
-
     public static Location asLocationFromString(String json) {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             JsonNode ms = mapper.readTree(json);
-            return new Location(ms.get("latitude").asLong(), ms.get("longitude").asLong(), ms.get("elevation").asLong(), null);
+            return new Location(ms.get("latitude").asDouble(), ms.get("longitude").asDouble(), ms.get("elevation").asDouble(), null);
         } catch (IOException e) {
             logger.error("Failed to parse location JSON: {}", e.getMessage());
         }
@@ -75,8 +68,10 @@ public class LocationSessionController extends TextWebSocketHandler {
             Optional<People> peopleResult = peopleService.getUserFromKey(keyAsLong);
             if (peopleResult.isEmpty()) {
                 logger.error("Could not open session with key: {}", key);
+                System.out.println("Could not open session with key: " + key);
             } else {
                 authenticatedPerson.put(session, peopleResult.get().getUsername());
+                locationService.startActivity(peopleResult.get());
             }
         } catch (Exception e) {
             logger.error("Error parsing key from URL: {}", e.getMessage());
@@ -103,12 +98,14 @@ public class LocationSessionController extends TextWebSocketHandler {
             locationService.appendLocation(personResult.get(), location);
         }
 
-        session.sendMessage(new TextMessage(String.valueOf(locationDayService.totalDistanceFromUser(username).get().getTotalDistance())));
+        session.sendMessage(new TextMessage(String.valueOf(locationService.getCurrentActivity(username).getTotalDistance())));
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        authenticatedPerson.remove(session);
+        String username = authenticatedPerson.remove(session);
+        // total up the final distance
+        locationService.endSession(username);
     }
 
     @Override
