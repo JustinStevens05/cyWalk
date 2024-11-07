@@ -87,8 +87,11 @@ class LocationDayControllerTest {
     @Transactional
     @Test
     void logLocations() throws Exception {
-        if (peopleService.getUserByUsername("userOne").isPresent()) {
-            peopleService.deleteUserByName("userOne");
+        MvcResult checkIfUserOneExists = this.mockMvc.perform(
+                        get("/users/username/userOne"))
+                .andExpect(status().isOk()).andReturn();
+        if (!checkIfUserOneExists.getResponse().getContentAsString().isEmpty()) {
+            this.mockMvc.perform(delete("/users/username/userOne")).andExpect(status().isOk());
         }
 
         // try to sign up
