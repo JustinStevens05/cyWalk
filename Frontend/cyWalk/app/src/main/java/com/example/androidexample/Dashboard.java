@@ -57,8 +57,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     double latitude;
     double longitude;
     TextView txt_greeting;
-    private Button btn_start_auto_route;
-    private SwitchCompat switch_auto_route;
+    //private Button btn_start_auto_route;
+    //private SwitchCompat switch_auto_route;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private boolean isTracking = false;
@@ -81,7 +81,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
         txt_websocket_test = findViewById(R.id.txt_websocket_test);
-        switch_auto_route = findViewById(R.id.switch_auto_route);
+        //switch_auto_route = findViewById(R.id.switch_auto_route);
         //btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -107,12 +107,12 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
 
         /* click listener on login button pressed */
-        btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isTracking = !isTracking;
-                while (isTracking) {
-                    startAutoRoute();
+//        btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                isTracking = !isTracking;
+//                while (isTracking) {
+//                    startAutoRoute();
 //                    try {
 //                        Thread.sleep(1000);
 //                    } catch (InterruptedException e) {
@@ -129,10 +129,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 //                    }
 
                     //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-                }
+//                }
 
-            }
-        });
+//            }
+//        });
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -353,9 +353,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
     @Override
     public void onWebSocketMessage(String message) {
-        runOnUiThread(() -> {
-            txt_websocket_test.setText("Websocket Connected");
-        });
+        //runOnUiThread(() -> {
+        //    txt_websocket_test.setText("Websocket Connected");
+        //});
     }
 
     @Override
