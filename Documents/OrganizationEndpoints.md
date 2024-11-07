@@ -1,6 +1,4 @@
-
 # Organization Service API Documentation
-
 
 ## Base URL
 ```
@@ -162,6 +160,91 @@ Retrieve a list of all users who are members of a specific organization.
 
 ---
 
+### 5. Get Organization ID by Name
+Retrieve the ID of an organization based on its name.
+
+- **Endpoint:** `/organizations/get-id`
+- **Method:** `POST`
+- **Description:** Retrieves the unique identifier (`id`) of an organization by providing its name.
+
+#### Request Body:
+```json
+{
+    "name": "Fitness Enthusiasts"
+}
+```
+
+#### Fields:
+- `name` (String, required): The name of the organization.
+
+#### Responses:
+
+- **Success:**
+  - **Status:** `200 OK`
+  - **Body:**
+    ```json
+    {
+        "id": 1
+    }
+    ```
+
+- **Failure:**
+  - **Status:** `404 Not Found`
+  - **Description:** If no organization with the provided name exists.
+
+---
+
+### 6. Get Organization Info by Username
+Retrieve the details of an organization that a user belongs to based on their username.
+
+- **Endpoint:** `/organizations/get-info`
+- **Method:** `POST`
+- **Description:** Retrieves the organization's ID, name, and other relevant information for a user based on their username. **Note:** A user can only belong to one organization at a time.
+
+#### Request Body:
+```json
+{
+    "username": "john_doe"
+}
+```
+
+#### Fields:
+- `username` (String, required): The username of the user.
+
+#### Responses:
+
+- **Success:**
+  - **Status:** `200 OK`
+  - **Body:**
+    ```json
+    {
+        "id": 1,
+        "name": "Fitness Enthusiasts",
+        "users": [
+            {
+                "username": "john_doe",
+                "email": "john@example.com",
+                "locations": []
+            },
+            {
+                "username": "jane_smith",
+                "email": "jane@example.com",
+                "locations": []
+            },
+            {
+                "username": "alice_jones",
+                "email": "alice@example.com",
+                "locations": []
+            }
+        ]
+    }
+    ```
+
+- **Failure:**
+  - **Status:** `404 Not Found`
+  - **Description:** If the user does not exist or is not a member of any organization.
+
+---
 
 ## Usage Examples
 
@@ -252,9 +335,7 @@ Retrieve a list of all users who are members of a specific organization.
 
 **Response:**
 
-- **Status:** `
-
-200 OK`
+- **Status:** `200 OK`
 - **Body:**
 ```json
 [
@@ -278,30 +359,122 @@ Retrieve a list of all users who are members of a specific organization.
 
 ---
 
+### 5. Retrieving Organization ID by Name
+**Request:**
+
+- **Method:** `POST`
+- **URL:** `http://localhost:8080/organizations/get-id`
+- **Body:**
+```json
+{
+    "name": "Fitness Enthusiasts"
+}
+```
+
+**Response:**
+
+- **Status:** `200 OK`
+- **Body:**
+```json
+{
+    "id": 1
+}
+```
+
+---
+
+### 6. Retrieving Organization Info by Username
+**Request:**
+
+- **Method:** `POST`
+- **URL:** `http://localhost:8080/organizations/get-info`
+- **Body:**
+```json
+{
+    "username": "john_doe"
+}
+```
+
+**Response:**
+
+- **Status:** `200 OK`
+- **Body:**
+```json
+{
+    "id": 1,
+    "name": "Fitness Enthusiasts",
+    "users": [
+        {
+            "username": "john_doe",
+            "email": "john@example.com",
+            "locations": []
+        },
+        {
+            "username": "jane_smith",
+            "email": "jane@example.com",
+            "locations": []
+        },
+        {
+            "username": "alice_jones",
+            "email": "alice@example.com",
+            "locations": []
+        }
+    ]
+}
+```
+
+- **Failure Response Example:**
+
+**Request:**
+
+- **Method:** `POST`
+- **URL:** `http://localhost:8080/organizations/get-info`
+- **Body:**
+```json
+{
+    "username": "unknown_user"
+}
+```
+
+**Response:**
+
+- **Status:** `404 Not Found`
+- **Description:** If the user does not exist or is not a member of any organization.
+
+```json
+{
+    "error": "User not found or not part of any organization."
+}
+```
+
+---
+
+
 ## Additional Information
 
 ### Data Validation
 Ensure that the data provided in requests meets the necessary criteria. For example:
-- Organization Name: Must be unique and not empty.
-- Username: Must exist in the system before joining an organization.
+- **Organization Name:** Must be unique and not empty.
+- **Username:** Must exist in the system before joining an organization.
+- **Unique Membership:** A user can only belong to one organization at a time.
 
 ### Error Handling
 The API returns appropriate HTTP status codes based on the outcome of requests:
 - `200 OK`: Successful operations.
 - `400 Bad Request`: Invalid input or request (e.g., organization name already exists, user already a member).
-- `404 Not Found`: Resource not found (e.g., organization does not exist).
+- `404 Not Found`: Resource not found (e.g., organization does not exist, user not found, user not part of any organization).
 
 ### Security Considerations
 - **Authentication:** Ensure that only authenticated users can create or join organizations.
 - **Authorization:** Implement role-based access control if certain actions should be restricted (e.g., only admins can delete organizations).
 - **Input Sanitization:** Protect against injection attacks by validating and sanitizing all input data.
+- **Unique Membership Enforcement:** Ensure that a user cannot join multiple organizations. Implement checks in the service layer to enforce this constraint.
 
 ### WebSocket Integration for Organization Leaderboards
 Organizations have their own leaderboards. To receive real-time updates for an organization's leaderboard:
 
 - **WebSocket Endpoint:** Clients should subscribe to `/topic/leaderboard/organization/{orgId}`.
-- **Example:** `/topic/leaderboard/organization/1`
+  - **Example:** `/topic/leaderboard/organization/1`
 
 **Broadcasting Updates:** When an organization's leaderboard changes (e.g., when a user within the organization adds new steps), the `LeaderboardService` should broadcast the updated leaderboard to the corresponding WebSocket topic.
 
----
