@@ -36,6 +36,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     ViewPager2 viewPager2;
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
+    TextView temp;
 
     private LinearLayout leaderbaordTester;
 
@@ -46,6 +47,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_GLOBAL_LEADERBOARD = null;
+    private String URL_WS_SOCKET = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         friendsButton = findViewById(R.id.friendsButton);
         // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
+        temp = findViewById(R.id.temp);
 
         leaderbaordTester =findViewById(R.id.leaderboardTester);
 
@@ -106,6 +109,15 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         URL_GLOBAL_LEADERBOARD = "http://10.0.2.2:8080/leaderboard";
+        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/friends?key="+key;
+
+        /* connect this activity to the websocket instance */
+        WebSocketManagerLeaderboard.getInstance().setWebSocketListener(Social.this);
+
+        // Establish WebSocket connection and set listener
+        WebSocketManagerLeaderboard.getInstance().connectWebSocket(URL_WS_SOCKET);
+
+        temp.setText(URL_WS_SOCKET);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -142,7 +154,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeJsonObjReq();
-        globalLeaderboardReq();
+        //globalLeaderboardReq();
     }
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -259,21 +271,29 @@ public class Social extends AppCompatActivity implements WebSocketListener{
      */
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) {
-
+        runOnUiThread(() -> {
+            temp.setText("Websocket Connected");
+        });
     }
 
     @Override
     public void onWebSocketMessage(String message) {
-
+        runOnUiThread(() -> {
+            temp.setText("Websocket did something");
+        });
     }
 
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
-
+        runOnUiThread(() -> {
+            //temp.setText("Websocket closed");
+        });
     }
 
     @Override
     public void onWebSocketError(Exception ex) {
-
+        runOnUiThread(() -> {
+            temp.setText(ex.toString());
+        });
     }
 }
