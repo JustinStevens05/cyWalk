@@ -1,5 +1,7 @@
 package com.cywalk.spring_boot.Locations;
 
+import java.math.BigDecimal;
+
 public class LocationUtils {
 
     private static final double EARTH_RADIUS_METERS = 6371000.0; // used for getting the distance between objects
@@ -23,15 +25,15 @@ public class LocationUtils {
         double dLon = lon2 - lon1;
 
         // Haversine formula
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1) * Math.cos(lat2) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double a = Math.sin(dLat / 2d) * Math.sin(dLat / 2d) + Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(dLon / 2d) * Math.sin(dLon / 2d);
+        double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         // Distance in meters (without considering elevation)
         double distance = EARTH_RADIUS_METERS * c;
 
         double elevationDiff = location2.getElevation() - location1.getElevation();
-        distance = Math.sqrt(Math.pow(distance, 2) + Math.pow(elevationDiff, 2));
+        distance = Math.sqrt(Math.pow(distance, 2d) + Math.pow(elevationDiff, 2d));
 
         return distance; // Distance in kilometers
     }
