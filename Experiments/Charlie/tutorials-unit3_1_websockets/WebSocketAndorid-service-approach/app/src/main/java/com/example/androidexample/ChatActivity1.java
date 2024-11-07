@@ -43,7 +43,6 @@ public class ChatActivity1 extends AppCompatActivity {
             intent.putExtra("message", msgEtx.getText().toString());
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         });
-
         /* back button listener */
         backMainBtn.setOnClickListener(view -> {
             // got to chat activity

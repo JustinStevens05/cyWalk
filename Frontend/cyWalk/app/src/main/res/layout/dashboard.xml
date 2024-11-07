@@ -14,47 +14,37 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
+        android:layout_margin="15dp"
         android:textColor="@color/cywalkRed"
         android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
 
+<!--    <Button-->
+<!--        android:id="@+id/btn_start_auto_route"-->
+<!--        android:layout_width="75dp"-->
+<!--        android:layout_height="75dp"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:backgroundTint="@color/cywalkRed"-->
+<!--        android:background="@drawable/ic_auto_route_foreground"-->
+<!--         />-->
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_auto_route"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_above="@id/frag_map"
+        android:layout_alignParentEnd="true"
+        />
+
     <TextView
-        android:id="@+id/txt_response"
+        android:id="@+id/txt_websocket_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/txt_greeting"
-        android:text="Response text"
-        android:textColor="@color/cywalkRed"/>
-
-    <Button
-        android:id="@+id/btn_start_manual_route"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
-        android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@id/btn_start_auto_route"
-        android:text="Log Previous Distance" />
-
-    <Button
-        android:id="@+id/btn_start_auto_route"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/cywalkRed"
+        android:textColor="@color/cywalkRed"
         android:layout_below="@id/txt_daily_distance"
-        android:text="Start New Route" />
-
-    <TextView
-        android:id="@+id/txt_coords"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/btn_start_manual_route"
-        android:text="[ Latitude ][ Longitude ]"
-        android:textColor="@color/cywalkRed"/>
+        android:text="No Socket" />
 
     <TextView
         android:id="@+id/txt_daily_distance"
@@ -62,7 +52,6 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
         android:textColor="@color/cywalkRed"
         android:layout_below="@id/txt_greeting"
         android:text="Daily Distance: \n ----------------------" />
@@ -85,10 +74,10 @@
         android:id="@+id/frag_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="25dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/btn_start_manual_route"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/custom_border"/>
+        android:layout_below="@+id/txt_daily_distance"
+        />
 
 </RelativeLayout>

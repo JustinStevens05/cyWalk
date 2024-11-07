@@ -35,7 +35,7 @@ public class Login extends AppCompatActivity {
     private Button loginButton;         // define login button variable
     private static String URL_LOGIN = "http://10.0.2.2:8080/users";
     private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
-    private String userKey = "";
+    private String key = "";
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
@@ -113,12 +113,12 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
-                            if(!userKey.isEmpty()) {
+                            if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", userKey);
-                                //errorMsg.setText("success " + jsonObject);
+                                intent.putExtra("key", key);
+                                //errorMsg.setText("success " + key);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
@@ -175,12 +175,12 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
-                            if(!userKey.isEmpty()) {
+                            if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", userKey);
-                                //errorMsg.setText("success " + jsonObject);
+                                intent.putExtra("key", key);
+                                //errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             }
 
