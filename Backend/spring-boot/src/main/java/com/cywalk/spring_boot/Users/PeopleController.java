@@ -59,14 +59,7 @@ public class PeopleController {
      */
     @DeleteMapping("/{key}")
     public ResponseEntity<Void> logout(@PathVariable Long key) {
-        Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
-        if (toDelete.isPresent()) {
-            userModelRepository.deleteBySecretKey(key);
-            return ResponseEntity.ok().build();
-        }
-        else {
-            return ResponseEntity.badRequest().build();
-        }
+        return peopleService.logout(key);
     }
 
     /**
@@ -84,7 +77,7 @@ public class PeopleController {
            }
            else {
                for (UserModel userModel : elements) {
-                   userModelRepository.deleteBySecretKey(userModel.getSecretKey());
+                   peopleService.logout(userModel.getSecretKey());
                }
                return ResponseEntity.ok().build();
            }

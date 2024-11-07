@@ -34,10 +34,12 @@ public class PeopleService {
         return Optional.of(peopleRepository.save(user));
     }
 
+    @Transactional
     public void saveUserRequest(UserRequest userRequest) {
         userRequestRepository.save(userRequest);
     }
 
+    @Transactional
     public Optional<People> getUserByUsername(String username) {
         return peopleRepository.findByUsername(username);
     }
@@ -126,6 +128,18 @@ public class PeopleService {
             logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @Transactional
+    public ResponseEntity<Void> logout(Long key) {
+        Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
+        if (toDelete.isPresent()) {
+            userModelRepository.deleteBySecretKey(key);
+            return ResponseEntity.ok().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public List<People> getAllPeople() {

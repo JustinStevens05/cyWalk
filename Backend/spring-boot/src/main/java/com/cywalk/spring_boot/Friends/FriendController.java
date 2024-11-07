@@ -110,7 +110,7 @@ public class FriendController {
 	}
 	List<People> friendsResult = friendService.getFriends(peopleResult.get()); 
 	if (friendsResult.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.of(Optional.of());
         }
 
         ArrayList<String> usernames = new ArrayList<>(friendsResult.size());
