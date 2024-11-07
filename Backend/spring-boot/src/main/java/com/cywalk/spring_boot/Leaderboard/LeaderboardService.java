@@ -21,8 +21,28 @@ public class LeaderboardService {
 
     private List<LeaderboardEntry> currentLeaderboard = new ArrayList<>();
 
+    // Existing method for the global leaderboard
     public List<LeaderboardEntry> getLeaderboard() {
         List<People> users = peopleRepository.findAll();
+        List<LeaderboardEntry> leaderboard = calculateLeaderboard(users);
+
+        // Broadcast updates if the leaderboard has changed
+        if (!leaderboard.equals(currentLeaderboard)) {
+            currentLeaderboard = leaderboard;
+            LeaderboardUpdate update = new LeaderboardUpdate(currentLeaderboard);
+            LeaderboardWebSocket.broadcast(update);
+        }
+
+        return leaderboard;
+    }
+
+    // New method for organization-specific leaderboards
+    public List<LeaderboardEntry> getLeaderboard(Set<People> users) {
+        return calculateLeaderboard(users);
+    }
+
+    // Helper method to calculate the leaderboard
+    private List<LeaderboardEntry> calculateLeaderboard(Collection<People> users) {
         Map<String, Integer> userStepsMap = new HashMap<>();
 
         for (People user : users) {
@@ -48,7 +68,8 @@ public class LeaderboardService {
                 }
             }
 
-            double stepsPerMeter = 2000.0 / 1609.34;
+            // Convert totalDistance from meters to steps
+            double stepsPerMeter = 2000.0 / 1609.34; // Steps per meter
             double totalStepsDouble = totalDistanceMeters * stepsPerMeter;
             int totalSteps = (int) Math.round(totalStepsDouble);
 
@@ -59,18 +80,14 @@ public class LeaderboardService {
                 .map(entry -> new LeaderboardEntry(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
+        // Sort the leaderboard by total steps in descending order
         leaderboard.sort(Comparator.comparingInt(LeaderboardEntry::getTotalSteps).reversed());
 
+        // Assign ranks
         int rank = 1;
         for (LeaderboardEntry entry : leaderboard) {
             entry.setRank(rank++);
-            entry.setLeaderboardId(0);
-        }
-
-        if (!leaderboard.equals(currentLeaderboard)) {
-            currentLeaderboard = leaderboard;
-            LeaderboardUpdate update = new LeaderboardUpdate(currentLeaderboard);
-            LeaderboardWebSocket.broadcast(update);
+            entry.setLeaderboardId(0); // Adjust if needed
         }
 
         return leaderboard;
