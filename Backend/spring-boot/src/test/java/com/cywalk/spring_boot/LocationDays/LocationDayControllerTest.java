@@ -114,6 +114,8 @@ class LocationDayControllerTest {
                 get("/" + key + "/locations/total")
         ).andExpect(status().isOk())
                 .andExpect(content().string(containsString("93")));
+                get("/" + key + "/location/total")
+        ).andExpect(status().isOk());
 
         this.mockMvc.perform(delete("/" + key + "/locations/end")).andExpect(status().isOk());
 

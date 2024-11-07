@@ -3,6 +3,7 @@ package com.example.androidexample;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.content.Intent;
@@ -31,45 +32,58 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
+public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
-    public static String URL_STRING_REQ;
+    private String key = "";
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap gMap;
-    private static String key;
     private String totalDistance;
-    private String URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
     TextView txt_daily_distance;
+    TextView txt_websocket_test;
     String username;
-    String dailyDistance;
+    double latitude;
+    double longitude;
     TextView txt_greeting;
     TextView txt_response;
     TextView txt_coords;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    private String URL_JSON_GET_DISTANCE = null;
+    private String URL_JSON_GET_USER = null;
+    private String URL_JSON_POST_LOCATION = null;
+    private String URL_WS_SOCKET = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);             // link to Main activity XML
+        setContentView(R.layout.dashboard);                             // link to Main activity XML
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
-        txt_response = findViewById(R.id.txt_response);
-        txt_coords = findViewById(R.id.txt_coords);
+        txt_websocket_test = findViewById(R.id.txt_websocket_test);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
-        URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
+
+        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/location/total";
+        URL_JSON_GET_USER = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
+        URL_WS_SOCKET = "ws://10.0.2.2:8080/location/sessions?key="+key;
+
+        /* connect this activity to the websocket instance */
+        WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
+
+        // Establish WebSocket connection and set listener
+        WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -122,19 +136,18 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
             return;
         }
-        else {
-            txt_coords.setText("Permissions enabled");
-        }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-              if (location != null) {
-                  currentLocation = location;
-                  txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
-                  SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
-                  mapFragment.getMapAsync(Dashboard.this);
-              }
+                if (location != null) {
+                    currentLocation = location;
+                    latitude = currentLocation.getLatitude();
+                    longitude = currentLocation.getLongitude();
+                    //txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+                    mapFragment.getMapAsync(Dashboard.this);
+                }
             }
         });
     }
@@ -156,25 +169,34 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
+        requestDailyDistance();
         LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
         gMap.addMarker(new MarkerOptions().position(currentCoords).title("Current Location"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("latitude", currentLocation.getLatitude());
+            jsonObject.put("longitude", currentLocation.getLongitude());
+            jsonObject.put("elevation", 0);
+            WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 LatLng markerCoords = new LatLng(50, 50);
+
                 MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Marker");
-                gMap.addMarker(markerOptions);
-                gMap.moveCamera(CameraUpdateFactory.newLatLng(markerCoords));
+                gMap.moveCamera(CameraUpdateFactory.newLatLng(markerOptions.getPosition()));
+                // gMap.addMarker(markerOptions);
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("latitude", markerCoords.latitude);
-                    jsonObject.put("longitude", markerCoords.longitude);
+                    jsonObject.put("latitude", markerOptions.getPosition().latitude);
+                    jsonObject.put("longitude", markerOptions.getPosition().longitude);
                     jsonObject.put("elevation", 0);
-                    // URL_JSON_OBJECT_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
-                    makeStringReqWithBody(jsonObject);
+                    WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -182,46 +204,27 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
 
-    // For posting location
-    private void makeStringReqWithBody(JSONObject jsonBody) {
-        final String mRequestBody = jsonBody.toString();
-
-        URL_STRING_REQ = "http://10.0.2.2:8080/"+key+"/location/total";
+    // For getting distance double
+    private void requestDailyDistance() {
+        String URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
-                Request.Method.POST, URL_STRING_REQ,
+                Request.Method.GET, URL_JSON_GET_DISTANCE,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Handle the successful response here
                         Log.d("Volley Response", response);
                         // msgResponse.setText(response.toString());
-
-                        txt_daily_distance.setText(response.toString());
+                        txt_daily_distance.setText("Distance: " + response.toString());
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Handle any errors that occur during the request
                         Log.e("Volley Error", error.toString());
                         // msgResponse.setText(error.toString());
                     }
                 }
-        ) {
-
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-                    VolleyLog.d("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                    return null;
-                }
-            }
+            ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -246,7 +249,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
      */
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
+                Request.Method.GET, URL_JSON_GET_USER, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -255,8 +258,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                             // Parse JSON object data
                             username = response.getString("username");
                             // key = response.getString("key");
-
-                            // Populate text views with the parsed data
                             txt_greeting.setText(username);
 
                         } catch (JSONException e) {
@@ -287,12 +288,88 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback {
                 return params;
             }
         };
-
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
-    };
+    }
 
+    private void sendLocation() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("latitude", latitude);
+        jsonObject.put("longitude", longitude);
+        jsonObject.put("elevation", 0);
+        //final String requestBody = jsonObject.toString();
 
+        String URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.POST, URL_JSON_POST_LOCATION, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            key = response.getString("key");
+                            //extraMsg.setText("working " + userKey);
+                            if(!key.isEmpty()) {
+                                requestDailyDistance();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        // errorMsg.setText(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /*
+     * Methods implementing WebSocketListener
+     */
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+
+    }
+
+    @Override
+    public void onWebSocketMessage(String message) {
+        runOnUiThread(() -> {
+            txt_websocket_test.setText("Websocket Connected");
+        });
+    }
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote) {
+
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex) {
+
+    }
 }
 
 
