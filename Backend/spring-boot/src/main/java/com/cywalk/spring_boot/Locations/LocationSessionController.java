@@ -43,7 +43,7 @@ public class LocationSessionController extends TextWebSocketHandler {
         try {
             final ObjectMapper mapper = new ObjectMapper();
             JsonNode ms = mapper.readTree(json);
-            return new Location(ms.get("latitude").asLong(), ms.get("longitude").asLong(), ms.get("elevation").asLong(), null);
+            return new Location(ms.get("latitude").asDouble(), ms.get("longitude").asDouble(), ms.get("elevation").asDouble(), null);
         } catch (IOException e) {
             logger.error("Failed to parse location JSON: {}", e.getMessage());
         }
