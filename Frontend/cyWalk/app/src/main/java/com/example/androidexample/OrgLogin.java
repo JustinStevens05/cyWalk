@@ -31,6 +31,7 @@ public class OrgLogin extends AppCompatActivity {
     private static String URL_LOGIN = "http://10.0.2.2:8080/users";
     private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
     private String userKey = "";
+    private String orgId="";
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
@@ -105,6 +106,7 @@ public class OrgLogin extends AppCompatActivity {
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
                                 intent.putExtra("key", userKey);
+                                intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);
                             } else {

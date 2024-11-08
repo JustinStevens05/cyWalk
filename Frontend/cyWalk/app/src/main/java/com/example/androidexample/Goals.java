@@ -53,6 +53,7 @@ public class Goals extends AppCompatActivity {
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_NEW_GOALS = null;
+    private static String URL_GET_USERNAME = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,16 +121,15 @@ public class Goals extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        username = extras.getString("username");
+        //username = extras.getString("username");
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
         URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
+        URL_GET_USERNAME = "http://10.0.2.2:8080/users/"+key;
 
         newPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
+                makeJsonObjReq();
             }
         });
 
@@ -239,6 +239,54 @@ public class Goals extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+    private void makeJsonObjReq() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET, URL_GET_USERNAME, null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            username = response.getString("username");
+
+                            Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
+                            intent.putExtra("key", key);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {

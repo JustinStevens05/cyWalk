@@ -6,6 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.cywalk.spring_boot.websocket.OnlineUserService;
+import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,9 @@ public class PeopleService {
 
     @Autowired
     private PeopleRepository peopleRepository;
+
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @Autowired
     private UserModelRepository userModelRepository;
@@ -69,14 +74,22 @@ public class PeopleService {
     public Optional<Long> generateAuthKey(String username) {
         Optional<People> userResult = peopleRepository.findByUsername(username);
         if (userResult.isPresent()) {
-            // make a user model which tracks the People
-           UserModel model = new UserModel(userResult.get());
-           userModelRepository.save(model);
-            // return the key to be used the rest of the time
-           return Optional.of(model.getSecretKey());
-        }
-        else {
-            logger.warn("somehow could not find user in the People Table. Tried: {}", username);
+
+            UserModel model = new UserModel(userResult.get());
+            userModelRepository.save(model);
+
+            People user = userResult.get();
+            if (user.getOrganization() != null) {
+                Long orgId = user.getOrganization().getId();
+                onlineUserService.userLoggedIn(username, orgId);
+
+                OrganizationOnlineUsersWebSocket.broadcastOnlineUsers(
+                        orgId, onlineUserService.getOnlineUsers(orgId));
+            }
+
+            return Optional.of(model.getSecretKey());
+        } else {
+
             return Optional.empty();
         }
     }

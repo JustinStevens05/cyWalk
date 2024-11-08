@@ -1,14 +1,10 @@
 package com.example.androidexample;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,16 +13,13 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class orgSetGoals extends AppCompatActivity {
+public class orgLeaderboards extends AppCompatActivity {
 
     private Button usersButton;
     private Button leaderboardButton;
@@ -43,7 +36,7 @@ public class orgSetGoals extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.orgsetgoals);
+        setContentView(R.layout.orgleaderboards);
         usersButton = findViewById(R.id.usersButton);
         leaderboardButton = findViewById(R.id.leaderboardButton);
         goalsButton = findViewById(R.id.goalsButton);
@@ -58,7 +51,7 @@ public class orgSetGoals extends AppCompatActivity {
         usersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(orgSetGoals.this, orgUsers.class);
+                Intent intent = new Intent(orgLeaderboards.this, orgUsers.class);
                 intent.putExtra("key", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
@@ -68,7 +61,7 @@ public class orgSetGoals extends AppCompatActivity {
         leaderboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(orgSetGoals.this, orgLeaderboards.class);
+                Intent intent = new Intent(orgLeaderboards.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
@@ -78,7 +71,7 @@ public class orgSetGoals extends AppCompatActivity {
         goalsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(orgSetGoals.this, orgSetGoals.class);
+                Intent intent = new Intent(orgLeaderboards.this, orgSetGoals.class);
                 intent.putExtra("key", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
@@ -88,7 +81,7 @@ public class orgSetGoals extends AppCompatActivity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(orgSetGoals.this, OrgProfile.class);
+                Intent intent = new Intent(orgLeaderboards.this, OrgProfile.class);
                 intent.putExtra("key", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);

@@ -81,7 +81,7 @@ public class Login extends AppCompatActivity {
                 password = passwordEditText.getText().toString();
 
                 try {
-                    makeSignUpReq();;
+                    makeSignUpReq();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

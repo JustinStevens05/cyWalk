@@ -1,10 +1,12 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,29 +17,39 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Social extends AppCompatActivity {
+public class Social extends AppCompatActivity implements WebSocketListener{
 
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
+    TextView temp;
+
+    private LinearLayout leaderbaordTester;
 
     private Button goalButton;
     private Button friendsButton;
     private String key;
     private String username;
+    String mobile_url_chunk;
+    String local_url_chunk;
 
     private static String URL_JSON_OBJECT = null;
+    private static String URL_GLOBAL_LEADERBOARD = null;
+    private String URL_WS_SOCKET = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,9 @@ public class Social extends AppCompatActivity {
         friendsButton = findViewById(R.id.friendsButton);
         // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
+        temp = findViewById(R.id.temp);
+
+        leaderbaordTester =findViewById(R.id.leaderboardTester);
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
@@ -94,7 +109,20 @@ public class Social extends AppCompatActivity {
         });
         makeJsonObjReq();
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
+        local_url_chunk = "10.0.2.2:8080";
+
+        URL_JSON_OBJECT = "http://" + mobile_url_chunk + "/users/"+key;
+        URL_GLOBAL_LEADERBOARD = "http://" + mobile_url_chunk + "/leaderboard";
+        URL_WS_SOCKET = "ws://" + mobile_url_chunk + "/leaderboard"; //locations/friends?key="+key;
+
+        /* connect this activity to the websocket instance */
+        WebSocketManagerLeaderboard.getInstance().setWebSocketListener(Social.this);
+
+        // Establish WebSocket connection and set listener
+        WebSocketManagerLeaderboard.getInstance().connectWebSocket(URL_WS_SOCKET);
+
+        temp.setText(URL_WS_SOCKET);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -121,17 +149,6 @@ public class Social extends AppCompatActivity {
             }
         });
 
-//        goalButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent intent = new Intent(Social.this, Goals.class);
-//                intent.putExtra("key", key);
-//                intent.putExtra("username",username);
-//                startActivity(intent);
-//            }
-//        });
-
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +159,7 @@ public class Social extends AppCompatActivity {
         });
 
         makeJsonObjReq();
+        globalLeaderboardReq();
     }
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -188,5 +206,101 @@ public class Social extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void globalLeaderboardReq() {
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
+                Request.Method.GET, URL_GLOBAL_LEADERBOARD, null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Volley Response", response.toString());
+
+
+                        //title.setText("good");
+
+                        if(response.length() > 0) {
+                            leaderbaordTester.removeAllViews();
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    String current = response.getString(i);
+                                    TextView tempText = new TextView(Social.this);
+                                    tempText.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                                    tempText.setTextSize(20);
+                                    tempText.setTextColor(Color.parseColor("#000000"));
+                                    tempText.setText(current);
+
+                                    leaderbaordTester.addView(tempText);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        title.setText("not good");
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
+    /*
+     * Methods implementing WebSocketListener
+     */
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+        runOnUiThread(() -> {
+            temp.setText("Websocket Connected");
+            //temp.setText(handshakedata.toString());
+        });
+    }
+
+    @Override
+    public void onWebSocketMessage(String message) {
+        runOnUiThread(() -> {
+            //temp.setText("Websocket did something");
+            temp.setText(message);
+        });
+    }
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote) {
+        runOnUiThread(() -> {
+            //temp.setText("Websocket closed");
+        });
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex) {
+        runOnUiThread(() -> {
+            temp.setText(ex.toString());
+        });
     }
 }

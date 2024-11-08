@@ -3,16 +3,21 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationService;
 import com.cywalk.spring_boot.Users.People;
+import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.*;
+import jakarta.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
@@ -20,6 +25,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+// @ServerEndpoint("/locations/friends")
 public class FriendLocationController extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(FriendLocationController.class);
@@ -80,6 +86,7 @@ public class FriendLocationController extends TextWebSocketHandler {
                 sessionToFriends.put(session, friendsListNames);
                  */
                 userToSession.put(peopleResult.get().getUsername(), session);
+                session.sendMessage(new TextMessage("Connected to user: " + peopleResult.get().getUsername()));
             }
         } catch (Exception e) {
             logger.error("Error parsing key from URL: {}", e.getMessage());
@@ -87,7 +94,9 @@ public class FriendLocationController extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {}
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        // session.sendMessage(message);
+    }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -128,12 +137,15 @@ public class FriendLocationController extends TextWebSocketHandler {
                 fl = new FriendLocation(username, location.getLatitude(), location.getLongitude(), location.getTime());
             }
             try {
-                sendFriendLocation(fl, session);
+                sendFriendLocation(fl, session); // HIT
             }
             catch (IOException e) {
                 logger.error("encountered an io exception");
                 logger.error(e.getMessage());
             }
+        }
+        else {
+            logger.info("no session found for user {}", friendUsername);
         }
     }
 
@@ -146,6 +158,7 @@ public class FriendLocationController extends TextWebSocketHandler {
         TextMessage tm = new TextMessage(
                 fl.toString()
         );
-        session.sendMessage(tm);
+        session.sendMessage(new TextMessage("oh yea bud"));
+        // session.sendMessage(tm);
     }
 }

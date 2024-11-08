@@ -14,7 +14,7 @@
         android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
-        android:text="Set Organization Goals"
+        android:text="Users in Organization"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -26,6 +26,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:translationY="75sp">
+
+        <TextView
+            android:id="@+id/usersText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:text="no organization accessed"/>
 
 
 
