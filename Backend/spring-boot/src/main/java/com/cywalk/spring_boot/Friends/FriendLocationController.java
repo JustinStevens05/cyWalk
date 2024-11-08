@@ -94,7 +94,9 @@ public class FriendLocationController extends TextWebSocketHandler {
     }
 
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {}
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
+        // session.sendMessage(message);
+    }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
