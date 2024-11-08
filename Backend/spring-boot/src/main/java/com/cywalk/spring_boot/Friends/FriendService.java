@@ -119,14 +119,14 @@ public class FriendService {
         List<FriendRequest> requests = friendRequestRepository.findByReceiverOrSender(person, person);
         ArrayList<People> friends = new ArrayList<>(requests.size());
         for (int i = 0; i < requests.size(); i++) {
-	    if (requests.get(i).getStatus() == FriendRequestStatus.APPROVED) {
-		if (requests.get(i).getReceiver() != person) {
-		    friends.add(requests.get(i).getReceiver());
-		}
-		else {
-		    friends.add(requests.get(i).getSender());
-		}
-	    }
+            if (requests.get(i).getStatus() == FriendRequestStatus.APPROVED) {
+                if (requests.get(i).getReceiver() != person) {
+                    friends.add(requests.get(i).getReceiver());
+                }
+                else {
+                    friends.add(requests.get(i).getSender());
+                }
+            }
         }
         return friends;
     }

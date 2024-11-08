@@ -128,12 +128,15 @@ public class FriendLocationController extends TextWebSocketHandler {
                 fl = new FriendLocation(username, location.getLatitude(), location.getLongitude(), location.getTime());
             }
             try {
-                sendFriendLocation(fl, session);
+                sendFriendLocation(fl, session); // HIT
             }
             catch (IOException e) {
                 logger.error("encountered an io exception");
                 logger.error(e.getMessage());
             }
+        }
+        else {
+            logger.info("no session found for user {}", friendUsername);
         }
     }
 
