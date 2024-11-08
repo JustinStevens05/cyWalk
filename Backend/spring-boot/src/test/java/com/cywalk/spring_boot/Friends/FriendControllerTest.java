@@ -68,7 +68,7 @@ class FriendControllerTest {
     @Test
     void approveFriendRequest() throws Exception {
 
-        MvcResult checkIfUserOneExists = this.mockMvc.perform(get("/users/username/userOne"))
+       //  MvcResult checkIfUserOneExists = this.mockMvc.perform(get("/users/username/userOne"));
 
         if (peopleService.getUserByUsername("userOne").isPresent()) {
             peopleService.deleteUserByName("userOne");
