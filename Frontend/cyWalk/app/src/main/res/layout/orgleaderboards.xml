@@ -14,7 +14,7 @@
         android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
-        android:text="Set Organization Goals"
+        android:text="Organization Leaderboards"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
