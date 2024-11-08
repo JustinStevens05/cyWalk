@@ -5,6 +5,8 @@ import java.util.List;
 public class LeaderboardUpdate {
     private List<LeaderboardEntry> leaderboard;
 
+    public LeaderboardUpdate() {}
+
     public LeaderboardUpdate(List<LeaderboardEntry> leaderboard) {
         this.leaderboard = leaderboard;
     }

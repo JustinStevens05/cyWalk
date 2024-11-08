@@ -15,4 +15,5 @@ public class LeaderboardController {
     public List<LeaderboardEntry> getLeaderboard() {
         return leaderboardService.getLeaderboard();
     }
+
 }

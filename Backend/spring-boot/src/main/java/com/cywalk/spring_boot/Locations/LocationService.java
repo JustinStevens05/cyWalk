@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.cywalk.spring_boot.leaderboard.LeaderboardService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -37,12 +38,15 @@ public class LocationService {
     @Autowired
     private FriendLocationController friendLocationController;
 
-    Logger logger = LoggerFactory.getLogger(LocationService.class);
     @Autowired
     private FriendService friendService;
 
-    public LocationService() {
+    @Autowired
+    private LeaderboardService leaderboardService; // Inject LeaderboardService
 
+    Logger logger = LoggerFactory.getLogger(LocationService.class);
+
+    public LocationService() {
     }
 
     /**
@@ -77,25 +81,21 @@ public class LocationService {
     public boolean startActivity(People people) {
         if (activityIsRunning(people)) {
             return false;
-        }
-        else {
+        } else {
             Optional<LocationDay> ldResult = getTodaysLocation(people);
             LocationDay ld;
             if (ldResult.isEmpty()) {
-                // we need to make today's location
                 ld = new LocationDay(LocalDate.now());
                 ld = locationDayRepository.save(ld);
-                people.addLocation(ld); // Hibernate makes me sad
+                people.addLocation(ld);
                 peopleRepository.save(people);
-            }
-            else {
+            } else {
                 ld = ldResult.get();
             }
 
             List<LocationActivity> activities = ld.getActivities();
             if (activities == null) {
                 activities = new ArrayList<>();
-
                 ld.setActivities(activities);
                 ld = locationDayRepository.save(ld);
             }
@@ -105,6 +105,9 @@ public class LocationService {
             LocationDay newLd = locationDayRepository.save(ld);
             people.getLocations().set(people.getLocations().indexOf(ld), newLd);
             peopleService.saveUser(people);
+
+            leaderboardService.getLeaderboard();
+
             return true;
         }
     }
@@ -150,8 +153,7 @@ public class LocationService {
     @Transactional
     public Location appendLocation(People people, Location location) {
         if (!activityIsRunning(people)) {
-            logger.warn("activity is not running, starting activity and adding ");
-
+            logger.warn("Activity is not running, starting activity and adding location.");
             startActivity(people);
         }
 
@@ -161,6 +163,9 @@ public class LocationService {
         locationActivityRepository.save(la);
 
         sendLocationToFriends(people, location);
+
+        // Update leaderboard after appending a new location
+        leaderboardService.getLeaderboard();
 
         return location;
     }
@@ -242,6 +247,9 @@ public class LocationService {
     @Transactional
     public void endSession(People people) {
         getCurrentActivity(people).setFinished(true);
+
+        // Update leaderboard after ending the session
+        leaderboardService.getLeaderboard();
     }
 
     @Transactional
