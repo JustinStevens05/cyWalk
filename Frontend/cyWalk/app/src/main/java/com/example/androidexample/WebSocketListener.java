@@ -13,14 +13,14 @@ public interface WebSocketListener {
      *
      * @param handshakedata Information about the server handshake.
      */
-    void onWebSocketOpen(ServerHandshake handshakedata);
+    void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException;
 
     /**
      * Called when a WebSocket message is received.
      *
      * @param message The received WebSocket message.
      */
-    void onWebSocketMessage(String message);
+    void onWebSocketMessage(String message) throws InterruptedException;
 
     /**
      * Called when the WebSocket connection is closed.
