@@ -91,10 +91,11 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
-        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/locations/total";
-        URL_JSON_GET_USER = "http://10.0.2.2:8080/users/"+key;
-        URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/sessions?key="+key;
+
+        URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/locations/total";
+        URL_JSON_GET_USER = "http://" + mobile_url_chunk + "/users/"+key;
+        URL_JSON_POST_LOCATION = "http://" + mobile_url_chunk + "/"+key+"/locations/createLocation";
+        URL_WS_SOCKET = "ws://" + mobile_url_chunk + "/locations/sessions?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -223,7 +224,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
     // For getting distance double
     private void requestDailyDistance() {
-        String URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/location/total";
+        String URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET, URL_JSON_GET_DISTANCE,
                 new Response.Listener<String>() {
