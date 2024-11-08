@@ -44,6 +44,8 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private Button friendsButton;
     private String key;
     private String username;
+    String mobile_url_chunk;
+    String local_url_chunk;
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_GLOBAL_LEADERBOARD = null;
@@ -107,9 +109,12 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
         makeJsonObjReq();
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
-        URL_GLOBAL_LEADERBOARD = "http://10.0.2.2:8080/leaderboard";
-        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/friends?key="+key;
+        mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
+        local_url_chunk = "10.0.2.2:8080";
+
+        URL_JSON_OBJECT = "http://" + mobile_url_chunk + "/users/"+key;
+        URL_GLOBAL_LEADERBOARD = "http://" + mobile_url_chunk + "/leaderboard";
+        URL_WS_SOCKET = "ws://" + mobile_url_chunk + "/leaderboard"; //locations/friends?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLeaderboard.getInstance().setWebSocketListener(Social.this);
