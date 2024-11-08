@@ -33,6 +33,7 @@ public class orgSetGoals extends AppCompatActivity {
     private Button goalsButton;
     private Button profileButton;
     private String key;
+    private String orgId="";
 
     private static String URL_SET_GOAL = null;
 
@@ -50,6 +51,7 @@ public class orgSetGoals extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        orgId = extras.getString("orgId");
 
         //URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
 
@@ -58,6 +60,7 @@ public class orgSetGoals extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgSetGoals.this, orgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -67,6 +70,7 @@ public class orgSetGoals extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgSetGoals.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -76,6 +80,7 @@ public class orgSetGoals extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgSetGoals.this, orgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -85,6 +90,7 @@ public class orgSetGoals extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgSetGoals.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });

@@ -273,13 +273,15 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     public void onWebSocketOpen(ServerHandshake handshakedata) {
         runOnUiThread(() -> {
             temp.setText("Websocket Connected");
+            //temp.setText(handshakedata.toString());
         });
     }
 
     @Override
     public void onWebSocketMessage(String message) {
         runOnUiThread(() -> {
-            temp.setText("Websocket did something");
+            //temp.setText("Websocket did something");
+            temp.setText(message);
         });
     }
 

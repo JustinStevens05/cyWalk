@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +16,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +29,10 @@ public class orgUsers extends AppCompatActivity {
     private Button goalsButton;
     private Button profileButton;
     private String key;
+    private String orgId="";
+    private TextView usersText;
 
-    private static String URL_SET_GOAL = null;
+    private static String URL_ORG_USERS = null;
 
     private String newFriendUsername;
     private String acceptFriendUsername;
@@ -40,17 +45,20 @@ public class orgUsers extends AppCompatActivity {
         leaderboardButton = findViewById(R.id.leaderboardButton);
         goalsButton = findViewById(R.id.goalsButton);
         profileButton = findViewById(R.id.profileButton);
+        usersText = findViewById(R.id.usersText);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        orgId = extras.getString("orgId");
 
-        //URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
+        URL_ORG_USERS = "http://10.0.2.2:8080/organizations/"+orgId+"/users";
 
         usersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(orgUsers.this, orgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -60,6 +68,7 @@ public class orgUsers extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgUsers.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -69,6 +78,7 @@ public class orgUsers extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgUsers.this, orgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -78,21 +88,35 @@ public class orgUsers extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgUsers.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
 
-        //setNewGoalReq();
+        getUsersReq();
     }
-    private void setNewGoalReq() {
+    private void getUsersReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,
-                URL_SET_GOAL,
+                URL_ORG_USERS,
                 null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
+                        //usersText.setText(response.toString());
+
+                        try {
+                            for(int j = 0; j<response.length(); j++) {
+                                JSONObject user = response.getJSONObject(j);
+                                String username = user.getString("username");
+
+                                String current = usersText.getText().toString() + username + "\n";
+                                usersText.setText(current);
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
 
                     }
                 },

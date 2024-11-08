@@ -59,6 +59,7 @@ public class OrgProfile extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        orgId = extras.getString("orgId");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
@@ -68,6 +69,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -77,6 +79,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -86,6 +89,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -95,6 +99,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -116,7 +121,7 @@ public class OrgProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 orgName = findOrgName.getText().toString();
-                URL_FIND_ORG = "http://10.0.2.2:8080/organizations/get_id";
+                URL_FIND_ORG = "http://10.0.2.2:8080/organizations/get-id";
                 try {
                     findOrgReq();
                 } catch (JSONException e) {
@@ -245,6 +250,7 @@ public class OrgProfile extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                        //txt_username.setText(error.toString());
                     }
                 }
         ) {
