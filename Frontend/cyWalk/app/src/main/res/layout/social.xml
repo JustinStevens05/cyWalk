@@ -22,6 +22,7 @@
         android:textSize="25dp" />
 
     <LinearLayout
+        android:id="@+id/tabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -60,6 +61,27 @@
             android:id="@+id/viewPager"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/leaderboardTester"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/friendsButton">
+
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="nothing yet"
+        android:textSize="20dp"
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/friendsButton"
