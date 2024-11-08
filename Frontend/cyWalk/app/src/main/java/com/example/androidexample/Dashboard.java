@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +45,10 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
@@ -57,8 +62,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     double latitude;
     double longitude;
     TextView txt_greeting;
-    //private Button btn_start_auto_route;
-    //private SwitchCompat switch_auto_route;
+    private Button btn_start_auto_route;
+    private Button btn_increment_auto_route;
+    private SwitchCompat switch_auto_route;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private boolean isTracking = false;
@@ -70,10 +76,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_SOCKET = null;
 
-//    public void onSwitchClick(View view) {
-//
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,8 +83,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
         txt_websocket_test = findViewById(R.id.txt_websocket_test);
-        //switch_auto_route = findViewById(R.id.switch_auto_route);
-        //btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
+        btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         Bundle extras = getIntent().getExtras();
@@ -90,13 +91,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
-
-
-
-        URL_JSON_GET_DISTANCE = "http://"+mobile_url_chunk+"/"+key+"/location/total";
-        URL_JSON_GET_USER = "http://"+mobile_url_chunk+"/users/"+key;
-        URL_JSON_POST_LOCATION = "http://"+mobile_url_chunk+"/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://"+mobile_url_chunk+"/location/sessions?key="+key;
+        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/locations/total";
+        URL_JSON_GET_USER = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
+        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/sessions?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -104,35 +102,33 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         // Establish WebSocket connection and set listener
         WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
+        /* click listener on auto route button pressed */
+       btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //isTracking = !isTracking;
+                //txt_websocket_test.setText("Connected");
+                for (int counter = 0; counter < 50; counter++) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
+                        jsonObject.put("latitude", currentLocation.getLatitude());
+                        jsonObject.put("longitude", currentLocation.getLongitude());
+                        jsonObject.put("elevation", 0);
+                        runOnUiThread(() -> {
+                            WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+                        });
+                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
+                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
+                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
 
-
-        /* click listener on login button pressed */
-//        btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                isTracking = !isTracking;
-//                while (isTracking) {
-//                    startAutoRoute();
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    JSONObject jsonObject = new JSONObject();
-//                    try {
-//                        jsonObject.put("latitude", currentLocation.getLatitude());
-//                        jsonObject.put("longitude", currentLocation.getLongitude());
-//                        jsonObject.put("elevation", 0);
-//                        WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-//                    } catch (JSONException e) {
-//                        throw new RuntimeException(e);
-//                    }
-
-                    //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-//                }
-
-//            }
-//        });
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+       });
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -173,6 +169,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         });
         makeJsonObjReq();
         getLastLocation();
+
+
     }
 
     private void getLastLocation() {
@@ -193,7 +191,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                     currentLocation = location;
                     latitude = currentLocation.getLatitude();
                     longitude = currentLocation.getLongitude();
-                    //txt_coords.setText("(" + currentLocation.getLatitude() + ", " + currentLocation.getLongitude() + ")");
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
                     mapFragment.getMapAsync(Dashboard.this);
                 }
@@ -220,39 +217,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         gMap = googleMap;
         requestDailyDistance();
         LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        // gMap.addMarker(new MarkerOptions().position(currentCoords).title("Current Location"));
         gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-        JSONObject jsonObject = new JSONObject();
-        try {
-            txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-            jsonObject.put("latitude", currentLocation.getLatitude());
-            jsonObject.put("longitude", currentLocation.getLongitude());
-            jsonObject.put("elevation", 0);
-            runOnUiThread(() -> {
-                WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-            });
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-
-        gMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                // LatLng markerCoords = new LatLng(50, 50);
-
-                // MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("New Marker");
-                // gMap.moveCamera(CameraUpdateFactory.newLatLng(markerOptions.getPosition()));
-                // gMap.addMarker(markerOptions);
-            }
-        });
-    }
-
-    public void startAutoRoute() {
-        currentLocation.setLatitude(currentLocation.getLatitude() + 5);
-        currentLocation.setLongitude(currentLocation.getLongitude() + 5);
-        txt_greeting.setText("Tracking: " + isTracking + "\n" +
-                "Latitude: " + currentLocation.getLatitude() + "\n" +
-                "Longitude: " + currentLocation.getLongitude());
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 6.0f));
     }
 
     // For getting distance double
@@ -265,7 +231,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                     public void onResponse(String response) {
                         Log.d("Volley Response", response);
                         // msgResponse.setText(response.toString());
-                        txt_daily_distance.setText("Distance: " + response.toString());
+                        txt_daily_distance.setText("Daily Distance: " + response.toString());
                     }
                 },
                 new Response.ErrorListener() {
@@ -347,15 +313,14 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      * Methods implementing WebSocketListener
      */
     @Override
-    public void onWebSocketOpen(ServerHandshake handshakedata) {
-
+    public void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException {
+        //txt_websocket_test.setText("Connected");
     }
 
     @Override
-    public void onWebSocketMessage(String message) {
-        //runOnUiThread(() -> {
-        //    txt_websocket_test.setText("Websocket Connected");
-        //});
+    public void onWebSocketMessage(String message) throws InterruptedException {
+        txt_daily_distance.setText("Daily Distance: " + message);
+
     }
 
     @Override
@@ -365,7 +330,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
     @Override
     public void onWebSocketError(Exception ex) {
-
+        //txt_websocket_test.setText("WS Error");
     }
-
 }
