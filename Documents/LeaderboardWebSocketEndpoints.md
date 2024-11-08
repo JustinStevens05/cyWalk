@@ -1,204 +1,268 @@
-# Leaderboard WebSocket Service Documentation
+# Live Leaderboard Feature Documentation
 
-## Overview
+This document provides a comprehensive guide to the **Live Leaderboard** feature of your application. It includes instructions on setting up the environment, running the application, understanding the codebase, and interacting with the API endpoints and WebSocket for real-time updates.
 
-The **Leaderboard WebSocket Service** enables real-time updates of leaderboards within the application. Clients can subscribe to leaderboard updates and receive live notifications whenever the leaderboard changes. This service supports both the **global leaderboard** and **organization-specific leaderboards**.
+---
 
-## WebSocket Endpoint
+## Table of Contents
 
-- **URL:** `ws://localhost:8080/ws-leaderboard`
-- **Protocol:** STOMP over WebSocket
-- **Fallback:** SockJS is enabled for browsers that do not support WebSocket.
+1. [Introduction](#introduction)
+2. [Prerequisites](#prerequisites)
+3. [Project Structure](#project-structure)
+4. [Setup and Installation](#setup-and-installation)
+5. [Running the Application](#running-the-application)
+6. [API Endpoints](#api-endpoints)
+    - [User Management](#user-management)
+    - [Location Tracking](#location-tracking)
+    - [Leaderboard](#leaderboard)
+    - [Organizations](#organizations)
+7. [WebSocket Configuration](#websocket-configuration)
+    - [Connecting to the WebSocket](#connecting-to-the-websocket)
+    - [Receiving Live Leaderboard Updates](#receiving-live-leaderboard-updates)
+8. [Testing the Application](#testing-the-application)
+9. [Additional Notes](#additional-notes)
+10. [Conclusion](#conclusion)
 
-## Subscription Topics
+---
 
-Clients can subscribe to the following topics to receive live leaderboard updates:
+## Introduction
 
-### 1. Global Leaderboard Updates
+The **Live Leaderboard** feature allows users to see real-time updates of their rankings based on the number of steps they've taken. Steps are calculated using the Haversine formula on the location data provided by the users. This feature enhances user engagement by providing instant feedback and fostering a competitive environment.
 
-- **Destination:** `/topic/leaderboard/global`
-- **Description:** Receives real-time updates for the global leaderboard, which ranks all users based on their total steps.
+---
 
-### 2. Organization-Specific Leaderboard Updates
 
-- **Destination:** `/topic/leaderboard/organization/{orgId}`
-- **Description:** Receives real-time updates for a specific organization's leaderboard, identified by `orgId`.
-  
-  - **Example:** For organization with ID `1`, subscribe to `/topic/leaderboard/organization/1`.
+The application will start on `http://localhost:8080`.
 
-## Message Structure
+---
 
-### LeaderboardUpdate
+## API Endpoints
 
-All leaderboard updates are sent in the following JSON format:
+### User Management
 
-```json
-{
-    "leaderboard": [
-        {
-            "username": "john_doe",
-            "totalSteps": 15000,
-            "rank": 1,
-            "leaderboardId": 0
-        },
-        {
-            "username": "jane_smith",
-            "totalSteps": 12000,
-            "rank": 2,
-            "leaderboardId": 0
-        },
-        {
-            "username": "alice_jones",
-            "totalSteps": 9000,
-            "rank": 3,
-            "leaderboardId": 0
-        }
+#### **1. Sign Up a User**
+
+- **Endpoint:** `POST /signup`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "username": "user1",
+    "password": "password1"
+  }
+  ```
+
+- **Response:**
+
+  ```json
+  {
+    "username": "user1",
+    "key": 1234567890
+  }
+  ```
+
+#### **2. Log In a User**
+
+- **Endpoint:** `PUT /users`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "username": "user1",
+    "password": "password1"
+  }
+  ```
+
+- **Response:**
+
+  ```json
+  {
+    "key": 1234567890
+  }
+  ```
+
+### Location Tracking
+
+#### **1. Start a Location Session**
+
+- **Endpoint:** `POST /{key}/locations/start`
+- **Headers:** None
+- **Body:** Empty
+- **Note:** Replace `{key}` with the session key obtained during signup or login.
+
+#### **2. Log Location Data**
+
+- **Endpoint:** `POST /{key}/locations/log`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "latitude": 37.7749,
+    "longitude": -122.4194,
+    "elevation": 10.0
+  }
+  ```
+
+- **Note:** Send multiple location data points to simulate movement.
+
+#### **3. End the Location Session**
+
+- **Endpoint:** `DELETE /{key}/locations/end`
+- **Headers:** None
+- **Body:** Empty
+
+### Leaderboard
+
+#### **1. Get the Global Leaderboard**
+
+- **Endpoint:** `GET /leaderboard`
+- **Headers:** None
+- **Response:**
+
+  ```json
+  [
+    {
+      "username": "user1",
+      "totalSteps": 1500,
+      "rank": 1,
+      "leaderboardId": 0
+    },
+    {
+      "username": "user2",
+      "totalSteps": 1200,
+      "rank": 2,
+      "leaderboardId": 0
+    }
+  ]
+  ```
+
+### Organizations
+
+#### **1. Create an Organization**
+
+- **Endpoint:** `POST /organizations`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "name": "Fitness Enthusiasts"
+  }
+  ```
+
+- **Response:**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Fitness Enthusiasts",
+    "users": []
+  }
+  ```
+
+#### **2. Join an Organization**
+
+- **Endpoint:** `POST /organizations/{orgId}/join`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "username": "user1"
+  }
+  ```
+
+- **Response:** `200 OK` if successful.
+
+#### **3. Get Organization Leaderboard**
+
+- **Endpoint:** `GET /organizations/{orgId}/leaderboard`
+- **Response:**
+
+  ```json
+  [
+    {
+      "username": "user1",
+      "totalSteps": 5000,
+      "rank": 1,
+      "leaderboardId": 0
+    }
+  ]
+  ```
+
+#### **4. List Organization Users**
+
+- **Endpoint:** `GET /organizations/{orgId}/users`
+- **Response:**
+
+  ```json
+  [
+    {
+      "username": "user1",
+      "email": "user1@example.com",
+      "locations": []
+    }
+  ]
+  ```
+
+#### **5. Get Organization ID by Name**
+
+- **Endpoint:** `POST /organizations/get-id`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "name": "Fitness Enthusiasts"
+  }
+  ```
+
+- **Success Response:**
+
+  ```json
+  {
+    "id": 1
+  }
+  ```
+
+- **Failure Response:**
+
+    - **Status:** 404 Not Found
+
+#### **6. Get Organization Info by Username**
+
+- **Endpoint:** `POST /organizations/get-info`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+  ```json
+  {
+    "username": "user1"
+  }
+  ```
+
+- **Success Response:**
+
+  ```json
+  {
+    "id": 1,
+    "name": "Fitness Enthusiasts",
+    "users": [
+      {
+        "username": "user1",
+        "email": "user1@example.com",
+        "locations": []
+      },
+      // Other users...
     ]
-}
-```
+  }
+  ```
 
-- **Fields:**
-  - `leaderboard` (Array of `LeaderboardEntry`): The updated leaderboard entries.
+- **Failure Response:**
 
-### LeaderboardEntry
+    - **Status:** 404 Not Found
 
-Each entry within the `leaderboard` array has the following structure:
-
-```json
-{
-    "username": "john_doe",
-    "totalSteps": 15000,
-    "rank": 1,
-    "leaderboardId": 0
-}
-```
-
-- **Fields:**
-  - `username` (String): The username of the user.
-  - `totalSteps` (Integer): The total number of steps taken by the user.
-  - `rank` (Integer): The user's rank on the leaderboard.
-  - `leaderboardId` (Integer): The ID of the leaderboard (`0` for global, `orgId` for organization-specific).
-
-## How It Works
-
-1. **Establish Connection:**
-   - Clients connect to the WebSocket endpoint at `/ws-leaderboard` using SockJS and STOMP protocols.
-
-2. **Subscribe to Topics:**
-   - **Global Leaderboard:** Subscribe to `/topic/leaderboard/global` to receive updates for the global leaderboard.
-   - **Organization Leaderboard:** Subscribe to `/topic/leaderboard/organization/{orgId}` to receive updates for a specific organization's leaderboard.
-
-3. **Receive Updates:**
-   - When the leaderboard (global or organization-specific) changes, the server broadcasts a `LeaderboardUpdate` message to the respective topic.
-   - Subscribed clients receive the message and can update their UI accordingly.
-
-## Example Usage
-
-### Subscribing to Global Leaderboard
-
-```javascript
-stompClient.subscribe('/topic/leaderboard/global', function(message) {
-    const update = JSON.parse(message.body);
-    // Handle the global leaderboard update
-    console.log('Global Leaderboard Update:', update);
-});
-```
-
-### Subscribing to an Organization's Leaderboard
-
-```javascript
-const orgId = 1; // Replace with the desired organization ID
-stompClient.subscribe(`/topic/leaderboard/organization/${orgId}`, function(message) {
-    const update = JSON.parse(message.body);
-    // Handle the organization's leaderboard update
-    console.log(`Organization ${orgId} Leaderboard Update:`, update);
-});
-```
-
-
-### WebSocketConfig.java
-
-```java
-package com.cywalk.spring_boot.config;
-
-import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.*;
-
-@Configuration
-@EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-leaderboard")
-                .setAllowedOrigins("*") // Adjust origins for production
-                .withSockJS(); // Fallback options for browsers that don't support WebSocket
-    }
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // Prefix for outgoing messages to clients
-        config.setApplicationDestinationPrefixes("/app"); // Prefix for incoming messages from clients
-    }
-}
-```
-
-- **`registerStompEndpoints`:** Defines the `/ws-leaderboard` endpoint for WebSocket connections and enables SockJS as a fallback.
-- **`configureMessageBroker`:** Sets up a simple in-memory message broker with `/topic` for outgoing messages and `/app` for incoming messages.
-
-## Message Broadcasting in LeaderboardService
-
-Ensure that the `LeaderboardService` broadcasts updates to the appropriate WebSocket topics when the leaderboard changes.
-
-
-
-## Summary of Endpoints
-
-### WebSocket Endpoint
-
-- **Connect To:** `ws://localhost:8080/ws-leaderboard`
-
-### Subscription Topics
-
-1. **Global Leaderboard**
-   - **Subscribe To:** `/topic/leaderboard/global`
-   - **Receives:** `LeaderboardUpdate` messages for the global leaderboard.
-
-2. **Organization-Specific Leaderboard**
-   - **Subscribe To:** `/topic/leaderboard/organization/{orgId}`
-   - **Receives:** `LeaderboardUpdate` messages for the specified organization.
-
-## How to Use
-
-1. **Establish Connection:**
-   - Use SockJS and STOMP.js (or equivalent libraries) to connect to the WebSocket endpoint.
-
-2. **Subscribe to Desired Topics:**
-   - **Global Leaderboard:** Subscribe to `/topic/leaderboard/global` to receive updates.
-   - **Organization Leaderboard:** Subscribe to `/topic/leaderboard/organization/{orgId}` by replacing `{orgId}` with the actual organization ID.
-
-3. **Handle Incoming Messages:**
-   - Listen for `LeaderboardUpdate` messages and update the UI accordingly.
-
-## Example Workflow
-
-1. **Client Connects:**
-   - Establishes a WebSocket connection to `/ws-leaderboard`.
-
-2. **Client Subscribes:**
-   - Subscribes to `/topic/leaderboard/global` for global updates.
-   - Subscribes to `/topic/leaderboard/organization/1` for organization ID `1` updates.
-
-3. **Leaderboard Changes:**
-   - When a user adds steps that affect the leaderboard, the server recalculates the leaderboard.
-   - If the global or organization-specific leaderboard changes, a `LeaderboardUpdate` message is broadcasted to the respective topic.
-
-4. **Client Receives Update:**
-   - The subscribed client receives the `LeaderboardUpdate` message and updates the leaderboard display in real-time.
-
-## Notes
-
-- **Multiple Subscriptions:** Clients can subscribe to multiple topics simultaneously to receive various leaderboard updates.
-- **Reconnection Logic:** Implement reconnection strategies to handle scenarios where the WebSocket connection is lost.
-- **Security:** Ensure that only authorized clients can subscribe to sensitive topics, especially organization-specific leaderboards.
+---
