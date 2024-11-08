@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -90,10 +91,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
-        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/location/total";
+        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/locations/total";
         URL_JSON_GET_USER = "http://10.0.2.2:8080/users/"+key;
         URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://10.0.2.2:8080/location/sessions?key="+key;
+        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/sessions?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -117,15 +118,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                         runOnUiThread(() -> {
                             WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
                         });
-                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
-                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
-
             }
        });
 
