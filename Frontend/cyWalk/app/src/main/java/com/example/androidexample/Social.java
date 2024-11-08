@@ -154,7 +154,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeJsonObjReq();
-        //globalLeaderboardReq();
+        globalLeaderboardReq();
     }
     private void makeJsonObjReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -212,7 +212,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                         Log.d("Volley Response", response.toString());
 
 
-                        title.setText("good");
+                        //title.setText("good");
 
                         if(response.length() > 0) {
                             leaderbaordTester.removeAllViews();
