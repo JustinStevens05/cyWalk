@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dashboard"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,32 +20,24 @@
         android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_start_auto_route"-->
-<!--        android:layout_width="75dp"-->
-<!--        android:layout_height="75dp"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:backgroundTint="@color/cywalkRed"-->
-<!--        android:background="@drawable/ic_auto_route_foreground"-->
-<!--         />-->
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switch_auto_route"
+    <Button
+        android:id="@+id/btn_start_auto_route"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_above="@id/frag_map"
         android:layout_alignParentEnd="true"
-        />
+        android:backgroundTint="@color/cywalkRed"
+        android:background="@drawable/ic_auto_route_foreground"
+         />
 
     <TextView
         android:id="@+id/txt_websocket_test"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/cywalkRed"
         android:layout_below="@id/txt_daily_distance"
-        android:text="No Socket" />
+        />
 
     <TextView
         android:id="@+id/txt_daily_distance"
