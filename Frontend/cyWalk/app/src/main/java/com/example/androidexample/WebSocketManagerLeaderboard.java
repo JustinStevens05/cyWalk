@@ -119,7 +119,11 @@ public class WebSocketManagerLeaderboard {
         public void onOpen(ServerHandshake handshakedata) {
             Log.d("WebSocket", "Connected");
             if (webSocketListener != null) {
-                webSocketListener.onWebSocketOpen(handshakedata);
+                try {
+                    webSocketListener.onWebSocketOpen(handshakedata);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -134,7 +138,11 @@ public class WebSocketManagerLeaderboard {
         public void onMessage(String message) {
             Log.d("WebSocket", "Received message: " + message);
             if (webSocketListener != null) {
-                webSocketListener.onWebSocketMessage(message);
+                try {
+                    webSocketListener.onWebSocketMessage(message);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 

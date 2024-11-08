@@ -118,6 +118,11 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                         runOnUiThread(() -> {
                             WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
                         });
+                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
+                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
+                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
+
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
