@@ -4,19 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +20,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -37,18 +32,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.UnsupportedEncodingException;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
@@ -76,6 +66,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_SOCKET = null;
 
+    /**
+     * creates the dashboard view for for the user to see
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,12 +161,16 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 return false;
             }
         });
-        makeJsonObjReq();
+        requestUsername();
         getLastLocation();
 
 
     }
 
+    /**
+     *Retrieves the last known location of the user from the database. If the permission is not already granted for
+     * the program to get the location it will then request permission.
+     */
     private void getLastLocation() {
         // if permissions not already granted, request permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -199,6 +196,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         });
     }
 
+    /**
+     *Deals with the response to the program asking for the permissions to access the users location
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -213,6 +213,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         }
     }
 
+    /**
+     * When the map is ready this will move the assign the gMap object to the google map. Then it will place the users
+     * pinpoint on the map and move the map to ge centered over their location.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
@@ -222,7 +226,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 6.0f));
     }
 
-    // For getting distance double
+    /**
+     * Asks the backend server for the distance that the user has walked so far in the day using a volley request.
+     * retrieves the double from the database and then changes the text on the screen to reflect this new distance.
+     */
     private void requestDailyDistance() {
         String URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
@@ -263,9 +270,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     /**
-     * Sends a string request [GET] without a body.
+     * requests the username from the database using the session key and then sets the welcome text equal to the username retrieved
      */
-    private void makeJsonObjReq() {
+    private void requestUsername() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_GET_USER, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
@@ -310,25 +317,34 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
-    /*
-     * Methods implementing WebSocketListener
+    /**
+     * required websocket code currently does nothing
      */
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException {
         //txt_websocket_test.setText("Connected");
     }
 
+    /**
+     *updates the daily distance on the screen when the websocket returns a value
+     */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
         txt_daily_distance.setText("Daily Distance: " + message);
 
     }
 
+    /**
+     * required websocket code currently does nothing
+     */
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
 
     }
 
+    /**
+     *required websocket code currently does nothing
+     */
     @Override
     public void onWebSocketError(Exception ex) {
         //txt_websocket_test.setText("WS Error");

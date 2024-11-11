@@ -12,6 +12,11 @@ import com.example.androidexample.R;
 
 public class friendsFragment extends Fragment {
 
+    /**
+     * creates the leaderboard sections for the friends leaderboard
+     *
+     * @return friends leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

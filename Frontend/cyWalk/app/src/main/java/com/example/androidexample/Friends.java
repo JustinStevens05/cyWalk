@@ -106,6 +106,10 @@ public class Friends extends AppCompatActivity {
         makeJsonFriendReq();
         makeJsonPendingReq();
     }
+
+    /**
+     *gets the list of current friends for a user from the database using a volley request
+     */
     private void makeJsonFriendReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,
@@ -169,6 +173,9 @@ public class Friends extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
+    /**
+     *gets the list of current pending friend requests for a user from the database using a volley request
+     */
     private void makeJsonPendingReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,
@@ -232,6 +239,9 @@ public class Friends extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
+    /**
+     *sends a friend request to the username stored in the newFriendUsername variable
+     */
     private void makeFriendRequest() {
         //JSONObject jsonObject = new JSONObject();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -277,6 +287,9 @@ public class Friends extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     *approves a friend request from the username stored in the acceptedFriendUsername variable
+     */
     private void makeFriendApproval() {
         //JSONObject jsonObject = new JSONObject();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(

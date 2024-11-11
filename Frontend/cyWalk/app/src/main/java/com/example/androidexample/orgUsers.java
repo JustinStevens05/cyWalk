@@ -37,6 +37,9 @@ public class orgUsers extends AppCompatActivity {
     private String newFriendUsername;
     private String acceptFriendUsername;
 
+    /**
+     * creates the page that shows the organization all the users included in their organization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,11 @@ public class orgUsers extends AppCompatActivity {
 
         getUsersReq();
     }
+
+    /**
+     * gets the list of all uses that are in the organization. Takes the returned list of person objects and just prints out their
+     * usernames to the screen
+     */
     private void getUsersReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,

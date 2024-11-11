@@ -12,6 +12,11 @@ import com.example.androidexample.R;
 
 public class globalFragment extends Fragment {
 
+    /**
+     * creates the leaderboard sections for the global leaderboard
+     *
+     * @return global leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

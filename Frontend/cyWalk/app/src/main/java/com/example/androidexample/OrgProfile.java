@@ -15,7 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +42,9 @@ public class OrgProfile extends AppCompatActivity {
     private EditText findOrgName;
 
 
+    /**
+     * creates the profile page for the organization users
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,10 +132,13 @@ public class OrgProfile extends AppCompatActivity {
             }
         });
 
-        makeJsonObjReq();
+        makeUsernameReq();
     }
 
-    private void makeJsonObjReq() {
+    /**
+     * gets the organizations username using their session key and sets the username text box equal to their username
+     */
+    private void makeUsernameReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
@@ -177,6 +182,10 @@ public class OrgProfile extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * takes the input from the new organization name box and attempts to create a new organization with that name.
+     * if successful sets the orgId var equal to the newly created organization's Id number
+     */
     private void makeOrgReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", orgName);
@@ -228,6 +237,9 @@ public class OrgProfile extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * takes the input from the organization lookup box and sets the orgId var to the id associated with that organizations
+     */
     private void findOrgReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", orgName);

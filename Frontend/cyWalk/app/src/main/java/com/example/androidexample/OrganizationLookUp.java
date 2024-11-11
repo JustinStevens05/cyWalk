@@ -82,6 +82,9 @@ public class OrganizationLookUp extends AppCompatActivity {
         });
     }
 
+    /**
+     *requests to join the organization that the user requests
+     */
     private void makeJsonOrgJoinReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -125,6 +128,10 @@ public class OrganizationLookUp extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     *gets the organization id of the organization that the user has requested and then calls the makeJsonOrgJoinReq function
+     * using the retrieved id number
+     */
     private void makeJsonOrgNameReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", orgName);

@@ -3,7 +3,6 @@ package com.example.androidexample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +27,9 @@ public class Profile extends AppCompatActivity {
     private String username;
     TextView txt_username;
 
-
+    /**
+     * creates the users profile page
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,10 +78,14 @@ public class Profile extends AppCompatActivity {
                 return false;
             }
         });
-        makeJsonObjReq();
+        makeUsernameReq();
     }
 
-    private void makeJsonObjReq() {
+    /**
+     * gets the current users username base off of their session key and then sets the required text
+     * on the screen to that retrieved username
+     */
+    private void makeUsernameReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {

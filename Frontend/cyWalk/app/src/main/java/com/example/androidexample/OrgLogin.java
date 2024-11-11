@@ -36,6 +36,9 @@ public class OrgLogin extends AppCompatActivity {
     private String password;
     private Button signUpButton;        // define signup button variable
 
+    /**
+     *creates the page for the organization users to be able to login in or create their organization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,10 @@ public class OrgLogin extends AppCompatActivity {
         });
     }
 
+    /**
+     * attempts to log the organization user in using their inputted username and password. If the organization doesn't exist
+     * or the credentials are wrong will throw an error and let the user know that something went wrong
+     */
     private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -148,6 +155,10 @@ public class OrgLogin extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * attempts to sign the user up using the inputted credentials if all is good moves the organization on to the organizations landing page
+     * if there is an issue like the organization already exists it will throw an error and let the user know that something went wrong
+     */
     private void makeSignUpReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
