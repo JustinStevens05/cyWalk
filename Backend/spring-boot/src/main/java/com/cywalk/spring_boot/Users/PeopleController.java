@@ -20,7 +20,6 @@ public class PeopleController {
     @Autowired
     private UserModelRepository userModelRepository;
 
-
     @Autowired
     private OnlineUserService onlineUserService;
 

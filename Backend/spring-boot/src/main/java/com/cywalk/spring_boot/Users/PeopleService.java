@@ -58,6 +58,7 @@ public class PeopleService {
      * Delete a user in the database based off of the passed in username
      * @param name the username of the user to delete
      */
+    @Transactional
     public void deleteUserByName(String name) {
         if (getUserByUsername(name).isPresent()) {
             peopleRepository.deleteByUsername(name);
