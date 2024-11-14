@@ -30,6 +30,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The users socials view that shows them the three types of leaderboards and where they rank
+ * */
 public class Social extends AppCompatActivity implements WebSocketListener{
 
     TabLayout tabLayout;

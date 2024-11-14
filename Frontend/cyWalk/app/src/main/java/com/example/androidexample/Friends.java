@@ -34,6 +34,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Friends page for the users to see
+ * */
 public class Friends extends AppCompatActivity {
 
     private Button backButton;

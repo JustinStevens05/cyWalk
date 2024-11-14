@@ -22,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations login page that they see before logging in
+ * */
 public class OrgLogin extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable

@@ -1,6 +1,12 @@
 plugins {
     id 'com.android.application'
+    //id 'java'
 }
+
+//javadoc {
+//    destinationDir = file("${buildDir}/docs/javadoc")
+//    include 'com/java/**'
+//}
 
 android {
     namespace 'com.example.androidexample'
@@ -32,6 +38,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.3.0'
     implementation 'com.google.android.gms:play-services-maps:19.0.0'
     implementation 'com.google.android.gms:play-services-location:21.3.0'
+    implementation fileTree(dir: 'C:\\Users\\jmste\\AppData\\Local\\Android\\Sdk\\platforms\\android-33', include: ['*.aar', '*.jar'], exclude: [])
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

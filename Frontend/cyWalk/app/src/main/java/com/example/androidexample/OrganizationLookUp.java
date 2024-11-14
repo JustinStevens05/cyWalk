@@ -28,6 +28,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Page for the users to lookup organizations they could join
+ * */
 public class OrganizationLookUp extends AppCompatActivity {
 
     private Button backButton;

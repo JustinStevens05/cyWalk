@@ -18,7 +18,9 @@ import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * The organizations view of their organizations leaderboard
+ * */
 public class orgLeaderboards extends AppCompatActivity {
 
     private Button usersButton;

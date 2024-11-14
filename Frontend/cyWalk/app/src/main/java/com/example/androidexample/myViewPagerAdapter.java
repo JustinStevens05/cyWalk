@@ -9,8 +9,14 @@ import com.example.androidexample.fragment.friendsFragment;
 import com.example.androidexample.fragment.globalFragment;
 import com.example.androidexample.fragment.localFragment;
 
+/**
+ * page adapter used when switching tabs on the socials page
+ * */
 public class myViewPagerAdapter extends FragmentStateAdapter {
 
+    /**
+     * calls the fragment activity that is passed into it
+     * */
     public myViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
