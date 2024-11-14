@@ -9,6 +9,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * The volley singleton that is used to make requests to the backend
+ * */
 public class VolleySingleton {
 
     private static VolleySingleton instance;
@@ -40,6 +43,7 @@ public class VolleySingleton {
     /**
      * gets the volley instance being using in the program
      *
+     * @param context the context of the current page
      * @return the VolleySingleton being used in the code
      */
     public static synchronized VolleySingleton getInstance(Context context) {
@@ -65,6 +69,9 @@ public class VolleySingleton {
 
     /**
      * adds a request to the end of the current request queue in volley
+     *
+     * @param req the request you would like to add to the request queue
+     * @param <T> I honestly don't know
      */
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);

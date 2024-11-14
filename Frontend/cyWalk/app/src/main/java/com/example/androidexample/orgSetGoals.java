@@ -26,6 +26,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations view that allows them to set and modify their goals for their organization
+ * */
 public class orgSetGoals extends AppCompatActivity {
 
     private Button usersButton;

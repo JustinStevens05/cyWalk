@@ -20,6 +20,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The users view that shows them their profile
+ * */
 public class Profile extends AppCompatActivity {
 
     private static String key;

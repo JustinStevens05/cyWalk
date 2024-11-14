@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 
 import com.example.androidexample.R;
 
+/**
+ * global fragment for the social leaderbaord
+ * */
 public class globalFragment extends Fragment {
 
     /**

@@ -25,6 +25,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Goals page for the users to see
+ * */
 public class Goals extends AppCompatActivity {
 
     private TextView daily_step_disp;

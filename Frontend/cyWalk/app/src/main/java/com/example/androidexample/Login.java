@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Login page for all users to see upon opening the app
+ * */
 public class Login extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable

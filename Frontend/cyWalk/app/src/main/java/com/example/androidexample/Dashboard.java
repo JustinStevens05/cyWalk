@@ -40,6 +40,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Dashboard class for the users
+ * */
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
     private String key = "";

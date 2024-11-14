@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 
 import com.example.androidexample.R;
 
+/**
+ * friends fragment for the social leaderboards
+ * */
 public class friendsFragment extends Fragment {
 
     /**

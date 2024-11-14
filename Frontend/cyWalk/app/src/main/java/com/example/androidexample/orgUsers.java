@@ -22,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations view that shows them all users in their organizations
+ * */
 public class orgUsers extends AppCompatActivity {
 
     private Button usersButton;

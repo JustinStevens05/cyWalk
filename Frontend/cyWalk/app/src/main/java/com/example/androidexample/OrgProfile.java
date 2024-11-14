@@ -22,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations view of their own profile
+ * */
 public class OrgProfile extends AppCompatActivity {
 
     private static String key;
