@@ -20,7 +20,6 @@ public class PeopleController {
     @Autowired
     private UserModelRepository userModelRepository;
 
-
     @Autowired
     private OnlineUserService onlineUserService;
 
@@ -101,7 +100,7 @@ public class PeopleController {
            }
            else {
                for (UserModel userModel : elements) {
-                   userModelRepository.deleteBySecretKey(userModel.getSecretKey());
+                   peopleService.logout(userModel.getSecretKey());
                }
                return ResponseEntity.ok().build();
            }

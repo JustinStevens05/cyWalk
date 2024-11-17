@@ -15,7 +15,7 @@ public class FriendRequest {
     private Long requestID;
 
     @ManyToOne
-    @JoinColumn(name = "people_username")
+    @JoinColumn(name = "sender_username")
     private People sender;
     @ManyToOne
     @JoinColumn(name = "receiver_username")

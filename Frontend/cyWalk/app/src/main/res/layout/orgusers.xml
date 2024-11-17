@@ -27,6 +27,14 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
+        <TextView
+            android:id="@+id/usersText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:text="no organization accessed"/>
+
 
 
     </LinearLayout>

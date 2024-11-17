@@ -162,7 +162,10 @@ public class LocationService {
         la.addLocationToActivity(location);
         locationActivityRepository.save(la);
 
-        sendLocationToFriends(people, location);
+        Location finalLocation = location;
+        new Thread(
+                () -> sendLocationToFriends(people, finalLocation)
+        );
 
         // Update leaderboard after appending a new location
         leaderboardService.getLeaderboard();

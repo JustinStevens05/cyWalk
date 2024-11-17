@@ -15,7 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations view of their own profile
+ * */
 public class OrgProfile extends AppCompatActivity {
 
     private static String key;
@@ -43,6 +45,9 @@ public class OrgProfile extends AppCompatActivity {
     private EditText findOrgName;
 
 
+    /**
+     * creates the profile page for the organization users
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,7 @@ public class OrgProfile extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        orgId = extras.getString("orgId");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
@@ -68,6 +74,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -77,6 +84,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -86,6 +94,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, orgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -95,6 +104,7 @@ public class OrgProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrgProfile.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -116,7 +126,7 @@ public class OrgProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 orgName = findOrgName.getText().toString();
-                URL_FIND_ORG = "http://10.0.2.2:8080/organizations/get_id";
+                URL_FIND_ORG = "http://10.0.2.2:8080/organizations/get-id";
                 try {
                     findOrgReq();
                 } catch (JSONException e) {
@@ -125,10 +135,13 @@ public class OrgProfile extends AppCompatActivity {
             }
         });
 
-        makeJsonObjReq();
+        makeUsernameReq();
     }
 
-    private void makeJsonObjReq() {
+    /**
+     * gets the organizations username using their session key and sets the username text box equal to their username
+     */
+    private void makeUsernameReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
@@ -172,6 +185,10 @@ public class OrgProfile extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * takes the input from the new organization name box and attempts to create a new organization with that name.
+     * if successful sets the orgId var equal to the newly created organization's Id number
+     */
     private void makeOrgReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", orgName);
@@ -223,6 +240,9 @@ public class OrgProfile extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * takes the input from the organization lookup box and sets the orgId var to the id associated with that organizations
+     */
     private void findOrgReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", orgName);
@@ -245,6 +265,7 @@ public class OrgProfile extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                        //txt_username.setText(error.toString());
                     }
                 }
         ) {

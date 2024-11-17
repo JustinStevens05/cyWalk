@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Login page for all users to see upon opening the app
+ * */
 public class Login extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
@@ -101,6 +104,12 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * attempts to log the user in using the inputted username and password if correct will  switch their view
+     * to the dashboard if incorrect will throw an error and send a message to the user to let them know that something
+     * was wrong.
+     */
     private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -164,6 +173,10 @@ public class Login extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * attempts to create a new user using the entered credentials. if the new user is created it will move the user to the dashboard page
+     * if the username is already in use it will throw and error and tell the user that something went wrong.
+     */
     private void makeSignUpReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);

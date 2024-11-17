@@ -18,7 +18,9 @@ import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * The organizations view of their organizations leaderboard
+ * */
 public class orgLeaderboards extends AppCompatActivity {
 
     private Button usersButton;
@@ -26,12 +28,13 @@ public class orgLeaderboards extends AppCompatActivity {
     private Button goalsButton;
     private Button profileButton;
     private String key;
+    private String orgId="";
 
-    private static String URL_SET_GOAL = null;
+    private static String URL_ORG_LEADERBOARD = null;
 
-    private String newFriendUsername;
-    private String acceptFriendUsername;
-
+    /**
+     *builds the page for the organizations to view their organization leaderboard
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,7 @@ public class orgLeaderboards extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        orgId = extras.getString("orgId");
 
         //URL_SET_GOAL = "http://10.0.2.2:8080/friends/"+key;
 
@@ -51,6 +55,7 @@ public class orgLeaderboards extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgLeaderboards.this, orgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -60,6 +65,7 @@ public class orgLeaderboards extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgLeaderboards.this, orgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -69,6 +75,7 @@ public class orgLeaderboards extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgLeaderboards.this, orgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
@@ -78,50 +85,12 @@ public class orgLeaderboards extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(orgLeaderboards.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
             }
         });
 
         //setNewGoalReq();
-    }
-    private void setNewGoalReq() {
-        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
-                Request.Method.GET,
-                URL_SET_GOAL,
-                null, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d("Volley Response", response.toString());
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley Error", error.toString());
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
-
-        // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
 }

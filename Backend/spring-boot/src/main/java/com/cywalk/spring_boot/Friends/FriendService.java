@@ -2,6 +2,7 @@ package com.cywalk.spring_boot.Friends;
 
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class FriendService {
      * @param userGettingRequested user getting requested to be added
      * @return true if the request was sent. false if it already existed
      */
+    @Transactional
     public boolean requestToFriend(People userRequesting, People userGettingRequested) {
         Optional<FriendRequest> fr = getFriendRequestFrom(userRequesting, userGettingRequested);
         if (fr.isPresent()) {
@@ -38,6 +40,7 @@ public class FriendService {
         return true;
     }
 
+    @Transactional
     Optional<List<FriendRequest>> getPendingFriendRequests(Long sessionKey) {
         Optional<People> peopleRequest = peopleService.getUserFromKey(sessionKey);
         if (peopleRequest.isEmpty()) {
@@ -58,6 +61,7 @@ public class FriendService {
      * @param sessionKey the key of the current session
      * @param username of the user to approve
      */
+    @Transactional
     public boolean approveFriendRequest(Long sessionKey, String username) {
         Optional<People> peopleRequest = peopleService.getUserFromKey(sessionKey);
         if (peopleRequest.isEmpty()) {
@@ -89,6 +93,7 @@ public class FriendService {
      * @param sessionKey the key of the current session
      * @param username of the user to approve
      */
+    @Transactional
     public boolean denyFriendRequest(Long sessionKey, String username) {
         Optional<People> peopleRequest = peopleService.getUserFromKey(sessionKey);
         if (peopleRequest.isEmpty()) {
@@ -115,18 +120,19 @@ public class FriendService {
         return true;
     }
 
+    @Transactional
     public List<People> getFriends(People person) {
         List<FriendRequest> requests = friendRequestRepository.findByReceiverOrSender(person, person);
         ArrayList<People> friends = new ArrayList<>(requests.size());
         for (int i = 0; i < requests.size(); i++) {
-	    if (requests.get(i).getStatus() == FriendRequestStatus.APPROVED) {
-		if (requests.get(i).getReceiver() != person) {
-		    friends.add(requests.get(i).getReceiver());
-		}
-		else {
-		    friends.add(requests.get(i).getSender());
-		}
-	    }
+            if (requests.get(i).getStatus() == FriendRequestStatus.APPROVED) {
+                if (requests.get(i).getReceiver() != person) {
+                    friends.add(requests.get(i).getReceiver());
+                }
+                else {
+                    friends.add(requests.get(i).getSender());
+                }
+            }
         }
         return friends;
     }
