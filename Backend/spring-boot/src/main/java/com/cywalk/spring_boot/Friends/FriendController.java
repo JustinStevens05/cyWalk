@@ -3,6 +3,7 @@ package com.cywalk.spring_boot.Friends;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.cywalk.spring_boot.Users.UserModelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.mysql.cj.xdevapi.JsonArray;
@@ -26,6 +27,8 @@ public class FriendController {
 
     @Autowired
     private FriendService friendService;
+    @Autowired
+    private UserModelRepository userModelRepository;
 
     public static String asJsonString(Object o) {
         try {
@@ -109,9 +112,6 @@ public class FriendController {
 	    return ResponseEntity.badRequest().build();
 	}
 	List<People> friendsResult = friendService.getFriends(peopleResult.get()); 
-	if (friendsResult.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
 
         ArrayList<String> usernames = new ArrayList<>(friendsResult.size());
 

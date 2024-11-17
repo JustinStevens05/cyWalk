@@ -1,7 +1,8 @@
 package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Friends.FriendRequest;
-import com.cywalk.spring_boot.LocationDays.LocationDay;
+import com.cywalk.spring_boot.Locations.LocationDay;
+import com.cywalk.spring_boot.organizations.Organization;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -18,6 +19,10 @@ public class People {
   @Column(name = "username")
   private String username;
 
+  @ManyToOne
+  @JoinColumn(name = "organization_id")
+  private Organization organization;
+
   private String email;
 
   @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
@@ -26,25 +31,18 @@ public class People {
   @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
   private Set<FriendRequest> receivedRequests = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<LocationDay> locations = new ArrayList<>(); // Initialized to an empty list
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<LocationDay> locations = new ArrayList<>();
 
-  // Constructors
+  // Constructors, getters, and setters
+
   public People(String username, String email, List<LocationDay> locations) {
     this.username = username;
     this.email = email;
-    if (locations != null) {
-      this.locations = locations;
-    } else {
-      this.locations = new ArrayList<>();
-    }
+    this.locations = locations != null ? locations : new ArrayList<>();
   }
 
-  public People() {
-    // No need to initialize locations here as it's already initialized above
-  }
-
-  // Getters and Setters
+  public People() {}
 
   // Username
   public String getUsername() {
@@ -64,23 +62,29 @@ public class People {
     this.email = email;
   }
 
+  // Organization
+  public Organization getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(Organization organization) {
+    this.organization = organization;
+  }
+
   // Locations
   public List<LocationDay> getLocations() {
     return locations;
   }
 
   public void setLocations(List<LocationDay> locations) {
-    if (locations != null) {
-      this.locations = locations;
-    } else {
-      this.locations = new ArrayList<>();
-    }
+    this.locations = locations != null ? locations : new ArrayList<>();
   }
 
   public void addLocation(LocationDay newLocation) {
     this.locations.add(newLocation);
   }
 
+  // Friend requests
   public Set<FriendRequest> getSentRequests() {
     return sentRequests;
   }
@@ -93,19 +97,19 @@ public class People {
     return receivedRequests;
   }
 
+  public void setReceivedRequests(Set<FriendRequest> receivedRequests) {
+    this.receivedRequests = receivedRequests;
+  }
+
   @Override
   public String toString() {
     return "People{" +
             "username='" + username + '\'' +
             ", email='" + email + '\'' +
+            ", organization=" + organization +
             ", sentRequests=" + sentRequests +
             ", receivedRequests=" + receivedRequests +
             ", locations=" + locations +
             '}';
   }
-
-  public void setReceivedRequests(Set<FriendRequest> receivedRequests) {
-    this.receivedRequests = receivedRequests;
-  }
-
 }

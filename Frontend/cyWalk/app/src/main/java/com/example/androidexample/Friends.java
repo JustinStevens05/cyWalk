@@ -22,6 +22,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.tabs.TabLayout;
 
@@ -33,23 +34,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Friends page for the users to see
+ * */
 public class Friends extends AppCompatActivity {
 
     private Button backButton;
     private Button friendsSubmitButton;
+    private Button acceptFriendSubmitButton;
     private EditText friendUsername;
+    private EditText acceptedFriendUsername;
     private TextView newFriendTitle;
     private String key;
-    private JSONArray friends;
-    private JSONArray pendingRequests;
-    private TableLayout friendTable;
-    private TableLayout requestsTable;
+    private LinearLayout friendTable;
+    private LinearLayout requestsTable;
 
     private static String URL_JSON_FRIENDS = null;
     private static String URL_JSON_PENDING = null;
     private static String URL_NEW_FRIEND = null;
+    private static String URL_ACCEPT_FRIEND = null;
 
     private String newFriendUsername;
+    private String acceptFriendUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +63,11 @@ public class Friends extends AppCompatActivity {
         setContentView(R.layout.friends);
         backButton = findViewById(R.id.returnButton);
         friendsSubmitButton = findViewById(R.id.friendSubmitBtn);
+        acceptFriendSubmitButton = findViewById(R.id.acceptFriendSubmitBtn);
         friendTable = findViewById(R.id.friendsTable);
         requestsTable = findViewById(R.id.requestsTable);
         friendUsername = findViewById(R.id.friendUsername);
+        acceptedFriendUsername = findViewById(R.id.acceptedFriendUsername);
         newFriendTitle = findViewById(R.id.newFriendTile);
 
         Bundle extras = getIntent().getExtras();
@@ -82,52 +90,62 @@ public class Friends extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 newFriendUsername = friendUsername.getText().toString();
-                URL_NEW_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/requests/" + newFriendUsername;
+                URL_NEW_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/request/" + newFriendUsername;
 
                 makeFriendRequest();
+            }
+        });
+
+        acceptFriendSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                acceptFriendUsername = acceptedFriendUsername.getText().toString();
+                URL_ACCEPT_FRIEND = "http://10.0.2.2:8080/friends/" + key +"/request/approve/" + acceptFriendUsername;
+
+                makeFriendApproval();
             }
         });
 
         makeJsonFriendReq();
         makeJsonPendingReq();
     }
+
+    /**
+     *gets the list of current friends for a user from the database using a volley request
+     */
     private void makeJsonFriendReq() {
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,
                 URL_JSON_FRIENDS,
                 null, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        try {
-                            friends = response.getJSONArray("friends");
+                        //newFriendTitle.setText(response.toString());
 
-                            if(!isNull(friends)){
-                                for(int i = 0; i < friends.length(); i++){
-                                    Object temp = friends.get(i);
-                                    TableRow tempRow = new TableRow(Friends.this);
+                        if(response.length() > 0) {
+                            friendTable.removeAllViews();
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    String current = response.getString(i);
                                     TextView tempText = new TextView(Friends.this);
-
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
                                             LinearLayout.LayoutParams.WRAP_CONTENT));
+
                                     tempText.setTextSize(20);
                                     tempText.setTextColor(Color.parseColor("#000000"));
-                                    tempText.setText(temp.toString());
+                                    tempText.setText(current);
 
-                                    tempRow.setLayoutParams(new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                                            LinearLayout.LayoutParams.WRAP_CONTENT));
-                                    tempRow.addView(tempText);
+                                    friendTable.addView(tempText);
 
-                                    friendTable.addView(tempRow);
-
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
                         }
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -155,25 +173,28 @@ public class Friends extends AppCompatActivity {
         };
 
         // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
+    /**
+     *gets the list of current pending friend requests for a user from the database using a volley request
+     */
     private void makeJsonPendingReq() {
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET,
                 URL_JSON_PENDING,
                 null, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        try {
-                            pendingRequests = response.getJSONArray("requests");
 
-                            if(!isNull(pendingRequests)){
-                                for(int i = 0; i < pendingRequests.length(); i++){
-                                    Object temp = pendingRequests.get(i);
-                                    TableRow tempRow = new TableRow(Friends.this);
+                        if(response.length() > 0) {
+                            requestsTable.removeAllViews();
+                            for (int i = 0; i < response.length(); i++) {
+
+                                try {
+                                    String current = response.getString(i);
                                     TextView tempText = new TextView(Friends.this);
 
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
@@ -181,18 +202,14 @@ public class Friends extends AppCompatActivity {
                                             LinearLayout.LayoutParams.WRAP_CONTENT));
                                     tempText.setTextSize(20);
                                     tempText.setTextColor(Color.parseColor("#000000"));
-                                    tempText.setText(temp.toString());
+                                    tempText.setText(current);
 
-                                    tempRow.setLayoutParams(new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                                            LinearLayout.LayoutParams.WRAP_CONTENT));
-                                    tempRow.addView(tempText);
+                                    requestsTable.addView(tempText);
 
-                                    requestsTable.addView(tempRow);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
                         }
                     }
                 },
@@ -200,6 +217,7 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+
                     }
                 }
         ) {
@@ -221,14 +239,19 @@ public class Friends extends AppCompatActivity {
         };
 
         // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
+    /**
+     *sends a friend request to the username stored in the newFriendUsername variable
+     */
     private void makeFriendRequest() {
+        //JSONObject jsonObject = new JSONObject();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+
                 Request.Method.POST,
                 URL_NEW_FRIEND,
-                null, // Pass null as the request body since it's a GET request
+                null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -240,7 +263,8 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        newFriendTitle.setText(URL_NEW_FRIEND);
+                        friendUsername.setText("");
+                        //temp.setText(error.toString());
                         //newFriendTitle.setText("couldn't find that user try again");
                     }
                 }
@@ -265,4 +289,52 @@ public class Friends extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
+
+    /**
+     *approves a friend request from the username stored in the acceptedFriendUsername variable
+     */
+    private void makeFriendApproval() {
+        //JSONObject jsonObject = new JSONObject();
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+
+                Request.Method.PUT,
+                URL_ACCEPT_FRIEND,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        acceptedFriendUsername.setText("");
+                        //newFriendTitle.setText(error.toString());
+                        //newFriendTitle.setText("couldn't find that user try again");
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
 }

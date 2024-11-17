@@ -26,15 +26,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Login page for all users to see upon opening the app
+ * */
 public class Login extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
+    private TextView orgSwitch;
     private Button loginButton;         // define login button variable
     private static String URL_LOGIN = "http://10.0.2.2:8080/users";
     private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
-    private String userKey = "";
+    private String key = "";
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
@@ -50,6 +54,7 @@ public class Login extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
+        orgSwitch = findViewById(R.id.switchOrgView);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -79,13 +84,27 @@ public class Login extends AppCompatActivity {
                 password = passwordEditText.getText().toString();
 
                 try {
-                    makeSignUpReq();;
+                    makeSignUpReq();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
+
+        orgSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Login.this, OrgLogin.class);
+                startActivity(intent);
+            }
+        });
     }
+
+    /**
+     * attempts to log the user in using the inputted username and password if correct will  switch their view
+     * to the dashboard if incorrect will throw an error and send a message to the user to let them know that something
+     * was wrong.
+     */
     private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -103,12 +122,12 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
-                            if(!userKey.isEmpty()) {
+                            if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", userKey);
-                                //errorMsg.setText("success " + userKey);
+                                intent.putExtra("key", key);
+                                //errorMsg.setText("success " + key);
                                 startActivity(intent);
                             } else {
                                 //errorMsg.setText("failed " + userKey);
@@ -149,6 +168,10 @@ public class Login extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * attempts to create a new user using the entered credentials. if the new user is created it will move the user to the dashboard page
+     * if the username is already in use it will throw and error and tell the user that something went wrong.
+     */
     private void makeSignUpReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -165,11 +188,11 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
-                            if(!userKey.isEmpty()) {
+                            if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", userKey);
+                                intent.putExtra("key", key);
                                 //errorMsg.setText("success " + userKey);
                                 startActivity(intent);
                             }

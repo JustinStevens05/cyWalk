@@ -41,6 +41,21 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".OrgLogin"
+            android:exported="false"/>
+        <activity
+            android:name=".orgSetGoals"
+            android:exported="false"/>
+        <activity
+            android:name=".OrgProfile"
+            android:exported="false"/>
+        <activity
+            android:name=".orgLeaderboards"
+            android:exported="false"/>
+        <activity
+            android:name=".orgUsers"
+            android:exported="false"/>
+        <activity
             android:name=".Profile"
             android:exported="false"/>
         <activity

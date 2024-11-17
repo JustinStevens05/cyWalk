@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="100sp"
@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="50sp" />
 
     <TextView
@@ -110,5 +110,21 @@
         </Button>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/switchOrgView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="organization sign-up/log-in"
+            android:textColor="#AAAAAA"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="150dp"/>
+
+    </RelativeLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

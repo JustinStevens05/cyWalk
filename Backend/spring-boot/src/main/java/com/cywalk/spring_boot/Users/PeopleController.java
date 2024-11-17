@@ -4,6 +4,9 @@ import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.cywalk.spring_boot.websocket.OnlineUserService;
+import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +19,9 @@ public class PeopleController {
     private PeopleService peopleService;
     @Autowired
     private UserModelRepository userModelRepository;
+
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @GetMapping("/username/{username}")
     public Optional<People> getUserByUsername(@PathVariable String username) {
@@ -61,10 +67,20 @@ public class PeopleController {
     public ResponseEntity<Void> logout(@PathVariable Long key) {
         Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
         if (toDelete.isPresent()) {
+            People user = toDelete.get().getUser();
             userModelRepository.deleteBySecretKey(key);
+
+            // Update online users
+            if (user.getOrganization() != null) {
+                Long orgId = user.getOrganization().getId();
+                onlineUserService.userLoggedOut(user.getUsername(), orgId);
+                // Broadcast update
+                OrganizationOnlineUsersWebSocket.broadcastOnlineUsers(
+                        orgId, onlineUserService.getOnlineUsers(orgId));
+            }
+
             return ResponseEntity.ok().build();
-        }
-        else {
+        } else {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -84,7 +100,7 @@ public class PeopleController {
            }
            else {
                for (UserModel userModel : elements) {
-                   userModelRepository.deleteBySecretKey(userModel.getSecretKey());
+                   peopleService.logout(userModel.getSecretKey());
                }
                return ResponseEntity.ok().build();
            }

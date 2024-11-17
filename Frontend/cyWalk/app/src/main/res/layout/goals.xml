@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".Goals">
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75sp"
@@ -34,7 +34,7 @@
             android:layout_height="5sp"
             android:background="@android:color/black"/>
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Personal Goals"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
+            <TextView
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -57,7 +57,7 @@
                 android:layout_weight="1"
                 android:text="Daily:"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/dailySteps"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <TextView
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -91,7 +91,7 @@
                 android:fontFamily="sans-serif-black"
                 android:text="Weekly:"/>
 
-            <EditText
+            <TextView
                 android:id="@+id/weeklySteps"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
             android:layout_height="5sp"
             android:background="@android:color/black"/>
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reward Goals"

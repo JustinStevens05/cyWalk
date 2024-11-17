@@ -1,10 +1,13 @@
 package com.cywalk.spring_boot.Users;
 import com.cywalk.spring_boot.Friends.FriendRequest;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.cywalk.spring_boot.websocket.OnlineUserService;
+import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,9 @@ public class PeopleService {
 
     @Autowired
     private PeopleRepository peopleRepository;
+
+    @Autowired
+    private OnlineUserService onlineUserService;
 
     @Autowired
     private UserModelRepository userModelRepository;
@@ -33,14 +39,17 @@ public class PeopleService {
         return Optional.of(peopleRepository.save(user));
     }
 
+    @Transactional
     public void saveUserRequest(UserRequest userRequest) {
         userRequestRepository.save(userRequest);
     }
 
+    @Transactional
     public Optional<People> getUserByUsername(String username) {
         return peopleRepository.findByUsername(username);
     }
 
+    @Transactional
     public People saveUser(People people) {
         return peopleRepository.save(people);
     }
@@ -49,6 +58,7 @@ public class PeopleService {
      * Delete a user in the database based off of the passed in username
      * @param name the username of the user to delete
      */
+    @Transactional
     public void deleteUserByName(String name) {
         if (getUserByUsername(name).isPresent()) {
             peopleRepository.deleteByUsername(name);
@@ -65,14 +75,22 @@ public class PeopleService {
     public Optional<Long> generateAuthKey(String username) {
         Optional<People> userResult = peopleRepository.findByUsername(username);
         if (userResult.isPresent()) {
-            // make a user model which tracks the People
-           UserModel model = new UserModel(userResult.get());
-           userModelRepository.save(model);
-            // return the key to be used the rest of the time
-           return Optional.of(model.getSecretKey());
-        }
-        else {
-            logger.warn("somehow could not find user in the People Table. Tried: {}", username);
+
+            UserModel model = new UserModel(userResult.get());
+            userModelRepository.save(model);
+
+            People user = userResult.get();
+            if (user.getOrganization() != null) {
+                Long orgId = user.getOrganization().getId();
+                onlineUserService.userLoggedIn(username, orgId);
+
+                OrganizationOnlineUsersWebSocket.broadcastOnlineUsers(
+                        orgId, onlineUserService.getOnlineUsers(orgId));
+            }
+
+            return Optional.of(model.getSecretKey());
+        } else {
+
             return Optional.empty();
         }
     }
@@ -124,6 +142,18 @@ public class PeopleService {
             logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @Transactional
+    public ResponseEntity<Void> logout(Long key) {
+        Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
+        if (toDelete.isPresent()) {
+            userModelRepository.deleteBySecretKey(key);
+            return ResponseEntity.ok().build();
+        }
+        else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     public List<People> getAllPeople() {

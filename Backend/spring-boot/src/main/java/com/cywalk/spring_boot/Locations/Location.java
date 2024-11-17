@@ -13,9 +13,9 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double latitude;
-    private double longitude;
-    private double elevation;
+    private Double latitude;
+    private Double longitude;
+    private Double elevation;
 
     private LocalTime time;
 
@@ -38,7 +38,7 @@ public class Location {
         this.time = time;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
@@ -46,7 +46,7 @@ public class Location {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
@@ -54,7 +54,7 @@ public class Location {
         this.longitude = longitude;
     }
 
-    public double getElevation() {
+    public Double getElevation() {
         return elevation;
     }
 
@@ -69,7 +69,6 @@ public class Location {
     public void setTime(LocalTime time) {
         this.time = time;
     }
-
 
     public void setId(Long id) {
         this.id = id;

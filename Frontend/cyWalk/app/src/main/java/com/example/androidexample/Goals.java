@@ -13,23 +13,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Goals page for the users to see
+ * */
 public class Goals extends AppCompatActivity {
 
     private TextView daily_step_disp;
@@ -41,7 +39,6 @@ public class Goals extends AppCompatActivity {
     private int weeklyStepCount = 0;
     private int dailyGoal = 10000;
     private int weeklyGoal = 70000;
-    // private Button socialButton;
     private Button newGoalsButton;
     private Button submitButton;
     private Button newPlanButton;
@@ -53,6 +50,7 @@ public class Goals extends AppCompatActivity {
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_NEW_GOALS = null;
+    private static String URL_GET_USERNAME = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +60,6 @@ public class Goals extends AppCompatActivity {
         //BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
         //botnav.setSelectedItemId(R.id.nav_goals);
 
-        // socialButton = findViewById(R.id.socialBtn);
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
@@ -116,31 +113,16 @@ public class Goals extends AppCompatActivity {
             }
         });
 
-
-
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        username = extras.getString("username");
         URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
         URL_NEW_GOALS = "http://10.0.2.2:8080/goals/" + username;
-
-//        socialButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                /* when counter button is pressed, use intent to switch to Counter Activity */
-//                Intent intent = new Intent(Goals.this, Social.class);
-//                intent.putExtra("key", key);
-//                startActivity(intent);
-//            }
-//        });
+        URL_GET_USERNAME = "http://10.0.2.2:8080/users/"+key;
 
         newPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
+                switchToJoinOrg();
             }
         });
 
@@ -177,6 +159,10 @@ public class Goals extends AppCompatActivity {
 
         getJsonObjStepGoals();
     }
+
+    /**
+     *gets the current progress towards the users goals and updates their progress bars based on that progress
+     */
     private void getJsonObjStepGoals() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET,
@@ -233,6 +219,10 @@ public class Goals extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
+
+    /**
+     *updates the users step goals locally and changes their goals that are stored in the database
+     */
     private void setJsonObjStepGoals() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("dailyGoal", Integer.parseInt(newDaily.getText().toString()));
@@ -250,6 +240,59 @@ public class Goals extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     *gets the users username based off of the session key
+     *switches to the join organizations page and passes in the session key and the retrieved username
+     */
+    private void switchToJoinOrg() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET, URL_GET_USERNAME, null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            username = response.getString("username");
+
+                            Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
+                            intent.putExtra("key", key);
+                            intent.putExtra("username", username);
+                            startActivity(intent);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
