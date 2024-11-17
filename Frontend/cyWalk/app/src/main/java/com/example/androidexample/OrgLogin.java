@@ -38,6 +38,8 @@ public class OrgLogin extends AppCompatActivity {
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
+    private TextView userSwitch;
+    private TextView devSwitch;
 
     /**
      *creates the page for the organization users to be able to login in or create their organization
@@ -53,6 +55,8 @@ public class OrgLogin extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
+        userSwitch = findViewById(R.id.switchUserView);
+        devSwitch = findViewById(R.id.switchDevView);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +90,22 @@ public class OrgLogin extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+            }
+        });
+
+        userSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrgLogin.this, Login.class);
+                startActivity(intent);
+            }
+        });
+
+        devSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrgLogin.this, DevLogin.class);
+                startActivity(intent);
             }
         });
     }

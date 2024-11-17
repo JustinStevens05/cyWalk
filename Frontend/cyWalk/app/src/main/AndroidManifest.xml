@@ -61,6 +61,9 @@
         <activity
             android:name=".Friends"
             android:exported="false" />
+        <activity
+            android:name=".DevLogin"
+            android:exported="false"/>
 
         <meta-data
             android:name = "com.google.android.geo.API_KEY"

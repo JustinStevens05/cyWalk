@@ -14,7 +14,7 @@
         android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
-        android:text="Login"
+        android:text="Dev Login"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:textColor="@color/black"
-            android:hint="Username"></EditText>
+            android:hint="Username"/>
 
     </LinearLayout>
 
@@ -78,7 +78,7 @@
             android:layout_height="50dp"
             android:hint="Password"
             android:textColor="@color/black"
-            android:inputType="textPassword"></EditText>
+            android:inputType="textPassword"/>
 
     </LinearLayout>
 
@@ -98,17 +98,6 @@
             android:textSize="20sp"
             android:textColor="#ffffff">
         </Button>
-
-        <Button
-            android:id="@+id/login_signup_btn"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Signup"
-            android:textSize="20sp"
-            android:textColor="#ffffff">
-        </Button>
-
     </LinearLayout>
 
     <RelativeLayout
