@@ -36,8 +36,10 @@ public class Login extends AppCompatActivity {
     private TextView errorMsg;
     private TextView orgSwitch;
     private Button loginButton;         // define login button variable
-    private static String URL_LOGIN = "http://10.0.2.2:8080/users";
-    private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
+    private String server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
+    private String local_url_chunk = "10.0.2.2:8080";
+    private String URL_LOGIN = null;
+    private String URL_SIGNUP = null;
     private String key = "";
     private String username;
     private String password;
@@ -55,6 +57,9 @@ public class Login extends AppCompatActivity {
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
         orgSwitch = findViewById(R.id.switchOrgView);
+
+        URL_LOGIN = "http://coms-3090-072.class.las.iastate.edu:8080/users";
+        URL_SIGNUP = "http://coms-3090-072.class.las.iastate.edu:8080/signup";
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
