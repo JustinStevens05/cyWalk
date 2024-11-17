@@ -68,7 +68,7 @@ public class LocationController {
     }
 
     @GetMapping("/week/total")
-    public Optional<LocationDay> getTotalDistancePastWeek(@PathVariable Long key) {
+    public Optional<Double> getTotalDistancePastWeek(@PathVariable Long key) {
         return locationService.totalDistanceFromUserWeek(key);
     }
 }
