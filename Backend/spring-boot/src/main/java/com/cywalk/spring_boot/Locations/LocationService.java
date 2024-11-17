@@ -313,5 +313,10 @@ public class LocationService {
         return Optional.of(locationDayRepository.save(ld));
 
     }
+
+    public Optional<LocationDay> totalDistanceFromUserWeek(Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        
+    }
 }
 
