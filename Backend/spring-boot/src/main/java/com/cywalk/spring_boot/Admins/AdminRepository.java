@@ -1,2 +1,6 @@
-package com.cywalk.spring_boot.Admins;public class AdminRepository {
+package com.cywalk.spring_boot.Admins;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface AdminRepository extends JpaRepository<Admin, String> {
 }

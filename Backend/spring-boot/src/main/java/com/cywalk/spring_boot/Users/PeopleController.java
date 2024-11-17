@@ -1,11 +1,10 @@
 package com.cywalk.spring_boot.Users;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.cywalk.spring_boot.websocket.OnlineUserService;
-import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
+import com.cywalk.spring_boot.Organizations.OnlineUserService;
+import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 
 
 import java.util.List;

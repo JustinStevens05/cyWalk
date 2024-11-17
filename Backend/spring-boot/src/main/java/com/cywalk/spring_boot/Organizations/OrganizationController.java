@@ -1,8 +1,8 @@
-package com.cywalk.spring_boot.organizations;
+package com.cywalk.spring_boot.Organizations;
 import java.util.HashMap;
 import java.util.Map;
 import com.cywalk.spring_boot.Users.People;
-import com.cywalk.spring_boot.leaderboard.LeaderboardEntry;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
