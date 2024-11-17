@@ -37,7 +37,7 @@ public class Profile extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
 
         // NAVIGATION BAR

@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,13 +40,14 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     myViewPagerAdapter myViewPagerAdapter;
     TextView title;
     TextView temp;
+    ListView lb_listView;
 
     private LinearLayout leaderbaordTester;
-
     private Button goalButton;
     private Button friendsButton;
     private String key;
     private String username;
+    private ArrayList<String> lbList;
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_GLOBAL_LEADERBOARD = null;
@@ -54,11 +58,11 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.social);
         friendsButton = findViewById(R.id.friendsButton);
-        // goalButton = findViewById(R.id.goalsBtn);
         title = findViewById(R.id.title);
         temp = findViewById(R.id.temp);
-
-        leaderbaordTester =findViewById(R.id.leaderboardTester);
+//        lb_listView = findViewById(R.id.lv_leaderboard);
+//
+//        lbList = new ArrayList<String>();
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
@@ -107,17 +111,15 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
         makeJsonObjReq();
 
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
-        URL_GLOBAL_LEADERBOARD = "http://10.0.2.2:8080/leaderboard";
-        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/friends?key="+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
+        URL_WS_SOCKET = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/friends?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLeaderboard.getInstance().setWebSocketListener(Social.this);
 
         // Establish WebSocket connection and set listener
         WebSocketManagerLeaderboard.getInstance().connectWebSocket(URL_WS_SOCKET);
-
-        temp.setText(URL_WS_SOCKET);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -211,14 +213,17 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
 
-
-                        //title.setText("good");
-
                         if(response.length() > 0) {
-                            leaderbaordTester.removeAllViews();
                             for (int i = 0; i < response.length(); i++) {
                                 try {
-                                    String current = response.getString(i);
+                                    JSONObject current = response.getJSONObject(i);
+                                    String userEntry = current.getString("username") + " | Distance: " +
+                                            current.getString("totalSteps");
+                                    lbList.add(userEntry);
+                                    //String current = response.getString(i);
+                                    //lbList.add(current);
+                                    //lbList.add(response.getString(0));
+
                                     TextView tempText = new TextView(Social.this);
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -226,22 +231,23 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
                                     tempText.setTextSize(20);
                                     tempText.setTextColor(Color.parseColor("#000000"));
-                                    tempText.setText(current);
-
-                                    leaderbaordTester.addView(tempText);
+                                    //tempText.setText(current);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    lbList.add(e.toString());
                                 }
                             }
                         }
+                        ArrayAdapter adapter = new ArrayAdapter(Social.this, R.layout.lb_textview, R.id.tv_leaderboard, lbList);
+                        lb_listView.setAdapter(adapter);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        title.setText("not good");
+                        //title.setText("not good");
                     }
                 }
         ) {
@@ -272,14 +278,14 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) {
         runOnUiThread(() -> {
-            temp.setText("Websocket Connected");
+            //temp.setText("Websocket Connected");
         });
     }
 
     @Override
     public void onWebSocketMessage(String message) {
         runOnUiThread(() -> {
-            temp.setText("Websocket did something");
+            //temp.setText("Websocket did something");
         });
     }
 
@@ -293,7 +299,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     @Override
     public void onWebSocketError(Exception ex) {
         runOnUiThread(() -> {
-            temp.setText(ex.toString());
+            //temp.setText(ex.toString());
         });
     }
 }

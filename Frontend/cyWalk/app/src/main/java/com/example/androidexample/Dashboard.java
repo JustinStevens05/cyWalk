@@ -68,7 +68,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private boolean isTracking = false;
-    String mobile_url_chunk;
+    String server_url_chunk;
     String local_url_chunk;
 
     private String URL_JSON_GET_DISTANCE = null;
@@ -89,12 +89,12 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
+        server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
-        URL_JSON_GET_DISTANCE = "http://10.0.2.2:8080/"+key+"/locations/total";
-        URL_JSON_GET_USER = "http://10.0.2.2:8080/users/"+key;
-        URL_JSON_POST_LOCATION = "http://10.0.2.2:8080/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://10.0.2.2:8080/locations/sessions?key="+key;
+        URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
+        URL_JSON_GET_USER = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
+        URL_WS_SOCKET = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -261,7 +261,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 
-    /**
+    /*
      * Sends a string request [GET] without a body.
      */
     private void makeJsonObjReq() {
