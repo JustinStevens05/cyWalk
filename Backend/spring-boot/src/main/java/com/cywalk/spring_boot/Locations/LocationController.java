@@ -71,5 +71,7 @@ public class LocationController {
     public Optional<Double> getTotalDistancePastWeek(@PathVariable Long key) {
         return locationService.totalDistanceFromUserWeek(key);
     }
+
+
 }
 

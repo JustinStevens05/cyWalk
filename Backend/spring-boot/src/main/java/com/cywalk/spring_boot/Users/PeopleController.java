@@ -1,6 +1,5 @@
 package com.cywalk.spring_boot.Users;
 
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -108,8 +107,6 @@ public class PeopleController {
        else {
            return ResponseEntity.status(result.getStatusCode()).build();
        }
-
-
     }
 
     /**
@@ -135,4 +132,76 @@ public class PeopleController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    /**
+     * Gets the current league a user is in
+     * @param key the key of said user
+     * @return the current league of the user
+     */
+    @GetMapping("/league")
+    public Optional<League> getCurrentLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(peopleResult.get().getLeague());
+    }
+
+
+    /**
+     * updates or generates the league for the current user.
+     * WARNING THIS IS VERY SLOW SO USE GET WHEN YOU CAN AND AVOID FREQUENT CALLS
+     * @param key the user's session key
+     * @return the league the user is in or nothing if there was an issue
+     */
+    @PutMapping("/league")
+    public Optional<League> updateAndGetLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        return peopleResult.map(people -> peopleService.updateLeagueForUser(people.getUsername()));
+    }
+
+    /**
+     * A very, very slow request.
+     * This should be accelerated in the future by updating the user's ranking via other user's new location Sessions
+     * @param key the key of the user
+     * @return ranking of a user globally
+     */
+    @PutMapping("/ranking/global")
+    public Optional<Long> updateAndGetRankingGlobal(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return peopleService.getUserGlobalRanking(peopleResult.get().getUsername());
+    }
+
+    /**
+     * A moderately slow request.
+     * @param key the user's key
+     * @return ranking of a user amongst friends
+     */
+    @PutMapping("/ranking/friends")
+    public Optional<Long> updateAndGetRankingFriends(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return peopleService.getUserRankingFriends(peopleResult.get().getUsername());
+    }
+
+    /**
+     * A slow request.
+     * @param key the user's key
+     * @return ranking of a user amongst organizations
+     */
+    @PutMapping("/ranking/organization")
+    public Optional<Long> updateAndGetRankingOrganization(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return peopleService.getUserOrganizationRanking(peopleResult.get().getUsername());
+    }
+
+
 }
