@@ -18,16 +18,17 @@
         android:textSize="30dp">
     </TextView>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_img_avatar"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_border"
         android:layout_below="@+id/profile_txt_username"
         android:layout_marginTop="75dp"
-        android:src="@drawable/default_avatar">
-    </ImageView>
+        android:src="@drawable/default_avatar"
+        app:shapeAppearanceOverlay="@style/Circular">
+
+    </com.google.android.material.imageview.ShapeableImageView>
 
     <Button
         android:id="@+id/profile_btn_logout"
