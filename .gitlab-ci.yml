@@ -6,7 +6,7 @@ android-build:
   image: afirefly/android-ci:java17
   stage: androidbuild
   tags:
-   - Charlie_Runner                   # <-- change to your runner's tag
+   - charlie_runner                   # <-- change to your runner's tag
   before_script:                    # change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/gradlew
@@ -23,7 +23,7 @@ android-test:
   image: afirefly/android-ci:java17
   stage: androidtest
   tags:
-    - Charlie_Runner                  # <-- change to your runner's tag
+    - charlie_runner                  # <-- change to your runner's tag
   before_script:                   # change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/gradlew
