@@ -25,9 +25,12 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/profile_txt_username"
         android:layout_marginTop="75dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/default_avatar"
-        app:shapeAppearanceOverlay="@style/Circular">
-
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.CircularBorder"
+        app:strokeColor="@color/bronze"
+        app:strokeWidth="15dp"
+        android:padding="15dp">
     </com.google.android.material.imageview.ShapeableImageView>
 
     <Button

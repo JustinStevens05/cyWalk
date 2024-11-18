@@ -95,7 +95,7 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
-                            img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
+                            //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
