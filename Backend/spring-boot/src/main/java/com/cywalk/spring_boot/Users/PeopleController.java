@@ -160,48 +160,4 @@ public class PeopleController {
         return peopleResult.map(people -> peopleService.updateLeagueForUser(people.getUsername()));
     }
 
-    /**
-     * A very, very slow request.
-     * This should be accelerated in the future by updating the user's ranking via other user's new location Sessions
-     * @param key the key of the user
-     * @return ranking of a user globally
-     */
-    @PutMapping("/ranking/global")
-    public Optional<Long> updateAndGetRankingGlobal(@PathVariable Long key) {
-        Optional<People> peopleResult = peopleService.getUserFromKey(key);
-        if (peopleResult.isEmpty()) {
-            return Optional.empty();
-        }
-        return peopleService.getUserGlobalRanking(peopleResult.get().getUsername());
-    }
-
-    /**
-     * A moderately slow request.
-     * @param key the user's key
-     * @return ranking of a user amongst friends
-     */
-    @PutMapping("/ranking/friends")
-    public Optional<Long> updateAndGetRankingFriends(@PathVariable Long key) {
-        Optional<People> peopleResult = peopleService.getUserFromKey(key);
-        if (peopleResult.isEmpty()) {
-            return Optional.empty();
-        }
-        return peopleService.getUserRankingFriends(peopleResult.get().getUsername());
-    }
-
-    /**
-     * A slow request.
-     * @param key the user's key
-     * @return ranking of a user amongst organizations
-     */
-    @PutMapping("/ranking/organization")
-    public Optional<Long> updateAndGetRankingOrganization(@PathVariable Long key) {
-        Optional<People> peopleResult = peopleService.getUserFromKey(key);
-        if (peopleResult.isEmpty()) {
-            return Optional.empty();
-        }
-        return peopleService.getUserOrganizationRanking(peopleResult.get().getUsername());
-    }
-
-
 }

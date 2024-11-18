@@ -177,7 +177,7 @@ public class PeopleService {
      * @return the league that they are in
      */
     public League updateLeagueForUser(String username) {
-        Optional<Long> rankingResult = getUserGlobalRanking(username);
+        Optional<Long> rankingResult = ;
         long ranking = 1;
         if (rankingResult.isPresent()) {
             ranking = rankingResult.get();
@@ -187,78 +187,6 @@ public class PeopleService {
         double pointInRank = (double) ranking / (double) amountOfUsers;
         // this number times the amount of leagues gives the league a user is in
         return League.values()[(int) pointInRank * AMOUNT_LEAGUES];
-    }
-
-    /**
-     * updates a users amongst a list of users
-     * Wrapper of {@link #getUsersRankingIn(People, List)}
-     * @param username the user who to update. USERNAME MUST HAVE BEEN CHECKED TO CORRESPOND TO A USER
-     * @param peopleToSearchThrough A non-null list of people to search through
-     * @return the user's ranking in that list
-     */
-    public Long getUsersRankingIn(String username,  List<People> peopleToSearchThrough) {
-        return getUsersRankingIn(getUserByUsername(username).get(), peopleToSearchThrough);
-    }
-
-    /**
-     * updates a user amongst a list of users
-     * @param user the user to search through. USER MUST NOT BE NULL.
-     * @param peopleToSearchThrough the list of people to search through. LIST MUST NOT BE NULL
-     * @return the ranking in said list
-     */
-    public long getUsersRankingIn(People user, List<People> peopleToSearchThrough) {
-        //TODO implement;
-        return 1L;
-    }
-
-    /**
-     * Updates the user's global ranking
-     * returns empty if there is only one user in the world
-     * @param username the username of the user. MUST HAVE BEEN CHECKED TO CORRESPOND TO A USER
-     * @return the user's global ranking
-     */
-    public Optional<Long> getUserGlobalRanking(String username) {
-        List<People> allPeople = getAllPeople();
-        if (allPeople.size() == 1) {
-            return Optional.empty();
-        }
-        else {
-            return Optional.of(getUsersRankingIn(username, allPeople));
-        }
-    }
-
-    /**
-     * Get the ranking of a user amongst their organization.
-     * If user is not in an organization or the organization only has one person in it, this returns empty.
-     * @param username the username of the user. MUST HAVE BEEN CHECKED TO CORRESPOND TO A USER
-     * @return the ranking of the user amongst the organization
-     */
-    public Optional<Long> getUserOrganizationRanking(String username) {
-        People user = getUserByUsername(username).get();
-        if (user.getOrganization() == null) {
-            return Optional.empty();
-        }
-        List<People> organizationUsers = user.getOrganization().getUsers().stream().toList();
-        if (organizationUsers.size() <= 1)  {
-            return Optional.empty();
-        }
-
-        return Optional.of(getUsersRankingIn(user, organizationUsers));
-    }
-
-    /**
-     * Get the ranking of the user amongst their friends.
-     * returns empty if a user has no friends
-     * @param username the username of the user. MUST HAVE BEEN CHECKED TO CORRESPOND TO A USER
-     * @return the user's ranking amongst their friends
-     */
-    public Optional<Long> getUserRankingFriends(String username) {
-        People user = getUserByUsername(username).get();
-        List<People> friends = friendService.getFriends(user);
-        if (friends == null || friends.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(getUsersRankingIn(user, friends));
     }
 
 }
