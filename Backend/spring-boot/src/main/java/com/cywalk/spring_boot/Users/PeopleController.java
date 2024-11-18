@@ -1,6 +1,8 @@
 package com.cywalk.spring_boot.Users;
 
-import org.apache.catalina.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -90,6 +92,11 @@ public class PeopleController {
      * @param key session key
      * @return a successful key
      */
+    @Operation(summary = "Log out all instances of a user including the current one")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "successfully logged out any logged in users"),
+            @ApiResponse(responseCode = "404", description = "No logged in users found")
+    })
     @DeleteMapping("/logins/{key}")
     public ResponseEntity<Void> logoutAllOfUser(@PathVariable Long key) {
        ResponseEntity<List<UserModel>> result = getActiveSessions(key);
@@ -121,6 +128,11 @@ public class PeopleController {
      * @param key the session key from {@link #login(UserRequest)}
      * @return all the sessions of a user
      */
+    @Operation(summary = "Gets all the current User Models in the database. Intended to be cleared using logoutAllOfUser")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successfully logged out any logged in users"),
+            @ApiResponse(responseCode = "404", description = "No logged in users found")
+    })
     @GetMapping("/logins/{key}")
     public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable Long key) {
         Optional<UserModel> userRequest = userModelRepository.findBySecretKey(key);
