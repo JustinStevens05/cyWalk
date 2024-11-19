@@ -1,22 +1,33 @@
 package com.cywalk.spring_boot.Locations;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalTime;
 
 @Entity
+@Schema(description = "Raw location measurements")
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Schema(description = "the latitude of the GPS position")
+    @NonNull
     private Double latitude;
+
+    @Schema(description = "the longitude of the GPS position")
+    @NonNull
     private Double longitude;
+
+    @Schema(description = "the elevation the Location was recorded at")
     private Double elevation;
 
+    @Schema(description = "The time of the measurement")
     private LocalTime time;
 
     public Location() {
@@ -38,6 +49,7 @@ public class Location {
         this.time = time;
     }
 
+    @NonNull
     public Double getLatitude() {
         return latitude;
     }
@@ -46,6 +58,7 @@ public class Location {
         this.latitude = latitude;
     }
 
+    @NonNull
     public Double getLongitude() {
         return longitude;
     }
