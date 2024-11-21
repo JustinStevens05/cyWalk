@@ -99,14 +99,14 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         checkLocationPermission();
 
-        handler = new Handler();
-        handler.postDelayed(runnable = new Runnable() {
-            @Override
-            public void run() {
-                handler.postDelayed(runnable, locationTick);
-                getUserLocation();
-            }
-        }, locationTick);
+//        handler = new Handler();
+//        handler.postDelayed(runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                handler.postDelayed(runnable, locationTick);
+//                getUserLocation();
+//            }
+//        }, locationTick);
 
 
         /* connect this activity to the websocket instance */
@@ -119,26 +119,27 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //isTracking = !isTracking;
-                //txt_websocket_test.setText("Connected");
-                for (int counter = 0; counter < 50; counter++) {
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-                        jsonObject.put("latitude", currentLocation.getLatitude());
-                        jsonObject.put("longitude", currentLocation.getLongitude());
-                        jsonObject.put("elevation", 0);
-                        runOnUiThread(() -> {
-                            WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-                        });
-                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
-                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                isTracking = !isTracking;
+                if (isTracking) {
+                    handler = new Handler();
+                    handler.postDelayed(runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            handler.postDelayed(runnable, locationTick);
+                            getUserLocation();
+                        }
+                    }, locationTick);
+                }
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("latitude", currentLocation.getLatitude());
+                    jsonObject.put("longitude", currentLocation.getLongitude());
+                    jsonObject.put("elevation", 0);
+                    runOnUiThread(() -> {
+                        WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
        });
