@@ -206,11 +206,16 @@ public class PeopleController {
             Image image = new Image();
             image.setFilepath(destinationFile.getAbsolutePath());
 
-            imageRepository.save(image);
+            image = imageRepository.save(image);
 
             // now remove from a user if they have one and add new to user
-            if (user.getImage() != null && user.getImage().getFilepath() != null && !user.getImage().getFilepath().isEmpty() ) {
-                imageRepository.delete(image);
+            if (user.getImage() != null && user.getImage().getFilepath() != null && !user.getImage().getFilepath().isEmpty()) {
+                imageRepository.delete(user.getImage());
+                // also remove the file
+                File file = new File(user.getImage().getFilepath());
+                if (!file.delete()) {
+                    logger.warn("could not delete file at location: {}", user.getImage().getFilepath());
+                }
             }
 
             user.setImage(image);
