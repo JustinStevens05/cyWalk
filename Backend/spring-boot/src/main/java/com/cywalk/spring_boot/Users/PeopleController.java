@@ -2,16 +2,25 @@ package com.cywalk.spring_boot.Users;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.cywalk.spring_boot.websocket.OnlineUserService;
 import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import javax.swing.plaf.nimbus.State;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +35,13 @@ public class PeopleController {
 
     @Autowired
     private OnlineUserService onlineUserService;
+
+    private Logger logger = LoggerFactory.getLogger(PeopleController.class);
+
+    private static String directory = "/target/profileImages/";
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Operation(summary = "retrieves a People model for a corresponding username in the database")
     @ApiResponse(useReturnTypeSchema = true)
@@ -158,6 +174,85 @@ public class PeopleController {
             }
         } else {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @Operation(summary = "upload a photo to be used as the profile image", description = "uploads a new profile image, replaces one if it currently exists")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "successfully uploaded the image"),
+            @ApiResponse(responseCode = "512", description = "could not write image on server end"),
+            @ApiResponse(responseCode = "404", description = "user not found")
+    })
+    @PostMapping("/image/{key}")
+    public ResponseEntity<Void> uploadImage(
+            @RequestParam("image")
+            @Parameter(name = "imageFile", description = "The image as a file? look at springboot tutorials to send")
+            MultipartFile imageFile,
+            @PathVariable @Parameter(name = "key", description = "The user's session key", example = "/1")
+            Long key
+            ) {
+
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+
+        People user = peopleResult.get();
+
+        try {
+            File destinationFile = new File(directory + File.separator + imageFile.getOriginalFilename());
+            imageFile.transferTo(destinationFile);
+
+            Image image = new Image();
+            image.setFilepath(destinationFile.getAbsolutePath());
+
+            imageRepository.save(image);
+
+            // now remove from a user if they have one and add new to user
+            if (user.getImage() != null && user.getImage().getFilepath() != null && !user.getImage().getFilepath().isEmpty() ) {
+                imageRepository.delete(image);
+            }
+
+            user.setImage(image);
+            peopleService.saveUser(user);
+
+            return ResponseEntity.ok().build();
+        }
+        catch (IOException e) {
+            logger.error("Could not write data to file: {}", imageFile.getOriginalFilename());
+            return ResponseEntity.status(512).build();
+        }
+    }
+
+    @GetMapping(value = "/image/{username}", produces = MediaType.IMAGE_JPEG_VALUE)
+    @Operation(summary = "get profile picture", description = "gets a profile picture for a particular user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "104", description = "Image not found for user", useReturnTypeSchema = false),
+            @ApiResponse(responseCode = "200", description = "Status ok, request fulfilled", content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found for given username", useReturnTypeSchema = false),
+            @ApiResponse(responseCode = "512", description = "Allegedly there is an image, however we couldn't read it")
+    })
+    public ResponseEntity<byte[]> getImageByUsername(
+            @PathVariable @Parameter(name = "username", description = "the username of the profile image to get", example = "ckugel")
+            String username
+    ) {
+        Optional<People> personResult = peopleService.getUserByUsername(username);
+        if (personResult.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+        Image image = personResult.get().getImage();
+        if (image != null && image.getFilepath() != null && !image.getFilepath().isEmpty()) {
+            try {
+                File imageFile = new File(image.getFilepath());
+                return ResponseEntity.ok(Files.readAllBytes(imageFile.toPath()));
+            }
+            catch (IOException e) {
+                logger.error("Could not recover from reading path: {}.\n Error: {}", image.getFilepath(), e.getMessage());
+                return ResponseEntity.status(512).build();
+            }
+        }
+        else {
+            return ResponseEntity.status(104).build();
         }
     }
 
