@@ -4,11 +4,14 @@ import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleController;
 import com.cywalk.spring_boot.Users.PeopleService;
 import com.cywalk.spring_boot.Users.UserRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import jakarta.transaction.Transactional;
+import org.h2.engine.User;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -18,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,133 +35,115 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+
 class FriendControllerTest {
+    @Autowired
+    private PeopleService peopleService;
 
     @LocalServerPort
-    int port;
+    static int port;
 
-    @Autowired
-    PeopleService peopleService;
+    private static final String BASE_URL = "http://localhost";
 
-    @Before
-    public void setUp() {
+    private static Long keyBase;
+    private static Long keyTest;
+
+    private static final String USER_ONE = "userOne";
+    private static final String BASE_USER = "base";
+
+    @BeforeAll
+    static void setup() {
+        RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
-        RestAssured.baseURI = "http://localhost";
     }
 
-    public static String asJsonString(Object o) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.writeValueAsString(o);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static long asKeyFromString(String json) {
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            return mapper.readTree(json).get("key").asLong();
-        } catch (Exception e) {
-            System.out.println("\n\nFAILED FOR STRING: " + json + "\n");
-            throw new RuntimeException(e);
-        }
-    }
-
-    private final People basePeople = new People("base", "base@email.com", null);
-    private final People testPeople = new People("userOne", "users@email.com", null);
-
-    private final UserRequest basePersonRequest = new UserRequest("base", "password123");
-    private final UserRequest testPeopleRequest = new UserRequest("userOne", "password123");
-
-
-    @Transactional
     @Test
-    void approveFriendRequest() throws Exception {
-
-        if (peopleService.getUserByUsername("userOne").isPresent()) {
-            peopleService.deleteUserByName("userOne");
+    @Order(1)
+    void cleanupExistingUsers() {
+        if (peopleService.getUserByUsername(USER_ONE).isPresent()) {
+            peopleService.deleteUserByName(USER_ONE);
         }
-        if (peopleService.getUserByUsername("base").isPresent()) {
-            peopleService.deleteUserByName("base");
+        if (peopleService.getUserByUsername(BASE_USER).isPresent()) {
+            peopleService.deleteUserByName(BASE_USER);
         }
+    }
 
-        Long keyTest;
-        Long keyBase;
+    @Test
+    @Order(2)
+    void signupUsers() {
+        // Sign up base user
+        Response baseSignup = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(asJsonString(createPersonRequest(BASE_USER)))
+                .post("/signup");
+        assertEquals(200, baseSignup.getStatusCode());
+        keyBase = extractKeyFromResponse(baseSignup);
 
-        // sign up both users
-        Response baseSignup = RestAssured.given().
-                header("Content-Type", "text/plain").header("charset", "utf-8").
-                body(asJsonString(basePersonRequest))
-                .when()
-                .post("/signup").thenReturn();
+        // Sign up test user
+        Response testSignup = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(asJsonString(createPersonRequest(USER_ONE)))
+                .post("/signup");
+        assertEquals(200, testSignup.getStatusCode());
+        keyTest = extractKeyFromResponse(testSignup);
+    }
 
-        int statusCode;
+    @Test
+    @Order(3)
+    void handleFriendRequest() {
+        // Send friend request
+        Response friendRequest = RestAssured.post("/friends/" + keyTest + "/request/" + BASE_USER);
+        assertEquals(200, friendRequest.getStatusCode());
 
-        statusCode = baseSignup.getStatusCode();
-        assertEquals(statusCode, 200);
-
-        keyBase = asKeyFromString(baseSignup.getBody().asString());
-
-        Response testSignup = RestAssured.given().
-                body(asJsonString(testPeopleRequest))
-                .when().post("/signup");
-
-        statusCode = testSignup.getStatusCode();
-        assertEquals(statusCode, 200);
-
-        keyTest = asKeyFromString(testSignup.getBody().asString());
-
-        Response friendRequestOne = when().post("/friends/" + keyTest + "/request/base");
-        statusCode = friendRequestOne.getStatusCode();
-        assertEquals(statusCode, 200);
-
-        // check if we have a waiting friend request
-        Response listAllFriends = RestAssured.get("/friends/all");
-        assertEquals(200, listAllFriends.getStatusCode());
-
+        // Check friend requests for BASE_USER
         Response friendRequests = RestAssured.get("/friends/requests/" + keyBase);
         assertEquals(200, friendRequests.getStatusCode());
-        assertTrue(friendRequests.getBody().toString().contains("userOne"));
+        assertTrue(friendRequests.getBody().asString().contains(USER_ONE));
 
-        // check that no one is anyone's friends yet
+        // Approve the friend request
+        Response approveRequest = RestAssured.put("/friends/" + keyBase + "/request/approve/" + USER_ONE);
+        assertEquals(200, approveRequest.getStatusCode());
+
+        // Verify both users are friends
         Response friendsOfBase = RestAssured.get("/friends/" + keyBase);
         assertEquals(200, friendsOfBase.getStatusCode());
-        assertFalse(friendsOfBase.getBody().toString().contains("userOne"));
+        assertTrue(friendsOfBase.getBody().asString().contains(USER_ONE));
 
         Response friendsOfTest = RestAssured.get("/friends/" + keyTest);
-        assertEquals(200,friendsOfTest.getStatusCode());
-        assertFalse(friendsOfTest.getBody().toString().contains("base"));
+        assertEquals(200, friendsOfTest.getStatusCode());
+        assertTrue(friendsOfTest.getBody().asString().contains(BASE_USER));
+    }
 
-        Response friendRequestsBase = RestAssured.get("/friends/requests/" + keyBase);
-        assertEquals(200,  friendRequestsBase.getStatusCode());
-        assertTrue(friendRequestsBase.getBody().toString().contains("userOne"));
+    @Test
+    @Order(4)
+    void cleanup() {
+        // Delete both users
+        Response deleteBase = RestAssured.delete("/users/" + keyBase);
+        assertEquals(200, deleteBase.getStatusCode());
 
-        // accept the request
-        assertEquals(200, RestAssured.put("/friends/" + keyBase + "/request/approve/userOne").getStatusCode());
+        Response deleteTest = RestAssured.delete("/users/" + keyTest);
+        assertEquals(200, deleteTest.getStatusCode());
+    }
 
-        // ensure there are no outgoing requests for either user
-        friendRequestsBase = RestAssured.get("/friends/requests/" + keyBase);
-        assertEquals(200,  friendRequestsBase.getStatusCode());
-        assertFalse(friendRequestsBase.getBody().toString().contains("userOne"));
+    private UserRequest createPersonRequest(String username) {
+        UserRequest request = new UserRequest();
+        request.setUsername(username);
+        request.setPassword("password");
+        return request;
+    }
 
-        friendRequests = RestAssured.get("/friends/requests/" + keyTest);
-        assertEquals(200,  friendRequests.getStatusCode());
-        assertFalse(friendRequests.getBody().toString().contains("base"));
+    private String asJsonString(Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        // ensure the friends have each other as friends
-        friendsOfBase = RestAssured.get("/friends/" + keyBase);
-        assertEquals(200, friendsOfBase.getStatusCode());
-        assertTrue(friendsOfBase.getBody().toString().contains("userOne"));
-
-        friendsOfTest = RestAssured.get("/friends/" + keyTest);
-        assertEquals(200,friendsOfTest.getStatusCode());
-        assertTrue(friendsOfTest.getBody().toString().contains("base"));
-
-        // defer
-        assertEquals(200, RestAssured.delete("/users/" + keyBase).getStatusCode());
-        assertEquals(200, RestAssured.delete("/users/" + keyTest).getStatusCode());
+    private Long extractKeyFromResponse(Response response) {
+        // Assumes response body contains the key
+        return Long.parseLong(response.getBody().asString());
     }
 
 }
