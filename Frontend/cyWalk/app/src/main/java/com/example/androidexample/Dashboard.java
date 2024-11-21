@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +33,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONException;
@@ -39,6 +41,10 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Dashboard class for the users
@@ -46,7 +52,7 @@ import java.util.Map;
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
     private String key = "";
-    private final int FINE_PERMISSION_CODE = 1;
+    private final int LOCATION_REQUEST_CODE = 100;
     private GoogleMap gMap;
     private String totalDistance;
     TextView txt_daily_distance;
@@ -61,8 +67,12 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private boolean isTracking = false;
-    String mobile_url_chunk;
+    String server_url_chunk;
     String local_url_chunk;
+    LatLng currentCoords;
+    Handler handler;
+    long locationTick = 3000;
+    Runnable runnable;
 
     private String URL_JSON_GET_DISTANCE = null;
     private String URL_JSON_GET_USER = null;
@@ -75,23 +85,40 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);                             // link to Main activity XML
+        setContentView(R.layout.dashboard);
+
+        Bundle extras = getIntent().getExtras();
+        key = extras.getString("key");
+        server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
+        local_url_chunk = "10.0.2.2:8080";
+        URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
+        URL_JSON_GET_USER = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
+        URL_WS_SOCKET = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
+
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
         txt_websocket_test = findViewById(R.id.txt_websocket_test);
         btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(Dashboard.this);
+        }
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        checkLocationPermission();
 
-        Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+//        handler = new Handler();
+//        handler.postDelayed(runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                handler.postDelayed(runnable, locationTick);
+//                getUserLocation();
+//            }
+//        }, locationTick);
 
-        mobile_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
-        local_url_chunk = "10.0.2.2:8080";
-
-        URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/locations/total";
-        URL_JSON_GET_USER = "http://" + mobile_url_chunk + "/users/"+key;
-        URL_JSON_POST_LOCATION = "http://" + mobile_url_chunk + "/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://" + mobile_url_chunk + "/locations/sessions?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -100,29 +127,30 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
         /* click listener on auto route button pressed */
-       btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
+        btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //isTracking = !isTracking;
-                //txt_websocket_test.setText("Connected");
-                for (int counter = 0; counter < 50; counter++) {
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-                        jsonObject.put("latitude", currentLocation.getLatitude());
-                        jsonObject.put("longitude", currentLocation.getLongitude());
-                        jsonObject.put("elevation", 0);
-                        runOnUiThread(() -> {
-                            WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-                        });
-                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
-                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+                isTracking = !isTracking;
+                if (isTracking) {
+                    handler = new Handler();
+                    handler.postDelayed(runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            handler.postDelayed(runnable, locationTick);
+                            getUserLocation();
+                        }
+                    }, locationTick);
+                }
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("latitude", currentLocation.getLatitude());
+                    jsonObject.put("longitude", currentLocation.getLongitude());
+                    jsonObject.put("elevation", 0);
+                    runOnUiThread(() -> {
+                        WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+                    });
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             }
        });
@@ -165,23 +193,58 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             }
         });
         requestUsername();
-        getLastLocation();
 
 
+    }
+
+    private void checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getUserLocation();
+        }
+        else {
+            requestForPermissions();
+        }
+    }
+
+    private void requestForPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+    }
+
+    /**
+     *Deals with the response to the program asking for the permissions to access the users location
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Location Enabled", Toast.LENGTH_SHORT).show();
+                getUserLocation();
+            }
+            else {
+                Toast.makeText(this, "Location Disabled", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
      *Retrieves the last known location of the user from the database. If the permission is not already granted for
      * the program to get the location it will then request permission.
      */
-    private void getLastLocation() {
-        // if permissions not already granted, request permissions
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+    private void getUserLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
@@ -192,28 +255,13 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                     currentLocation = location;
                     latitude = currentLocation.getLatitude();
                     longitude = currentLocation.getLongitude();
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
-                    mapFragment.getMapAsync(Dashboard.this);
+                    Log.i("location", latitude + ", " + longitude);
+                    currentCoords = new LatLng(latitude, longitude);
+                    gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 18.0f));
                 }
             }
         });
-    }
-
-    /**
-     *Deals with the response to the program asking for the permissions to access the users location
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == FINE_PERMISSION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
-            }
-            else {
-                Toast.makeText(this, "Location permission is disabled", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     /**
@@ -223,10 +271,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        requestDailyDistance();
-        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 6.0f));
+        gMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 
     /**
@@ -234,7 +279,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      * retrieves the double from the database and then changes the text on the screen to reflect this new distance.
      */
     private void requestDailyDistance() {
-        String URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET, URL_JSON_GET_DISTANCE,
                 new Response.Listener<String>() {

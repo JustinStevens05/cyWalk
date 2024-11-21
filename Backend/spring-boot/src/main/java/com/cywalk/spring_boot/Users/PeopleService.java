@@ -176,6 +176,7 @@ public class PeopleService {
      *                 THIS FUNCTION SHOULD ONLY BE CALLED WHEN WE KNOW FOR SURE THAT THE USER FOR SAID USERNAME EXISTS
      * @return the league that they are in
      */
+    /*
     public League updateLeagueForUser(String username) {
         Optional<Long> rankingResult = ;
         long ranking = 1;
@@ -188,5 +189,6 @@ public class PeopleService {
         // this number times the amount of leagues gives the league a user is in
         return League.values()[(int) pointInRank * AMOUNT_LEAGUES];
     }
+     */
 
 }

@@ -6,12 +6,15 @@
     tools:context=".fragment.friendsFragment">
 
 
-    <TextView
+    <ListView
+        android:id="@+id/lv_leaderboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        android:text="You have no friends" />
+        android:paddingTop="5dp"
+        android:divider="@color/black"
+        android:layout_gravity="center"
+        android:padding="25dp"
+        android:dividerHeight="1dp">
+    </ListView>
 
 </RelativeLayout>

@@ -3,6 +3,8 @@ package com.example.androidexample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +32,7 @@ public class Profile extends AppCompatActivity {
     private static String URL_JSON_OBJECT = null;
     private String username;
     TextView txt_username;
+    ShapeableImageView img_profile_avatar;
 
     /**
      * creates the users profile page
@@ -41,8 +45,9 @@ public class Profile extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
+        img_profile_avatar = findViewById(R.id.profile_img_avatar);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -99,6 +104,7 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
+                            //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -25,7 +25,7 @@
             export PORT=8080
           '';
         default = pkgs.mkShell {
-          packages = with pkgs; [ maven gcc ncurses patchelf zlib jdk22 ];
+          packages = with pkgs; [ maven gcc ncurses patchelf zlib ];
         };
       });
     };
