@@ -1,24 +1,30 @@
 package com.cywalk.spring_boot.Locations;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Schema(description = "The activity or location session recording")
 public class LocationActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "primary key in the database")
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Schema(description = "The locations logged during this activity")
     private List<Location> locations;
 
+    @Schema(description = "The total distance traveled during this session")
     private double totalDistance;
 
     /**
      * Whether the activity is finished or not.
      */
+    @Schema(description = "Whether this is actively being update or whether this is complete")
     private boolean finished;
 
     public LocationActivity(Long id, List<Location> locations) {
