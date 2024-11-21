@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The users socials view that shows them the three types of leaderboards and where they rank
+ * */
 public class Social extends AppCompatActivity implements WebSocketListener{
 
     TabLayout tabLayout;
@@ -53,6 +56,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private static String URL_GLOBAL_LEADERBOARD = null;
     private String URL_WS_SOCKET = null;
 
+    /**
+     * creates the social page for the user to see
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +115,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                 return false;
             }
         });
-        makeJsonObjReq();
+        //makeUsernameReq();
 
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
@@ -155,10 +161,14 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             }
         });
 
-        makeJsonObjReq();
+        makeUsernameReq();
         globalLeaderboardReq();
     }
-    private void makeJsonObjReq() {
+
+    /**
+     * gets the current users username based off of their session key and then includes that name into the title of the page
+     */
+    private void makeUsernameReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
@@ -205,6 +215,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * retrieves the global leaderboard from the database and then prints it out onto the screen
+     */
     private void globalLeaderboardReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET, URL_GLOBAL_LEADERBOARD, null, // Pass null as the request body since it's a GET request
@@ -275,6 +288,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     /*
      * Methods implementing WebSocketListener
      */
+    /**
+     * required websocket code currently does nothing
+     */
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) {
         runOnUiThread(() -> {
@@ -282,6 +298,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
     }
 
+    /**
+     * prints out the retrieved leaderboard from the database and updates it is the leaderboard changes
+     */
     @Override
     public void onWebSocketMessage(String message) {
         runOnUiThread(() -> {
@@ -289,6 +308,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
     }
 
+    /**
+     * required websocket code currently does nothing
+     */
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
         runOnUiThread(() -> {
@@ -296,6 +318,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
     }
 
+    /**
+     * required websocket code currently does nothing
+     */
     @Override
     public void onWebSocketError(Exception ex) {
         runOnUiThread(() -> {

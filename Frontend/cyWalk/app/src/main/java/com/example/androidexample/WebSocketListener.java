@@ -12,6 +12,7 @@ public interface WebSocketListener {
      * Called when the WebSocket connection is successfully opened.
      *
      * @param handshakedata Information about the server handshake.
+     * @throws java.lang.InterruptedException interrupt exception
      */
     void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException;
 
@@ -19,6 +20,7 @@ public interface WebSocketListener {
      * Called when a WebSocket message is received.
      *
      * @param message The received WebSocket message.
+     * @throws java.lang.InterruptedException interrupt exception
      */
     void onWebSocketMessage(String message) throws InterruptedException;
 

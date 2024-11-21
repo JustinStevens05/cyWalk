@@ -23,6 +23,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The users view that shows them their profile
+ * */
 public class Profile extends AppCompatActivity {
 
     private static String key;
@@ -31,7 +34,9 @@ public class Profile extends AppCompatActivity {
     TextView txt_username;
     ShapeableImageView img_profile_avatar;
 
-
+    /**
+     * creates the users profile page
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +86,14 @@ public class Profile extends AppCompatActivity {
                 return false;
             }
         });
-        makeJsonObjReq();
+        makeUsernameReq();
     }
 
-    private void makeJsonObjReq() {
+    /**
+     * gets the current users username base off of their session key and then sets the required text
+     * on the screen to that retrieved username
+     */
+    private void makeUsernameReq() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET, URL_JSON_OBJECT, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {

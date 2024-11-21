@@ -10,8 +10,16 @@ import android.view.ViewGroup;
 
 import com.example.androidexample.R;
 
+/**
+ * organization leaderboard for the socials tab
+ * */
 public class localFragment extends Fragment {
 
+    /**
+     * creates the leaderboard sections for the organizations leaderboard
+     *
+     * @return organizations leaderboard view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

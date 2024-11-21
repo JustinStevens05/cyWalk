@@ -22,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The organizations login page that they see before logging in
+ * */
 public class OrgLogin extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
@@ -31,10 +34,16 @@ public class OrgLogin extends AppCompatActivity {
     private static String URL_LOGIN = "http://10.0.2.2:8080/users";
     private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
     private String userKey = "";
+    private String orgId="";
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
+    private TextView userSwitch;
+    private TextView devSwitch;
 
+    /**
+     *creates the page for the organization users to be able to login in or create their organization
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +55,8 @@ public class OrgLogin extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
+        userSwitch = findViewById(R.id.switchUserView);
+        devSwitch = findViewById(R.id.switchDevView);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +92,28 @@ public class OrgLogin extends AppCompatActivity {
                 }
             }
         });
+
+        userSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrgLogin.this, Login.class);
+                startActivity(intent);
+            }
+        });
+
+        devSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrgLogin.this, DevLogin.class);
+                startActivity(intent);
+            }
+        });
     }
 
+    /**
+     * attempts to log the organization user in using their inputted username and password. If the organization doesn't exist
+     * or the credentials are wrong will throw an error and let the user know that something went wrong
+     */
     private void makeLoginReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
@@ -105,6 +136,7 @@ public class OrgLogin extends AppCompatActivity {
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
                                 intent.putExtra("key", userKey);
+                                intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);
                             } else {
@@ -146,6 +178,10 @@ public class OrgLogin extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * attempts to sign the user up using the inputted credentials if all is good moves the organization on to the organizations landing page
+     * if there is an issue like the organization already exists it will throw an error and let the user know that something went wrong
+     */
     private void makeSignUpReq() throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("username", username);
