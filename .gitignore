@@ -58,6 +58,7 @@ gen-external-apklibs
 .mtj.tmp/
 
 # Package Files #
+!gradle/wrapper/gradle-wrapper.jar
 *.jar
 *.war
 *.nar
@@ -81,6 +82,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
+
 .mvn/wrapper/maven-wrapper.jar
 
 # Eclipse m2e generated files

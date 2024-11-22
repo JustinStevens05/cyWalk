@@ -194,7 +194,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         });
         requestUsername();
 
-
     }
 
     private void checkLocationPermission() {
