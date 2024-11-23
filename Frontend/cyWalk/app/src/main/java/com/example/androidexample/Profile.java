@@ -17,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,6 +115,7 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
+                            //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

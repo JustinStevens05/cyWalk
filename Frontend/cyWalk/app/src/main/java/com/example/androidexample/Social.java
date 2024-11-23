@@ -66,9 +66,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         friendsButton = findViewById(R.id.friendsButton);
         title = findViewById(R.id.title);
         temp = findViewById(R.id.temp);
-//        lb_listView = findViewById(R.id.lv_leaderboard);
-//
-//        lbList = new ArrayList<String>();
+        lb_listView = findViewById(R.id.lv_leaderboard);
+
+        lbList = new ArrayList<String>();
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);

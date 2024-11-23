@@ -1,8 +1,10 @@
 package com.cywalk.spring_boot.Users;
 
-import java.util.Optional;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "A model for the secret key")
 public class Key {
+    @Schema(description = "A key")
     private long key;
 
     public Key(long key) {

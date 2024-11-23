@@ -1,5 +1,5 @@
 package com.cywalk.spring_boot.Users;
-import com.cywalk.spring_boot.Friends.FriendRequest;
+import com.cywalk.spring_boot.Friends.FriendService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +11,13 @@ import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PeopleService {
+
+    // I love comptime
+    public static final int AMOUNT_LEAGUES = League.values().length;
 
     @Autowired
     private PeopleRepository peopleRepository;
@@ -28,6 +32,8 @@ public class PeopleService {
     private UserRequestRepository userRequestRepository;
 
     private final Logger logger = LoggerFactory.getLogger(PeopleService.class);
+    @Autowired
+    private FriendService friendService;
 
     public PeopleService() {}
 
@@ -156,7 +162,33 @@ public class PeopleService {
         }
     }
 
+    /**
+     * @return all users in the database
+     */
     public List<People> getAllPeople() {
         return peopleRepository.findAll();
     }
+
+    /**
+     * updates and returns the league that the current user is in.
+     * This function calculates the user's global ranking relative to everyone else and then returns that
+     * @param username the username of the user.
+     *                 THIS FUNCTION SHOULD ONLY BE CALLED WHEN WE KNOW FOR SURE THAT THE USER FOR SAID USERNAME EXISTS
+     * @return the league that they are in
+     */
+    /*
+    public League updateLeagueForUser(String username) {
+        Optional<Long> rankingResult = ;
+        long ranking = 1;
+        if (rankingResult.isPresent()) {
+            ranking = rankingResult.get();
+        }
+        int amountOfUsers = getAllPeople().size();
+        // ranking as a percent corresponds to the league
+        double pointInRank = (double) ranking / (double) amountOfUsers;
+        // this number times the amount of leagues gives the league a user is in
+        return League.values()[(int) pointInRank * AMOUNT_LEAGUES];
+    }
+     */
+
 }
