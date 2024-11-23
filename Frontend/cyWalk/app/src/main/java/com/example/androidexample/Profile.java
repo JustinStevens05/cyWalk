@@ -3,6 +3,8 @@ package com.example.androidexample;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +14,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
@@ -29,6 +33,7 @@ public class Profile extends AppCompatActivity {
     private static String URL_JSON_OBJECT = null;
     private String username;
     TextView txt_username;
+    private Button btn_logout;
 
     /**
      * creates the users profile page
@@ -43,6 +48,7 @@ public class Profile extends AppCompatActivity {
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
+        btn_logout = findViewById(R.id.profile_btn_logout);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -82,6 +88,15 @@ public class Profile extends AppCompatActivity {
             }
         });
         makeUsernameReq();
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            Intent intent = null;
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(Profile.this, Login.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -131,4 +146,5 @@ public class Profile extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
+
 }
