@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +35,7 @@ public class Profile extends AppCompatActivity {
     private String username;
     TextView txt_username;
     ShapeableImageView img_profile_avatar;
+    private Button btn_logout;
 
     /**
      * creates the users profile page
@@ -47,6 +50,7 @@ public class Profile extends AppCompatActivity {
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
+        btn_logout = findViewById(R.id.profile_btn_logout);
         img_profile_avatar = findViewById(R.id.profile_img_avatar);
 
         // NAVIGATION BAR
@@ -87,6 +91,15 @@ public class Profile extends AppCompatActivity {
             }
         });
         makeUsernameReq();
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            Intent intent = null;
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(Profile.this, Login.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
