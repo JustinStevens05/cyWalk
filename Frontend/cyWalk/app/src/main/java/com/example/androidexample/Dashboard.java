@@ -83,7 +83,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        //key = extras.getString("key");
 
         server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
@@ -163,10 +163,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 return false;
             }
         });
-        requestUsername();
+        //requestUsername();
         getLastLocation();
-
-
     }
 
     /**
