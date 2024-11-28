@@ -47,12 +47,25 @@ public class People {
   @Schema(description = "All of the locations, organized as measurements in days, that a user has logged")
   private List<LocationDay> locations = new ArrayList<>();
 
+  @Enumerated(EnumType.STRING)
+  private League league;
+
   // Constructors, getters, and setters
 
   public People(@NonNull String username, String email, List<LocationDay> locations) {
     this.username = username;
     this.email = email;
     this.locations = locations != null ? locations : new ArrayList<>();
+  }
+
+  public People(String username, Organization organization, String email, Set<FriendRequest> sentRequests, Set<FriendRequest> receivedRequests, List<LocationDay> locations, League league) {
+    this.username = username;
+    this.organization = organization;
+    this.email = email;
+    this.sentRequests = sentRequests;
+    this.receivedRequests = receivedRequests;
+    this.locations = locations;
+    this.league = league;
   }
 
   public People() {}
@@ -117,15 +130,24 @@ public class People {
     this.receivedRequests = receivedRequests;
   }
 
+  public League getLeague() {
+    return league;
+  }
+
+  public void setLeague(League league) {
+    this.league = league;
+  }
+
   @Override
   public String toString() {
     return "People{" +
             "username='" + username + '\'' +
-            ", email='" + email + '\'' +
             ", organization=" + organization +
+            ", email='" + email + '\'' +
             ", sentRequests=" + sentRequests +
             ", receivedRequests=" + receivedRequests +
             ", locations=" + locations +
+            ", league=" + league +
             '}';
   }
 }

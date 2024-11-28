@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,6 @@ public class PeopleController {
 
     @Autowired
     private PeopleService peopleService;
-
     @Autowired
     private UserModelRepository userModelRepository;
 
@@ -111,7 +111,7 @@ public class PeopleController {
             @ApiResponse(responseCode = "404", description = "No logged in users found")
     })
     @DeleteMapping("/logins/{key}")
-    public ResponseEntity<Void> logoutAllOfUser(@PathVariable @Parameter(name = "key", description = "user key", example = "1") Long key) {
+    public ResponseEntity<Void> logoutAllOfUser(@PathVariable Long key) {
        ResponseEntity<List<UserModel>> result = getActiveSessions(key);
        if (result.getStatusCode().value() == 200) {
            List<UserModel> elements = result.getBody();
@@ -147,7 +147,7 @@ public class PeopleController {
             @ApiResponse(responseCode = "404", description = "No logged in users found")
     })
     @GetMapping("/logins/{key}")
-    public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable @Parameter(name = "key", description = "user key", example = "1") Long key) {
+    public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable Long key) {
         Optional<UserModel> userRequest = userModelRepository.findBySecretKey(key);
         if (userRequest.isPresent()) {
             List<UserModel> current = userModelRepository.findAllByPeople(userRequest.get().getUser());
@@ -160,4 +160,34 @@ public class PeopleController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    /**
+     * Gets the current league a user is in
+     * @param key the key of said user
+     * @return the current league of the user
+     */
+    /*
+    @GetMapping("/league")
+    public Optional<League> getCurrentLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(peopleResult.get().getLeague());
+    }
+*/
+
+    /**
+     * updates or generates the league for the current user.
+     * WARNING THIS IS VERY SLOW SO USE GET WHEN YOU CAN AND AVOID FREQUENT CALLS
+     * @param key the user's session key
+     * @return the league the user is in or nothing if there was an issue
+     */
+    /*
+    @PutMapping("/league")
+    public Optional<League> updateAndGetLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        return peopleResult.map(people -> peopleService.updateLeagueForUser(people.getUsername()));
+    }
+*/
 }

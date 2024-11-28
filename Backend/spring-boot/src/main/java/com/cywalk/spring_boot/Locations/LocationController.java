@@ -92,5 +92,12 @@ public class LocationController {
     public Optional<LocationDay> getDistanceFromDay(@PathVariable @Parameter(name = "key", description = "the user's sessopm key") Long key) {
         return locationService.totalDistanceFromUser(key);
     }
+
+    @GetMapping("/week/total")
+    public Optional<Double> getTotalDistancePastWeek(@PathVariable Long key) {
+        return locationService.totalDistanceFromUserWeek(key);
+    }
+
+
 }
 
