@@ -24,6 +24,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
+import static com.cywalk.spring_boot.Friends.FriendController.asJsonString;
+
 @RestController
 @RequestMapping("/users")
 public class PeopleController {
@@ -259,6 +261,66 @@ public class PeopleController {
         else {
             return ResponseEntity.status(104).build();
         }
+    }
+
+    @PostMapping(value = "{key}/profile")
+    @Operation(summary = "add a bio", description = "whatever String is passed through the body will be added as a bio")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "status ok, request fulfilled"),
+            @ApiResponse(responseCode = "404", description = "user not found"),
+    })
+    public ResponseEntity<Void> updateProfile(
+            @PathVariable @Parameter(name = "key", description = "the user session key") Long key,
+            @RequestHeader("bio") @Parameter(description = "the bio to update, null or empty string to keep same", example = "I loves to walk!") String bio,
+            @RequestHeader("username") @Parameter(description = "the updated username, null or empty string to keep the same", example = "jeb") String username,
+            @RequestHeader("email") @Parameter(description = "the updated email, null or empty to keep the same", example = "userOne@email.com") String email) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        People people = peopleResult.get();
+
+        if (bio != null && !bio.isEmpty()) {
+            people = peopleService.updateBio(people, bio);
+        }
+        if (username != null && !username.isEmpty()) {
+            people = peopleService.updateUsername(people, username);
+        }
+        if (email != null && !email.isEmpty()) {
+            peopleService.updateEmail(people, email);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("{key}/profile/email")
+    @Operation(summary = "email of user", description = "fetches the email of a given user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "status ok, request fulfilled", content = @Content),
+            @ApiResponse(responseCode = "404", description = "user not found"),
+    })
+    public ResponseEntity<String> getEmail(@PathVariable @Parameter(name = "key", description = "the user session key") Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.of(Optional.of(asJsonString(peopleResult.get().getEmail())));
+    }
+
+
+    @GetMapping("{key}/profile/bio")
+    @Operation(summary = "bio of user", description = "fetches the bio of a given user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "status ok, request fulfilled", content = @Content),
+            @ApiResponse(responseCode = "404", description = "user not found"),
+    })
+    public ResponseEntity<String> getBio(@PathVariable @Parameter(name = "key", description = "the user session key") Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.of(Optional.of(asJsonString(peopleResult.get().getUsername())));
     }
 
     /**
