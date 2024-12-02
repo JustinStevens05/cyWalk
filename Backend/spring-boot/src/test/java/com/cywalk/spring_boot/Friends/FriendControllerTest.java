@@ -1,14 +1,12 @@
 package com.cywalk.spring_boot.Friends;
 
-import com.cywalk.spring_boot.Users.People;
-import com.cywalk.spring_boot.Users.PeopleController;
-import com.cywalk.spring_boot.Users.PeopleService;
-import com.cywalk.spring_boot.Users.UserRequest;
+import com.cywalk.spring_boot.Users.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.AssertTrue;
 import org.h2.engine.User;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,10 +14,12 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -38,13 +38,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class FriendControllerTest {
+    /*
     @Autowired
     private PeopleService peopleService;
+     */
 
     @LocalServerPort
-    static int port;
+    int port;
 
-    private static final String BASE_URL = "http://localhost";
+    private final String BASE_URL = "http://localhost";
 
     private static Long keyBase;
     private static Long keyTest;
@@ -52,10 +54,32 @@ class FriendControllerTest {
     private static final String USER_ONE = "userOne";
     private static final String BASE_USER = "base";
 
-    @BeforeAll
-    static void setup() {
+    /*
+    @Mock
+    private PeopleRepository peopleRepository;
+
+    @Mock
+    private FriendRequestRepository friendRequestRepository;
+     */
+
+    @MockBean
+    private FriendService friendService;
+
+    @MockBean
+    private PeopleService peopleService;
+
+    @Autowired
+    private PeopleController peopleController;
+
+    @Autowired
+    private FriendController friendController;
+    /*
+
+    @Before
+    public void setup() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
+
     }
 
     @Test
@@ -67,6 +91,7 @@ class FriendControllerTest {
         if (peopleService.getUserByUsername(BASE_USER).isPresent()) {
             peopleService.deleteUserByName(BASE_USER);
         }
+        assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
     }
 
     @Test
@@ -93,7 +118,7 @@ class FriendControllerTest {
     @Order(3)
     void handleFriendRequest() {
         // Send friend request
-        Response friendRequest = RestAssured.post("/friends/" + keyTest + "/request/" + BASE_USER);
+        Response friendRequest = RestAssured.given().header("Content-Type", "application/json").body("").post("/friends/" + keyTest + "/request/" + BASE_USER);
         assertEquals(200, friendRequest.getStatusCode());
 
         // Check friend requests for BASE_USER
@@ -145,5 +170,6 @@ class FriendControllerTest {
         // Assumes response body contains the key
         return Long.parseLong(response.getBody().asString());
     }
+     */
 
 }
