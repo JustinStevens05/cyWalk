@@ -233,7 +233,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      * retrieves the double from the database and then changes the text on the screen to reflect this new distance.
      */
     private void requestDailyDistance() {
-        String URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/location/total";
+        //String URL_JSON_GET_DISTANCE = "http://" + mobile_url_chunk + "/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET, URL_JSON_GET_DISTANCE,
                 new Response.Listener<String>() {
