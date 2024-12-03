@@ -120,13 +120,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reward Goals"
+            android:text="Organization Goals"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-black"
             android:padding="5dp"
             android:textSize="25sp"/>
 
         <RelativeLayout
+            android:id="@+id/addPlanBtnLayout"
             android:layout_width="match_parent"
             android:padding="10dp"
             android:layout_height="wrap_content">
@@ -140,6 +141,49 @@
                 android:padding="5sp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/orgPlan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-black"
+                    android:layout_weight="1"
+                    android:text="Step Progress:"/>
+
+                <TextView
+                    android:id="@+id/orgSteps"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/black"
+                    android:fontFamily="sans-serif-black"
+                    android:textAlignment="textEnd"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/orgProgressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:progressDrawable="@drawable/myprogressbar"
+                android:layout_height="50sp"
+                android:paddingVertical="10sp"
+                android:max="10000"
+                android:progressTint="#FFEB3B" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
