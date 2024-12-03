@@ -184,8 +184,7 @@
             android:background="@color/white"
             android:text="User sign-up/log-in"
             android:textColor="#AAAAAA"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/switchDevView"/>
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>
