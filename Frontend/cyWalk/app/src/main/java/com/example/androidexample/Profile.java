@@ -45,6 +45,7 @@ public class Profile extends AppCompatActivity {
     TextView txt_username;
     ShapeableImageView img_profile_avatar;
     private Button btn_logout;
+    private Button btn_edit_avatar;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -79,6 +80,7 @@ public class Profile extends AppCompatActivity {
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
+        btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
         img_profile_avatar = findViewById(R.id.profile_img_avatar);
 
         // NAVIGATION BAR
@@ -129,7 +131,7 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        img_profile_avatar.setOnClickListener(v -> openGallery());
+        btn_edit_avatar.setOnClickListener(v -> openGallery());
     }
 
     /**
