@@ -98,7 +98,7 @@ android-build:
   image: afirefly/android-ci:java17
   stage: androidbuild
   tags:
-   - charlie_runner                   # <-- change to your runner's tag
+   - android_tag                   # <-- change to your runner's tag
   before_script:                    # change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/cyWalk/gradlew
@@ -107,7 +107,7 @@ android-build:
     - ./gradlew build
   only:
     refs:
-      - Charlie_CICD
+      - main
     changes:
       - Frontend/**/*
 
@@ -115,7 +115,7 @@ android-test:
   image: afirefly/android-ci:java17
   stage: androidtest
   tags:
-    - charlie_runner                  # <-- change to your runner's tag
+    - android_tag                  # <-- change to your runner's tag
   before_script:                   # change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/cyWalk/gradlew
@@ -124,6 +124,6 @@ android-test:
     - ./gradlew test
   only:
     refs:
-      - Charlie_CICD
+      - main
     changes:
       - Frontend/**/*
