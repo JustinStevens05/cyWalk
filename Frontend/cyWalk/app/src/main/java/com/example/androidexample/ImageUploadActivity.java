@@ -23,10 +23,12 @@ public class ImageUploadActivity extends AppCompatActivity {
     Button uploadBtn;
     ImageView mImageView;
     Uri selectiedUri;
+    String key;
+    private String UPLOAD_URL = null;
 
     // replace this with the actual address
     // 10.0.2.2 to be used for localhost if running springboot on the same host
-    private static String UPLOAD_URL = "http://coms-3090-072.class.las.iastate.edu:8080/images";
+
 
     private ActivityResultLauncher<String> mGetContent;
 
@@ -34,9 +36,12 @@ public class ImageUploadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
-
         mImageView = findViewById(R.id.imageSelView);
         selectBtn = findViewById(R.id.selectBtn);
+
+        Bundle extras = getIntent().getExtras();
+        key = extras.getString("key");
+        UPLOAD_URL = "http://coms-3090-072.class.las.iastate.edu:8080/users/images/" + key;
 
         // select image from gallery
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),

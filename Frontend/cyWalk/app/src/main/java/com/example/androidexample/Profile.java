@@ -51,8 +51,7 @@ public class Profile extends AppCompatActivity {
     private Button btn_logout;
     private Button btn_edit_avatar;
     Uri selectiedUri;
-    public static final String URL_IMAGE = "http://10.0.2.2:8080/images/1";
-    private static String UPLOAD_URL = "http://10.0.2.2:8080/images";
+    public String URL_IMAGE = null;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -131,6 +130,8 @@ public class Profile extends AppCompatActivity {
         makeUsernameReq();
         makeImageRequest();
 
+        URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             Intent intent = null;
             @Override
@@ -145,7 +146,9 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Navigate to ImageUploadActivity
-                startActivity(new Intent(Profile.this, ImageUploadActivity.class));
+                Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
                 makeImageRequest();
             }
         });
