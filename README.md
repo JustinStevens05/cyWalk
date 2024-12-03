@@ -1,5 +1,6 @@
 # 4_rasel_6
-
+## Documentation link
+http://coms-3090-072.class.las.iastate.edu:8080/swagger-ui/index.html#/
 
 
 ## Getting started
