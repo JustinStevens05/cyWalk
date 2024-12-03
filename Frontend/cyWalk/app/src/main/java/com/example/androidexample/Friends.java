@@ -73,8 +73,8 @@ public class Friends extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        URL_JSON_FRIENDS = "http://10.0.2.2:8080/friends/"+key;
-        URL_JSON_PENDING = "http://10.0.2.2:8080/friends/requests/"+key;
+        URL_JSON_FRIENDS = "http://coms-3090-072.class.las.iastate.edu:8080/friends/"+key;
+        URL_JSON_PENDING = "http://coms-3090-072.class.las.iastate.edu:8080/friends/requests/"+key;
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
