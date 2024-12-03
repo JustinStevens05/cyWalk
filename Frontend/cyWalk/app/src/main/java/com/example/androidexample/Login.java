@@ -117,63 +117,60 @@ public class Login extends AppCompatActivity {
 
         final String requestBody = jsonObject.toString();
 
-        Intent intent = new Intent(Login.this, Dashboard.class);
-        startActivity(intent);
-
         //errorMsg.setText(requestBody);
 
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-//                Request.Method.PUT, URL_LOGIN, jsonObject,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        Log.d("Volley Response", response.toString());
-//                        try {
-//                            // Parse JSON object data
-//                            key = response.getString("key");
-//                            //extraMsg.setText("working " + userKey);
-//                            if(!key.isEmpty()) {
-//                                Intent intent = new Intent(Login.this, Dashboard.class);
-//                                intent.putExtra("key", key);
-//                                //errorMsg.setText("success " + key);
-//                                startActivity(intent);
-//                            } else {
-//                                //errorMsg.setText("failed " + userKey);
-//                                errorMsg.setText("Error invalid username/password");
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.e("Volley Error", error.toString());
-//                        errorMsg.setText("an error has occured please try again later");
-//                    }
-//                }
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-////                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-////                headers.put("Content-Type", "application/json");
-//                return headers;
-//            }
-//
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<String, String>();
-////                params.put("param1", "value1");
-////                params.put("param2", "value2");
-//                return params;
-//            }
-//        };
-//
-//        // Adding request to request queue
-//        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.PUT, URL_LOGIN, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            key = response.getString("key");
+                            //extraMsg.setText("working " + userKey);
+                            if(!key.isEmpty()) {
+                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                intent.putExtra("key", key);
+                                //errorMsg.setText("success " + key);
+                                startActivity(intent);
+                            } else {
+                                //errorMsg.setText("failed " + userKey);
+                                errorMsg.setText("Error invalid username/password");
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        errorMsg.setText("an error has occured please try again later");
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
     /**
