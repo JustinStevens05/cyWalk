@@ -18,16 +18,20 @@
         android:textSize="30dp">
     </TextView>
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_img_avatar"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/custom_border"
-        android:layout_below="@+id/profile_txt_username"
-        android:layout_marginTop="75dp"
-        android:src="@drawable/default_avatar">
-    </ImageView>
+        android:layout_below="@+id/profile_btn_edit_avatar"
+        android:layout_marginTop="25dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/default_avatar"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.CircularBorder"
+        app:strokeColor="@color/bronze"
+        app:strokeWidth="15dp"
+        android:padding="15dp">
+    </com.google.android.material.imageview.ShapeableImageView>
 
     <Button
         android:id="@+id/profile_btn_logout"
@@ -40,26 +44,15 @@
         android:text="Log Out" />
 
     <Button
-        android:id="@+id/profile_btn_edit"
+        android:id="@+id/profile_btn_edit_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@id/profile_btn_logout"
-        android:layout_marginTop="25dp"
-        android:text="Start New Route" />
+        android:layout_below="@+id/profile_txt_username"
+        android:layout_marginTop="50dp"
+        android:text="Change Profile Picture" />
 
-    <Button
-        android:id="@+id/profile_btn_addfriend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottomNavigation"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/btn_style"
-        android:text="Add Friend"
-        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

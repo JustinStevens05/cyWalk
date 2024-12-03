@@ -1,5 +1,9 @@
 package com.cywalk.spring_boot.Users;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +27,21 @@ public class PeopleController {
     @Autowired
     private OnlineUserService onlineUserService;
 
+    @Operation(summary = "retrieves a People model for a corresponding username in the database")
+    @ApiResponse(useReturnTypeSchema = true)
     @GetMapping("/username/{username}")
-    public Optional<People> getUserByUsername(@PathVariable String username) {
+    public Optional<People> getUserByUsername(@PathVariable @Parameter(name = "username", description = "the username of a user used when signed in", example = "ckugel") String username) {
         return peopleService.getUserByUsername(username);
     }
 
+    @Operation(summary = "gets all of the users", description = "Retrieves all of the users from the database and returns those entitys")
+    @ApiResponse(useReturnTypeSchema = true)
     @GetMapping
     public List<People> getAllUsers() {
         return peopleService.getAllPeople();
     }
 
+    @Operation(summary = "creates a new user with a person schema")
     @PostMapping
     public Optional<People> createUser(@RequestBody People people) {
         return peopleService.createUser(people);
@@ -52,8 +61,9 @@ public class PeopleController {
      * @param userRequest username password combo
      * @return the key to be used during the session
      */
+    @Operation(summary = "Log in a user with the corresponding user request")
     @PutMapping
-    public ResponseEntity<Key> login(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<Key> login(@RequestBody @Parameter(name = "userRequest", description = "the username password combination to sign in") UserRequest userRequest) {
         return peopleService.login(userRequest);
     }
 
@@ -63,8 +73,13 @@ public class PeopleController {
      * @param key the key that was used for the login session
      * @return the
      */
+    @Operation(summary = "Log out an instance of a user")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "successfully logged out the user"),
+            @ApiResponse(responseCode = "404", description = "No logged in users found")
+    })
     @DeleteMapping("/{key}")
-    public ResponseEntity<Void> logout(@PathVariable Long key) {
+    public ResponseEntity<Void> logout(@PathVariable @Parameter(name = "key", description = "user key", example = "1") Long key) {
         Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
         if (toDelete.isPresent()) {
             People user = toDelete.get().getUser();
@@ -90,6 +105,11 @@ public class PeopleController {
      * @param key session key
      * @return a successful key
      */
+    @Operation(summary = "Log out all instances of a user including the current one")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "successfully logged out any logged in users"),
+            @ApiResponse(responseCode = "404", description = "No logged in users found")
+    })
     @DeleteMapping("/logins/{key}")
     public ResponseEntity<Void> logoutAllOfUser(@PathVariable Long key) {
        ResponseEntity<List<UserModel>> result = getActiveSessions(key);
@@ -121,6 +141,11 @@ public class PeopleController {
      * @param key the session key from {@link #login(UserRequest)}
      * @return all the sessions of a user
      */
+    @Operation(summary = "Gets all the current User Models in the database. Intended to be cleared using logoutAllOfUser")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Got all active sessions"),
+            @ApiResponse(responseCode = "404", description = "No logged in users found")
+    })
     @GetMapping("/logins/{key}")
     public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable Long key) {
         Optional<UserModel> userRequest = userModelRepository.findBySecretKey(key);
@@ -135,4 +160,34 @@ public class PeopleController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    /**
+     * Gets the current league a user is in
+     * @param key the key of said user
+     * @return the current league of the user
+     */
+    /*
+    @GetMapping("/league")
+    public Optional<League> getCurrentLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(peopleResult.get().getLeague());
+    }
+*/
+
+    /**
+     * updates or generates the league for the current user.
+     * WARNING THIS IS VERY SLOW SO USE GET WHEN YOU CAN AND AVOID FREQUENT CALLS
+     * @param key the user's session key
+     * @return the league the user is in or nothing if there was an issue
+     */
+    /*
+    @PutMapping("/league")
+    public Optional<League> updateAndGetLeague(@PathVariable Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        return peopleResult.map(people -> peopleService.updateLeagueForUser(people.getUsername()));
+    }
+*/
 }
