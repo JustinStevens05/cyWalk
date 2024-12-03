@@ -126,7 +126,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 2000;
+    long locationTick = 3000;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
@@ -360,8 +360,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 if (locationResult != null && !locationResult.getLocations().isEmpty()) {
                     currentLocation = locationResult.getLastLocation();
                     updateMapWithLocation(currentLocation);
+
                     if (isTracking) {
-                        sendLocationThroughWebSocket(currentLocation);
+                        sendLocationThroughWebSocket(currentLocation); // Only send location if tracking
                     }
                 }
             }
@@ -490,7 +491,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        txt_daily_distance.setText("Daily Distance: " + message);
+        double receivedDistance = Double.parseDouble(message);
+        txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", receivedDistance));
 
     }
 
