@@ -89,11 +89,13 @@ public class LocationController {
     @Operation(summary = "get the LocationDay from a today")
     @ApiResponse(useReturnTypeSchema = true)
     @GetMapping("/total")
-    public Optional<LocationDay> getDistanceFromDay(@PathVariable @Parameter(name = "key", description = "the user's sessopm key") Long key) {
+    public Optional<LocationDay> getDistanceFromDay(@PathVariable @Parameter(name = "key", description = "the user's session key") Long key) {
         return locationService.totalDistanceFromUser(key);
     }
 
     @GetMapping("/week/total")
+    @Operation(summary = "Weekly distance", description = "gets the total distance traveled by a user over the course of the past week")
+    @ApiResponse(useReturnTypeSchema = true)
     public Optional<Double> getTotalDistancePastWeek(@PathVariable Long key) {
         return locationService.totalDistanceFromUserWeek(key);
     }

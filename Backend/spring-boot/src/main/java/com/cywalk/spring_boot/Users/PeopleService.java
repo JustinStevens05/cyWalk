@@ -32,8 +32,6 @@ public class PeopleService {
     private UserRequestRepository userRequestRepository;
 
     private final Logger logger = LoggerFactory.getLogger(PeopleService.class);
-    @Autowired
-    private FriendService friendService;
 
     public PeopleService() {}
 

@@ -47,6 +47,10 @@ public class People {
   @Schema(description = "All of the locations, organized as measurements in days, that a user has logged")
   private List<LocationDay> locations = new ArrayList<>();
 
+  @OneToOne
+  @Schema(description = "The image object for the profile picture")
+  private Image image;
+
   @Enumerated(EnumType.STRING)
   private League league;
 
@@ -65,6 +69,18 @@ public class People {
     this.sentRequests = sentRequests;
     this.receivedRequests = receivedRequests;
     this.locations = locations;
+    this.league = league;
+  }
+
+
+  public People(@NonNull String username, Organization organization, String email, @NonNull Set<FriendRequest> sentRequests, @NonNull Set<FriendRequest> receivedRequests, List<LocationDay> locations, Image image, League league) {
+    this.username = username;
+    this.organization = organization;
+    this.email = email;
+    this.sentRequests = sentRequests;
+    this.receivedRequests = receivedRequests;
+    this.locations = locations;
+    this.image = image;
     this.league = league;
   }
 
@@ -138,6 +154,14 @@ public class People {
     this.league = league;
   }
 
+  public Image getImage() {
+    return image;
+  }
+
+  public void setImage(Image image) {
+    this.image = image;
+  }
+
   @Override
   public String toString() {
     return "People{" +
@@ -147,6 +171,7 @@ public class People {
             ", sentRequests=" + sentRequests +
             ", receivedRequests=" + receivedRequests +
             ", locations=" + locations +
+            ", image=" + image +
             ", league=" + league +
             '}';
   }
