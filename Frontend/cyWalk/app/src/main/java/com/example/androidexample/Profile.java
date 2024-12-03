@@ -1,7 +1,11 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -22,6 +30,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +45,25 @@ public class Profile extends AppCompatActivity {
     TextView txt_username;
     ShapeableImageView img_profile_avatar;
     private Button btn_logout;
+
+    // ActivityResultLauncher for opening the gallery
+    ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    // Get the URI of the selected image
+                    Uri selectedImageUri = result.getData().getData();
+
+                    // Convert URI to Bitmap and set it as profile image
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        img_profile_avatar.setImageBitmap(bitmap);  // Set the selected image to img_profile_avatar
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
 
     /**
      * creates the users profile page
@@ -100,6 +128,8 @@ public class Profile extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        img_profile_avatar.setOnClickListener(v -> openGallery());
     }
 
     /**
@@ -149,5 +179,14 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+
+    // Open the gallery to pick an image
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.setType("image/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        openGalleryLauncher.launch(intent); // Launch the gallery using the ActivityResultLauncher
     }
 }
