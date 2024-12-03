@@ -127,7 +127,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     LatLng currentCoords;
     Handler handler;
     long locationTick = 3000;
-    Runnable runnable;
+    private Runnable locationRunnable;
+    private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
     private boolean isCameraMoved = false; // To track if the camera was moved initially
 
@@ -145,9 +146,10 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         setContentView(R.layout.dashboard);                             // link to Main activity XML
         txt_daily_distance = findViewById(R.id.txt_daily_distance);
         txt_greeting = findViewById(R.id.txt_greeting);
-        txt_websocket_test = findViewById(R.id.txt_websocket_test);
         btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        setupLocationCallback();
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -165,33 +167,35 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         // Establish WebSocket connection and set listener
         WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
-        /* click listener on auto route button pressed */
-       btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
+        // Initialize location runnable
+        locationRunnable = new Runnable() {
             @Override
-            public void onClick(View v) {
-                //isTracking = !isTracking;
-                //txt_websocket_test.setText("Connected");
-                for (int counter = 0; counter < 50; counter++) {
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        //txt_greeting.setText("Latitude: " + currentLocation.getLatitude() + "\n" + "Longitude: " + currentLocation.getLongitude());
-                        jsonObject.put("latitude", currentLocation.getLatitude());
-                        jsonObject.put("longitude", currentLocation.getLongitude());
-                        jsonObject.put("elevation", 0);
-                        runOnUiThread(() -> {
-                            WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-                        });
-                        LatLng currentCoords = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-                        currentLocation.setLatitude(currentLocation.getLatitude() + 0.05);
-                        currentLocation.setLongitude(currentLocation.getLongitude() + 0.05);
-
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+            public void run() {
+                if (isTracking && currentLocation != null) {
+                    sendLocationThroughWebSocket(currentLocation);
+                    locationHandler.postDelayed(this, locationTick); // Repeat every LOCATION_TICK ms
                 }
             }
-       });
+        };
+
+        /* click listener on auto route button pressed */
+        btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isTracking = !isTracking; // Toggle tracking state
+                if (isTracking) {
+                    Toast.makeText(Dashboard.this, "Auto-route started", Toast.LENGTH_SHORT).show();
+                    createLocationRequest();
+                    locationHandler.postDelayed(locationRunnable, locationTick);
+                } else {
+                    Toast.makeText(Dashboard.this, "Auto-route stopped", Toast.LENGTH_SHORT).show();
+                    stopLocationUpdates();
+                    locationHandler.removeCallbacks(locationRunnable);
+                }
+            }
+        });
+
+        initializeMap();
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -231,23 +235,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             }
         });
         requestUsername();
-        getLastLocation();
-
-
-        // Initialize location updates callback
-        locationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                if (locationResult != null) {
-                    for (Location location : locationResult.getLocations()) {
-                        currentLocation = location;
-                        updateMapWithLocation(location);
-                    }
-                }
-            }
-        };
-
-        getLastLocation();
     }
 
     /**
@@ -266,6 +253,21 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 initializeMap();
             }
         });
+    }
+
+    /**
+     * When the map is ready this will move the assign the gMap object to the google map. Then it will place the users
+     * pinpoint on the map and move the map to ge centered over their location.
+     */
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gMap = googleMap;
+
+        if(currentLocation != null) {
+            updateMapWithLocation(currentLocation);
+        }
+
+        createLocationRequest();
     }
 
     /**
@@ -295,8 +297,9 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 .addOnFailureListener(e -> Toast.makeText(this, "Please enable location services.", Toast.LENGTH_SHORT).show());
     }
 
+
     /**
-     *Retrieves the last known location of the user from the database. If the permission is not already granted for
+     * Retrieves the last known location of the user from the database. If the permission is not already granted for
      * the program to get the location it will then request permission.
      */
     private void startLocationUpdates(LocationRequest locationRequest) {
@@ -308,26 +311,62 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
+    private void stopLocationUpdates() {
+        if (locationCallback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
     /**
      * Updates the map with the user's current location and moves the marker.
      */
     private void updateMapWithLocation(Location location) {
         if (gMap != null) {
             LatLng currentCoords = new LatLng(location.getLatitude(), location.getLongitude());
-
             if (userMarker == null) {
-                // Add a marker at the user's current location
                 userMarker = gMap.addMarker(new MarkerOptions().position(currentCoords).title("You are here"));
                 if (!isCameraMoved) {
-                    // Move the camera only the first time
                     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 20.0f));
                     isCameraMoved = true;
                 }
             } else {
-                // Update the existing marker's position
                 userMarker.setPosition(currentCoords);
             }
         }
+    }
+
+    private void sendLocationThroughWebSocket(Location location) {
+        if(location != null && !isTracking) {
+            return;
+        }
+
+        if(isTracking) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("latitude", location.getLatitude());
+                jsonObject.put("longitude", location.getLongitude());
+                jsonObject.put("elevation", 0);
+                WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setupLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult != null && !locationResult.getLocations().isEmpty()) {
+                    currentLocation = locationResult.getLastLocation();
+                    updateMapWithLocation(currentLocation);
+
+                    if (isTracking) {
+                        sendLocationThroughWebSocket(currentLocation); // Only send location if tracking
+                    }
+                }
+            }
+        };
     }
 
     /**
@@ -339,24 +378,13 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         if (requestCode == FINE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
+                if (isTracking) {
+                    createLocationRequest();
+                }
             } else {
                 Toast.makeText(this, "Location permission is required to use this feature.", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    /**
-     * When the map is ready this will move the assign the gMap object to the google map. Then it will place the users
-     * pinpoint on the map and move the map to ge centered over their location.
-     */
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        gMap = googleMap;
-        if (currentLocation != null) {
-            updateMapWithLocation(currentLocation);
-        }
-        createLocationRequest();
     }
 
     /**
@@ -463,7 +491,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        txt_daily_distance.setText("Daily Distance: " + message);
+        double receivedDistance = Double.parseDouble(message);
+        txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", receivedDistance));
 
     }
 

@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75sp"
@@ -19,17 +19,155 @@
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/black"
-        android:textSize="25dp" />
+        android:textSize="25dp"
+        android:paddingTop="20dp"/>
 
     <LinearLayout
+        android:id="@+id/currentGoalLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:translationY="75sp">
+        android:layout_below="@+id/title">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Current Goal"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="35dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance:"
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="20dp"/>
+
+            <TextView
+                android:id="@+id/currentGoalDist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:textColor="@color/black"
+                android:text="No goal found"
+                android:textSize="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reward:"
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="20dp"/>
+
+            <TextView
+                android:id="@+id/currentGoalReward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:textColor="@color/black"
+                android:text="No reward found"
+                android:textSize="25dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newGoalLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/currentGoalLayout"
+        android:paddingTop="15dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5sp"
+            android:background="@android:color/black"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Goal"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textSize="35dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance:"
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="20dp"/>
+
+            <EditText
+                android:id="@+id/newGoalDist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:text="Set new goal"
+                android:textSize="25dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reward:"
+                android:textSize="25dp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="20dp"/>
+
+            <EditText
+                android:id="@+id/newGoalReward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:text="Set new reward"
+                android:textSize="25dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/newGoalBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newGoalLayout"
+        android:layout_centerHorizontal="true"
+        android:text="Set Goal"
+        android:textSize="20sp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

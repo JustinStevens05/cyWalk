@@ -162,7 +162,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeUsernameReq();
-        globalLeaderboardReq();
+        //globalLeaderboardReq();
     }
 
     /**
