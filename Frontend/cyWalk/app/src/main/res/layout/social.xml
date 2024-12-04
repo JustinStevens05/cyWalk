@@ -57,13 +57,13 @@
 
         <ListView
             android:id="@+id/lv_leaderboard"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:divider="@color/black"
-            android:layout_gravity="center"
-            android:dividerHeight="1dp">
-        </ListView>
+            android:divider="@color/cywalkRed"
+            android:dividerHeight="1dp"
+            android:layout_margin="16dp"
+            android:scrollingCache="false"
+            android:layout_gravity="center"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"

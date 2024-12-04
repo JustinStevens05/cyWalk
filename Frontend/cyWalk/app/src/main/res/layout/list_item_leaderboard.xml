@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp"
+    android:background="?android:attr/selectableItemBackground" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:layout_gravity="center"
+        android:weightSum="3" >
+
+    <!-- Profile Image -->
+    <ImageView
+        android:id="@+id/profileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/default_avatar"
+        android:contentDescription="Profile Image"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/friendUsername"
+        android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:text="Username"
+    android:textSize="18sp"
+    android:textColor="@color/black"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/friendDistance"
+        android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textColor="@color/cywalkRed"
+    android:layout_gravity="center_vertical"
+    android:layout_weight="1" />
+
+</LinearLayout>
+    </androidx.cardview.widget.CardView>
