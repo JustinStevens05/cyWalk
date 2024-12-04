@@ -1,7 +1,5 @@
 package com.example.androidexample;
 
-import static java.util.Objects.isNull;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,14 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,7 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.material.tabs.TabLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +27,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Friends page for the users to see
@@ -72,7 +64,7 @@ public class Friends extends AppCompatActivity {
         acceptFriendSubmitButton = findViewById(R.id.acceptFriendSubmitBtn);
         friendTable = findViewById(R.id.friendsTable);
         requestsTable = findViewById(R.id.requestsTable);
-        friendUsername = findViewById(R.id.friendUsername);
+        friendUsername = findViewById(R.id.entryUsername);
         acceptedFriendUsername = findViewById(R.id.acceptedFriendUsername);
         newFriendTitle = findViewById(R.id.newFriendTile);
         profileCard = findViewById(R.id.profileCard);

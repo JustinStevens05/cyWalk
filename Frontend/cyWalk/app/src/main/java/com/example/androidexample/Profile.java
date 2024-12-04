@@ -50,7 +50,6 @@ public class Profile extends AppCompatActivity {
     ShapeableImageView img_profile_avatar;
     private Button btn_logout;
     private Button btn_edit_avatar;
-    Uri selectiedUri;
     public String URL_IMAGE = null;
 
     // ActivityResultLauncher for opening the gallery
@@ -140,7 +139,6 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-//        btn_edit_avatar.setOnClickListener(v -> openGallery());
         btn_edit_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -19,7 +19,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="50sp" />
 
     <LinearLayout
@@ -29,16 +29,16 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5sp"
-            android:background="@android:color/black"/>
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="5sp"-->
+<!--            android:background="@android:color/black"/>-->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Personal Goals"
-            android:textColor="@color/black"
+            android:textColor="@color/cywalkRed"
             android:fontFamily="sans-serif-black"
             android:padding="1dp"
             android:textSize="25sp"/>
@@ -52,7 +52,7 @@
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/black"
+                android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:layout_weight="1"
                 android:text="Daily:"/>
@@ -62,7 +62,7 @@
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/black"
+                android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textEnd"
                 android:layout_weight="1"/>
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/black"
+                android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:text="Weekly:"/>
 
@@ -96,7 +96,7 @@
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/black"
+                android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textEnd"
                 android:layout_weight="1"/>
@@ -112,16 +112,16 @@
             android:max="70000"
             android:progressTint="#FFEB3B"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5sp"
-            android:background="@android:color/black"/>
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="5sp"-->
+<!--            android:background="@android:color/black"/>-->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Reward Goals"
-            android:textColor="@color/black"
+            android:textColor="@color/cywalkRed"
             android:fontFamily="sans-serif-black"
             android:padding="5dp"
             android:textSize="25sp"/>
@@ -136,23 +136,22 @@
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:text="add new plan"
-                android:background="@android:color/darker_gray"
+                android:backgroundTint="@color/cywalkRed"
                 android:padding="5sp"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5sp"
-            android:background="@android:color/black"/>
+<!--        <View-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="5sp"-->
+<!--            android:background="@android:color/black"/>-->
 
         <Button
             android:id="@+id/setGoalsBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:textColor="#777777"
-            android:text="Edit Daily Goal"/>
+            android:backgroundTint="@color/cywalkRed"
+            android:text="Edit Daily/Weekly Goals"/>
 
         <LinearLayout
             android:id="@+id/newGoalLayout"
@@ -174,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
                     android:textColor="@color/black"
-                    android:text="New Daily Goal"/>
+                    android:text="New Daily Goal: "/>
 
                 <EditText
                     android:id="@+id/new_daily"
@@ -200,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
                     android:textColor="@color/black"
-                    android:text="Input your new Goal"/>
+                    android:text="New Weekly Goal: "/>
 
                 <EditText
                     android:id="@+id/new_weekly"
@@ -217,8 +216,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:background="@color/black"
-                android:textColor="@color/white"
+                android:backgroundTint="@color/cywalkRed"
                 android:text="Submit"
                 android:textSize="20sp"/>
         </LinearLayout>

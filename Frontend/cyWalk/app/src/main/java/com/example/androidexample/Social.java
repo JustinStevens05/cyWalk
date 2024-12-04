@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -182,8 +181,8 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                             // Parse JSON object data
                             username = response.getString("username");
 
-                            // Populate text views with the parsed data
-                            title.setText(username + "'S SOCIAL");
+//                            // Populate text views with the parsed data
+//                            title.setText(username + "'S SOCIAL");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -255,7 +254,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 }
                             }
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Social.this, R.layout.list_item_leaderboard, R.id.friendUsername, lbList) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Social.this, R.layout.list_item_leaderboard, R.id.entryUsername, lbList) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
                                 View view = convertView;
@@ -266,9 +265,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 }
 
                                 // Get references to the views in the custom layout
-                                TextView usernameTextView = view.findViewById(R.id.friendUsername);
-                                TextView distanceTextView = view.findViewById(R.id.friendDistance);
-                                ImageView profileImageView = view.findViewById(R.id.profileImage);
+                                TextView usernameTextView = view.findViewById(R.id.entryUsername);
+                                TextView distanceTextView = view.findViewById(R.id.entryDistance);
+                                ImageView profileImageView = view.findViewById(R.id.entryImage);
 
                                 // Set data for each item (example: lbList stores "username | distance")
                                 String userEntry = lbList.get(position);
@@ -277,7 +276,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 String distance = parts[1];
 
                                 // Set the username and distance text
-                                usernameTextView.setText(username + "  |  ");
+                                usernameTextView.setText(username);
                                 distanceTextView.setText(distance); // Correct distance format
 
                                 // Set a placeholder profile image (replace this with actual images if available)
