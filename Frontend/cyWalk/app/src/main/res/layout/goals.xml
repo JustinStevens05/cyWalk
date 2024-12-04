@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
     tools:context=".Goals">
 
     <TextView
@@ -29,11 +28,6 @@
         android:orientation="vertical"
         android:translationY="75sp">
 
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="5sp"-->
-<!--            android:background="@android:color/black"/>-->
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +35,7 @@
             android:textColor="@color/cywalkRed"
             android:fontFamily="sans-serif-black"
             android:padding="1dp"
-            android:textSize="25sp"/>
+            android:textSize="25sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +49,7 @@
                 android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:layout_weight="1"
-                android:text="Daily:"/>
+                android:text="Daily:" />
 
             <TextView
                 android:id="@+id/dailySteps"
@@ -65,15 +59,15 @@
                 android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textEnd"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/dailyprogressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:progressDrawable="@drawable/myprogressbar"
             android:layout_height="50sp"
+            android:progressDrawable="@drawable/myprogressbar"
             android:paddingVertical="10sp"
             android:max="10000"
             android:progressTint="#FFEB3B" />
@@ -89,7 +83,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
-                android:text="Weekly:"/>
+                android:text="Weekly:" />
 
             <TextView
                 android:id="@+id/weeklySteps"
@@ -99,40 +93,33 @@
                 android:textColor="@color/cywalkRed"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textEnd"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/weeklyprogressBar"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
-            android:progressDrawable="@drawable/myprogressbar"
             android:layout_height="50sp"
+            android:progressDrawable="@drawable/myprogressbar"
             android:paddingVertical="10sp"
             android:max="70000"
-            android:progressTint="#FFEB3B"/>
-
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="5sp"-->
-<!--            android:background="@android:color/black"/>-->
+            android:progressTint="#FFEB3B" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Reward Goals"
-            android:textColor="@color/cywalkRed"
             android:text="Organization Goals"
-            android:textColor="@color/black"
+            android:textColor="@color/cywalkRed"
             android:fontFamily="sans-serif-black"
             android:padding="5dp"
-            android:textSize="25sp"/>
+            android:textSize="25sp" />
 
         <RelativeLayout
             android:id="@+id/addPlanBtnLayout"
             android:layout_width="match_parent"
-            android:padding="10dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/newPlanBtn"
@@ -141,67 +128,20 @@
                 android:text="add new plan"
                 android:backgroundTint="@color/cywalkRed"
                 android:padding="5sp"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
         </RelativeLayout>
 
 <!--        <View-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="5sp"-->
-<!--            android:background="@android:color/black"/>-->
-        <LinearLayout
-            android:id="@+id/orgPlan"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/black"
-                    android:fontFamily="sans-serif-black"
-                    android:layout_weight="1"
-                    android:text="Step Progress:"/>
-
-                <TextView
-                    android:id="@+id/orgSteps"
-                    android:layout_width="1dp"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/black"
-                    android:fontFamily="sans-serif-black"
-                    android:textAlignment="textEnd"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/orgProgressBar"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:progressDrawable="@drawable/myprogressbar"
-                android:layout_height="50sp"
-                android:paddingVertical="10sp"
-                android:max="10000"
-                android:progressTint="#FFEB3B" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="5sp"
-            android:background="@android:color/black"/>
+<!--            android:background="@android:color/black" />-->
 
         <Button
             android:id="@+id/setGoalsBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/cywalkRed"
-            android:text="Edit Daily/Weekly Goals"/>
+            android:text="Edit Daily/Weekly Goals" />
 
         <LinearLayout
             android:id="@+id/newGoalLayout"
@@ -209,10 +149,10 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
                 android:orientation="horizontal">
@@ -223,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
                     android:textColor="@color/black"
-                    android:text="New Daily Goal: "/>
+                    android:text="New Daily Goal: " />
 
                 <EditText
                     android:id="@+id/new_daily"
@@ -232,13 +172,12 @@
                     android:textColor="@color/black"
                     android:padding="5dp"
                     android:background="@drawable/text_border"
-                    android:inputType="number"/>
+                    android:inputType="number" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
                 android:orientation="horizontal">
@@ -249,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="22sp"
                     android:textColor="@color/black"
-                    android:text="New Weekly Goal: "/>
+                    android:text="New Weekly Goal: " />
 
                 <EditText
                     android:id="@+id/new_weekly"
@@ -258,7 +197,7 @@
                     android:textColor="@color/black"
                     android:padding="5dp"
                     android:background="@drawable/text_border"
-                    android:inputType="number"/>
+                    android:inputType="number" />
             </LinearLayout>
 
             <Button
@@ -268,22 +207,18 @@
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="@color/cywalkRed"
                 android:text="Submit"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>
 
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:menu="@menu/bottom_navbar"
-            app:labelVisibilityMode="labeled"
-            app:itemIconTint="@color/cywalkRed"
-            app:itemBackground="@color/white"
-            app:itemIconSize="50dp"
-            />
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navbar"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/cywalkRed"
+        app:itemBackground="@color/white"
+        app:itemIconSize="50dp" />
 </RelativeLayout>

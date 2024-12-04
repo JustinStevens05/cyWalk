@@ -19,7 +19,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="25dp" />
 
     <TextView
@@ -66,21 +66,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:background="@color/white"
+        android:backgroundTint="@color/cywalkRed"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:text="Join"
         android:textSize="15sp"
         android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/returnButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/black"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:backgroundTint="@color/cywalkRed"
         android:text="Back"
-        android:textColor="@color/white"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
