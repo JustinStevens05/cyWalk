@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
@@ -16,6 +17,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.android.volley.AuthFailureError;
@@ -48,6 +50,10 @@ public class Friends extends AppCompatActivity {
     private String key;
     private LinearLayout friendTable;
     private LinearLayout requestsTable;
+    private CardView profileCard;
+    private ImageView profilePicture;
+    private TextView profileUsername;
+    private TextView profileDistance;
 
     private static String URL_JSON_FRIENDS = null;
     private static String URL_JSON_PENDING = null;
@@ -69,6 +75,10 @@ public class Friends extends AppCompatActivity {
         friendUsername = findViewById(R.id.friendUsername);
         acceptedFriendUsername = findViewById(R.id.acceptedFriendUsername);
         newFriendTitle = findViewById(R.id.newFriendTile);
+        profileCard = findViewById(R.id.profileCard);
+        profilePicture = findViewById(R.id.profilePicture);
+        profileUsername = findViewById(R.id.profileUsername);
+        profileDistance = findViewById(R.id.profileDistance);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -106,6 +116,14 @@ public class Friends extends AppCompatActivity {
             }
         });
 
+        profileCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileCard.setVisibility(View.GONE);
+            }
+        });
+
+
         makeJsonFriendReq();
         makeJsonPendingReq();
     }
@@ -137,6 +155,14 @@ public class Friends extends AppCompatActivity {
                                     tempText.setTextSize(20);
                                     tempText.setTextColor(Color.parseColor("#000000"));
                                     tempText.setText(current);
+
+                                    tempText.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            String clickedUsername = tempText.getText().toString();
+                                            showProfileCard(clickedUsername);
+                                        }
+                                    });
 
                                     friendTable.addView(tempText);
 
@@ -174,6 +200,17 @@ public class Friends extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
+    // Function to show the profile card
+    private void showProfileCard(String username) {
+        // Make the profile card visible
+        CardView profileCard = findViewById(R.id.profileCard);
+        profileCard.setVisibility(View.VISIBLE);
+
+        // Set the profile details
+        TextView profileUsername = findViewById(R.id.profileUsername);
+        profileUsername.setText("Username: " + username);
     }
 
     /**
