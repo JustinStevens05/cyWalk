@@ -1,6 +1,11 @@
 package com.cywalk.spring_boot.Users.SignUp;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,6 +72,20 @@ public class SignUpController {
             errorResponse.put("message", "User wasn't created.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
+    }
+
+    @PostMapping("/organization")
+    @Operation(summary = "sign up for organization", description = "sign up an organization and create an admin if one exists")
+    @ApiResponses(
+            @ApiResponse(responseCode = "201", description = "Created an organization and a corresponding admin"),
+            @ApiResponse(responseCode = "202", description = "Created a user for an  existing organization"),
+            @ApiResponse(responseCode = "405", description = "Admin already exists for an organization")
+    )
+    public ResponseEntity<Void> SignupOrganizationAndAdmin(
+            @RequestBody @Parameter(name = "organization", description = "The origanization") organization,
+            @RequestBody @Parameter(name = "admin", description = "the admin") admin
+    ) {
+
     }
 
     @GetMapping("/check-username/{username}")

@@ -69,11 +69,18 @@ public class Organization {
         user.setOrganization(this);
     }
 
+    public Set<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(Set<Admin> admins) {
+        this.admins = admins;
+    }
+
     public void removeUser(People user) {
         this.users.remove(user);
         user.setOrganization(null);
     }
-
 
 
     @Override
@@ -82,6 +89,7 @@ public class Organization {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", users=" + users +
+                ", admins=" + admins +
                 '}';
     }
 }
