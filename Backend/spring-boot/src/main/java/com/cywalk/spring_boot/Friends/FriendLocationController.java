@@ -158,7 +158,7 @@ public class FriendLocationController extends TextWebSocketHandler {
         TextMessage tm = new TextMessage(
                 fl.toString()
         );
-        session.sendMessage(new TextMessage("oh yea bud"));
+        session.sendMessage(tm);
         // session.sendMessage(tm);
     }
 }

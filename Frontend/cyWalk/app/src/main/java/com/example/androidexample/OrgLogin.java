@@ -31,13 +31,14 @@ public class OrgLogin extends AppCompatActivity {
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
     private Button loginButton;         // define login button variable
-    private static String URL_LOGIN = "http://10.0.2.2:8080/users";
-    private static String URL_SIGNUP = "http://10.0.2.2:8080/signup";
+    private static String URL_LOGIN = "http://coms-3090-072.class.las.iastate.edu:8080/users";
+    private static String URL_SIGNUP = "http://coms-3090-072.class.las.iastate.edu:8080/signup";
     private String userKey = "";
     private String orgId="";
     private String username;
     private String password;
     private Button signUpButton;        // define signup button variable
+    private TextView userSwitch;
 
     /**
      *creates the page for the organization users to be able to login in or create their organization
@@ -53,6 +54,7 @@ public class OrgLogin extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
+        userSwitch = findViewById(R.id.switchUserView);
 
         /* click listener on login button pressed */
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +90,14 @@ public class OrgLogin extends AppCompatActivity {
                 }
             }
         });
+
+        userSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OrgLogin.this, Login.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -114,7 +124,7 @@ public class OrgLogin extends AppCompatActivity {
                             userKey = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
-                                Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
+                                Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);
                                 intent.putExtra("key", userKey);
                                 intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
@@ -181,8 +191,9 @@ public class OrgLogin extends AppCompatActivity {
                             userKey = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!userKey.isEmpty()) {
-                                Intent intent = new Intent(OrgLogin.this, orgSetGoals.class);
+                                Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);
                                 intent.putExtra("key", userKey);
+                                intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);
                             }

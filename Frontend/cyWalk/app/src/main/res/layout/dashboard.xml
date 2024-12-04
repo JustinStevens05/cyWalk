@@ -8,46 +8,56 @@
     android:background="@color/white"
     tools:context=".Dashboard">
 
+    <!-- Google Map as background (appears at the bottom of the stack) -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="55dp" />
 
-    <TextView
-        android:id="@+id/txt_greeting"
+    <LinearLayout
+        android:id="@+id/linear_layout_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_background_textview"
+        android:padding="16dp">
+
+        <TextView
+        android:id="@+id/txt_greeting"
+            android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:textColor="@color/cywalkRed"
         android:textSize="20sp"
         android:text="Welcome Back { USERNAME }!" />
+
+        <TextView
+        android:id="@+id/txt_daily_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textColor="@color/cywalkRed"
+        android:text="Daily Distance: \n ----------------------" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_start_auto_route"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
         android:backgroundTint="@color/cywalkRed"
-        android:background="@drawable/ic_auto_route_foreground"
-         />
-
-    <TextView
-        android:id="@+id/txt_websocket_test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/cywalkRed"
-        android:layout_below="@id/txt_daily_distance"
-        />
-
-    <TextView
-        android:id="@+id/txt_daily_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/cywalkRed"
-        android:layout_below="@id/txt_greeting"
-        android:text="Daily Distance: \n ----------------------" />
+        android:background="@drawable/ic_auto_route_foreground" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -60,17 +70,5 @@
         app:itemIconTint="@color/cywalkRed"
         app:itemBackground="@color/white"
         android:icon="@drawable/bottom_navbar_selector"
-        app:itemIconSize="50dp"
-        />
-    
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/frag_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="25dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/txt_daily_distance"
-        />
-
+        app:itemIconSize="50dp" />
 </RelativeLayout>

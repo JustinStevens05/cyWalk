@@ -1,5 +1,6 @@
-package com.cywalk.spring_boot.Users.SignUp;
+package com.cywalk.spring_boot.SignUp;
 
+import com.cywalk.spring_boot.Organizations.CreateOrganizationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -76,16 +77,19 @@ public class SignUpController {
 
     @PostMapping("/organization")
     @Operation(summary = "sign up for organization", description = "sign up an organization and create an admin if one exists")
-    @ApiResponses(
+    @ApiResponses( value = {
             @ApiResponse(responseCode = "201", description = "Created an organization and a corresponding admin"),
             @ApiResponse(responseCode = "202", description = "Created a user for an  existing organization"),
             @ApiResponse(responseCode = "405", description = "Admin already exists for an organization")
+    }
     )
     public ResponseEntity<Void> SignupOrganizationAndAdmin(
-            @RequestBody @Parameter(name = "organization", description = "The origanization") organization,
-            @RequestBody @Parameter(name = "admin", description = "the admin") admin
+            @RequestBody @Parameter(name = "organization", description = "The origanization") CreateOrganizationRequest organization,
+            @RequestBody @Parameter(name = "admin", description = "the admin") UserRequest admin
     ) {
 
+        // TODO: implement
+        return ResponseEntity.status(511).build();
     }
 
     @GetMapping("/check-username/{username}")

@@ -59,7 +59,7 @@ public class OrganizationLookUp extends AppCompatActivity {
         key = extras.getString("key");
         username = extras.getString("username");
 
-        URL_ORGANIZATIONS_FIND = "http://10.0.2.2:8080/organizations/get-id";
+        URL_ORGANIZATIONS_FIND = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/get-id";
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +147,7 @@ public class OrganizationLookUp extends AppCompatActivity {
                         try {
                             // Parse JSON object data
                             orgId = response.getString("id");
-                            URL_ORGANIZATIONS_JOIN = "http://10.0.2.2:8080/organizations/"+ orgId +"/join";
+                            URL_ORGANIZATIONS_JOIN = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/"+ orgId +"/join";
                             //title.setText(orgId + "  " + username);
                             makeJsonOrgJoinReq();
                         } catch (JSONException e) {

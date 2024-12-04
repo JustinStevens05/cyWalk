@@ -313,5 +313,28 @@ public class LocationService {
         return Optional.of(locationDayRepository.save(ld));
 
     }
+
+    /**
+     * gets the total distance from the entire week
+     * @param key the user key
+     * @return an optional double of the distance traveled in the week. Optional.empty() for an issues. 0 for no distance.
+     */
+    public Optional<Double> totalDistanceFromUserWeek(Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        if (peopleResult.isEmpty()) {
+            return Optional.empty();
+        }
+        else {
+            List<LocationDay> locationDays = peopleResult.get().getLocations();
+            if (locationDays == null) {
+                return Optional.of(0.0);
+            }
+            double total = 0.0;
+            for (int i = locationDays.size() - 1; i > locationDays.size() - 8; i--) {
+                total += locationDays.get(i).getTotalDistance();
+            }
+            return Optional.of(total);
+        }
+    }
 }
 

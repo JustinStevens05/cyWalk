@@ -1,22 +1,40 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +47,29 @@ public class Profile extends AppCompatActivity {
     private static String URL_JSON_OBJECT = null;
     private String username;
     TextView txt_username;
+    ShapeableImageView img_profile_avatar;
+    private Button btn_logout;
+    private Button btn_edit_avatar;
+    public String URL_IMAGE = null;
+
+    // ActivityResultLauncher for opening the gallery
+    ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    // Get the URI of the selected image
+                    Uri selectedImageUri = result.getData().getData();
+
+                    // Convert URI to Bitmap and set it as profile image
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        img_profile_avatar.setImageBitmap(bitmap);  // Set the selected image to img_profile_avatar
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+    );
 
     /**
      * creates the users profile page
@@ -36,13 +77,17 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile);             // link to Main activity XML
+        setContentView(R.layout.profile);
+
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
+        btn_logout = findViewById(R.id.profile_btn_logout);
+        btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
+        img_profile_avatar = findViewById(R.id.profile_img_avatar);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -82,6 +127,29 @@ public class Profile extends AppCompatActivity {
             }
         });
         makeUsernameReq();
+
+        URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
+
+        btn_logout.setOnClickListener(new View.OnClickListener() {
+            Intent intent = null;
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(Profile.this, Login.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_edit_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to ImageUploadActivity
+                Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     /**
@@ -99,6 +167,11 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
+
+                            URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + username;
+                            makeImageRequest();
+
+                            //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -130,5 +203,37 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     * Making image request
+     * */
+    private void makeImageRequest() {
+
+        ImageRequest imageRequest = new ImageRequest(
+                URL_IMAGE,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        // Display the image in the ImageView
+                        img_profile_avatar.setImageBitmap(response);
+                    }
+                },
+                0, // Width, set to 0 to get the original width
+                0, // Height, set to 0 to get the original height
+                ImageView.ScaleType.FIT_XY, // ScaleType
+                Bitmap.Config.RGB_565, // Bitmap config
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors here
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
     }
 }
