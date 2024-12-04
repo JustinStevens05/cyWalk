@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,24 +62,26 @@ class FriendControllerTest {
     private FriendRequestRepository friendRequestRepository;
      */
 
+    /*
     @MockBean
     private FriendService friendService;
 
+*/
     @MockBean
     private PeopleService peopleService;
 
+    /*
     @Autowired
     private PeopleController peopleController;
 
     @Autowired
     private FriendController friendController;
-
+*/
     @Before
     @Order(1)
     public void setup() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
-
     }
 
     @Test
@@ -91,14 +94,25 @@ class FriendControllerTest {
             peopleService.deleteUserByName(BASE_USER);
         }
 
+        setup();
+
+        System.out.println("\n\nPORT: " + port);
+
+        System.out.println(given().basePath("/users").contentType("application/json").when().get().andReturn().prettyPrint());
+
         assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
+        String jsonPayload = "{\"id\": 0, \"username\": \"caleb\", \"password\": \"one\"}";
+
         // Sign up base user
         Response baseSignup = RestAssured.given()
+                .basePath("/signup")
+                .header("accept", "*/*")
                 .header("Content-Type", "application/json")
-                .header("charset","utf-8")
-                .body(asJsonString(createPersonRequest(BASE_USER)))
+                .body(jsonPayload)
                 .when()
-                .post("/signup");
+                .post().andReturn();
+
+        System.out.println(baseSignup.body().prettyPrint());
         assertEquals(200, baseSignup.getStatusCode());
         keyBase = extractKeyFromResponse(baseSignup);
 
