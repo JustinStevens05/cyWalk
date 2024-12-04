@@ -81,52 +81,16 @@
         android:layout_marginTop="5dp"
         android:text="access" />
 
-    <LinearLayout
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/orgbottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-        <Button
-            android:id="@+id/usersButton"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            android:text="Users"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/leaderboardButton"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            android:text="Board"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/goalsButton"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            android:text="Goals"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_weight="1"/>
-
-        <Button
-            android:id="@+id/profileButton"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:background="@color/black"
-            android:text="Profile"
-            android:textColor="@color/white"
-            android:layout_alignParentBottom="true"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/org_navbar"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/cywalkRed"
+        app:itemBackground="@color/white"
+        app:itemIconSize="50dp" />
 
 
 

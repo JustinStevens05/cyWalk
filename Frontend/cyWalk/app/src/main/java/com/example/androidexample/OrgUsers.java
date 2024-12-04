@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +26,7 @@ import java.util.Map;
 /**
  * The organizations view that shows them all users in their organizations
  * */
-public class orgUsers extends AppCompatActivity {
+public class OrgUsers extends AppCompatActivity {
 
     private Button usersButton;
     private Button leaderboardButton;
@@ -47,10 +48,6 @@ public class orgUsers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orgusers);
-        usersButton = findViewById(R.id.usersButton);
-        leaderboardButton = findViewById(R.id.leaderboardButton);
-        goalsButton = findViewById(R.id.goalsButton);
-        profileButton = findViewById(R.id.profileButton);
         usersText = findViewById(R.id.usersText);
 
         Bundle extras = getIntent().getExtras();
@@ -59,43 +56,41 @@ public class orgUsers extends AppCompatActivity {
 
         URL_ORG_USERS = "http://10.0.2.2:8080/organizations/"+orgId+"/users";
 
-        usersButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(orgUsers.this, orgUsers.class);
+        // NAVIGATION BAR
+        BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);
+        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setOnItemSelectedListener(item -> {
+            Intent intent = null;
+            if (item.getItemId() == R.id.nav_org_users) {
+                intent = new Intent(OrgUsers.this, OrgUsers.class);
                 intent.putExtra("key", key);
-                intent.putExtra("orgId",orgId);
                 startActivity(intent);
+                finish();
+                return true;
             }
-        });
-
-        leaderboardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(orgUsers.this, orgLeaderboards.class);
+            else if (item.getItemId() == R.id.nav_org_goals) {
+                intent = new Intent(OrgUsers.this, OrgSetGoals.class);
                 intent.putExtra("key", key);
-                intent.putExtra("orgId",orgId);
                 startActivity(intent);
+                finish();
+                return true;
             }
-        });
-
-        goalsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(orgUsers.this, orgSetGoals.class);
+            else if (item.getItemId() == R.id.nav_org_social) {
+                intent = new Intent(OrgUsers.this, OrgLeaderboards.class);
                 intent.putExtra("key", key);
-                intent.putExtra("orgId",orgId);
                 startActivity(intent);
+                finish();
+                return true;
             }
-        });
-
-        profileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(orgUsers.this, OrgProfile.class);
+            else if (item.getItemId() == R.id.nav_org_profile) {
+                intent = new Intent(OrgUsers.this, OrgProfile.class);
                 intent.putExtra("key", key);
-                intent.putExtra("orgId",orgId);
                 startActivity(intent);
+                finish();
+                return true;
+            }
+            else {
+                return false;
             }
         });
 

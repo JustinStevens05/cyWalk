@@ -220,5 +220,5 @@
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/cywalkRed"
         app:itemBackground="@color/white"
-        app:itemIconSize="50dp" />
+        app:itemIconSize="50dp"/>
 </RelativeLayout>

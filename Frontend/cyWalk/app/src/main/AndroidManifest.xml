@@ -50,16 +50,16 @@
             android:name=".OrgLogin"
             android:exported="false" />
         <activity
-            android:name=".orgSetGoals"
+            android:name=".OrgSetGoals"
             android:exported="false" />
         <activity
             android:name=".OrgProfile"
             android:exported="false" />
         <activity
-            android:name=".orgLeaderboards"
+            android:name=".OrgLeaderboards"
             android:exported="false" />
         <activity
-            android:name=".orgUsers"
+            android:name=".OrgUsers"
             android:exported="false" />
         <activity
             android:name=".Profile"
