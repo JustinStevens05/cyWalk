@@ -36,7 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class FriendControllerTest {
     /*
     @Autowired
@@ -73,9 +72,9 @@ class FriendControllerTest {
 
     @Autowired
     private FriendController friendController;
-    /*
 
     @Before
+    @Order(1)
     public void setup() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
@@ -83,7 +82,7 @@ class FriendControllerTest {
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     void cleanupExistingUsers() {
         if (peopleService.getUserByUsername(USER_ONE).isPresent()) {
             peopleService.deleteUserByName(USER_ONE);
@@ -91,16 +90,14 @@ class FriendControllerTest {
         if (peopleService.getUserByUsername(BASE_USER).isPresent()) {
             peopleService.deleteUserByName(BASE_USER);
         }
-        assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
-    }
 
-    @Test
-    @Order(2)
-    void signupUsers() {
+        assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
         // Sign up base user
         Response baseSignup = RestAssured.given()
                 .header("Content-Type", "application/json")
+                .header("charset","utf-8")
                 .body(asJsonString(createPersonRequest(BASE_USER)))
+                .when()
                 .post("/signup");
         assertEquals(200, baseSignup.getStatusCode());
         keyBase = extractKeyFromResponse(baseSignup);
@@ -112,11 +109,6 @@ class FriendControllerTest {
                 .post("/signup");
         assertEquals(200, testSignup.getStatusCode());
         keyTest = extractKeyFromResponse(testSignup);
-    }
-
-    @Test
-    @Order(3)
-    void handleFriendRequest() {
         // Send friend request
         Response friendRequest = RestAssured.given().header("Content-Type", "application/json").body("").post("/friends/" + keyTest + "/request/" + BASE_USER);
         assertEquals(200, friendRequest.getStatusCode());
@@ -138,11 +130,7 @@ class FriendControllerTest {
         Response friendsOfTest = RestAssured.get("/friends/" + keyTest);
         assertEquals(200, friendsOfTest.getStatusCode());
         assertTrue(friendsOfTest.getBody().asString().contains(BASE_USER));
-    }
 
-    @Test
-    @Order(4)
-    void cleanup() {
         // Delete both users
         Response deleteBase = RestAssured.delete("/users/" + keyBase);
         assertEquals(200, deleteBase.getStatusCode());
@@ -170,6 +158,5 @@ class FriendControllerTest {
         // Assumes response body contains the key
         return Long.parseLong(response.getBody().asString());
     }
-     */
 
 }
