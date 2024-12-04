@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -23,6 +24,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -30,7 +32,9 @@ import com.google.android.material.imageview.ShapeableImageView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +50,8 @@ public class Profile extends AppCompatActivity {
     ShapeableImageView img_profile_avatar;
     private Button btn_logout;
     private Button btn_edit_avatar;
+    Uri selectiedUri;
+    public String URL_IMAGE = null;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -72,7 +78,8 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile);             // link to Main activity XML
+        setContentView(R.layout.profile);
+
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
@@ -122,6 +129,8 @@ public class Profile extends AppCompatActivity {
         });
         makeUsernameReq();
 
+        URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
+
         btn_logout.setOnClickListener(new View.OnClickListener() {
             Intent intent = null;
             @Override
@@ -131,7 +140,18 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        btn_edit_avatar.setOnClickListener(v -> openGallery());
+//        btn_edit_avatar.setOnClickListener(v -> openGallery());
+        btn_edit_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Navigate to ImageUploadActivity
+                Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
+                intent.putExtra("key", key);
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     /**
@@ -149,6 +169,10 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
+
+                            URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + username;
+                            makeImageRequest();
+
                             //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -183,12 +207,35 @@ public class Profile extends AppCompatActivity {
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * Making image request
+     * */
+    private void makeImageRequest() {
 
-    // Open the gallery to pick an image
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        openGalleryLauncher.launch(intent); // Launch the gallery using the ActivityResultLauncher
+        ImageRequest imageRequest = new ImageRequest(
+                URL_IMAGE,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        // Display the image in the ImageView
+                        img_profile_avatar.setImageBitmap(response);
+                    }
+                },
+                0, // Width, set to 0 to get the original width
+                0, // Height, set to 0 to get the original height
+                ImageView.ScaleType.FIT_XY, // ScaleType
+                Bitmap.Config.RGB_565, // Bitmap config
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors here
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
     }
 }

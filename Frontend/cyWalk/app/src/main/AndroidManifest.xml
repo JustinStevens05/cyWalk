@@ -35,6 +35,9 @@
             android:name=".OrganizationLookUp"
             android:exported="false" />
         <activity
+            android:name=".ImageUploadActivity"
+            android:exported="false" />
+        <activity
             android:name=".Login"
             android:exported="true">
             <intent-filter>
