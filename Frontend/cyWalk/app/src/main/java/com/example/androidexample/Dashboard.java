@@ -136,6 +136,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private String URL_JSON_GET_USER = null;
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_SOCKET = null;
+    private Marker friendMarker;
 
     /**
      * creates the dashboard view for for the user to see
@@ -183,6 +184,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             @Override
             public void onClick(View v) {
                 isTracking = !isTracking; // Toggle tracking state
+
                 if (isTracking) {
                     Toast.makeText(Dashboard.this, "Auto-route started", Toast.LENGTH_SHORT).show();
                     createLocationRequest();
@@ -336,11 +338,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     private void sendLocationThroughWebSocket(Location location) {
-        if(location != null && !isTracking) {
-            return;
-        }
-
-        if(isTracking) {
+        if(location != null && isTracking) { // Ensure only sending location if tracking
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("latitude", location.getLatitude());
@@ -352,6 +350,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             }
         }
     }
+
 
     private void setupLocationCallback() {
         locationCallback = new LocationCallback() {
@@ -478,6 +477,19 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    private void updateFriendLocation(String friendUsername, double latitude, double longitude) {
+        LatLng friendLocation = new LatLng(latitude, longitude);
+
+        if (friendMarker == null) {
+            friendMarker = gMap.addMarker(new MarkerOptions()
+                    .position(friendLocation)
+                    .title(friendUsername));
+        } else {
+            friendMarker.setPosition(friendLocation);  // Update the friend's marker position
+        }
+    }
+
+
     /**
      * required websocket code currently does nothing
      */
@@ -491,10 +503,24 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        double receivedDistance = Double.parseDouble(message);
-        txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", receivedDistance));
+        try {
+            JSONObject jsonMessage = new JSONObject(message);
+            String friendUsername = jsonMessage.getString("username");  // or any other identifier
+            double latitude = jsonMessage.getDouble("latitude");
+            double longitude = jsonMessage.getDouble("longitude");
 
+            // Check if the message is for the friend (based on userId)
+            if (!friendUsername.equals(key)) {  // If not your own location, it's a friend's location
+                updateFriendLocation(friendUsername, latitude, longitude);
+            } else {
+                // Update your own location
+                txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", jsonMessage.getDouble("distance")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     /**
      * required websocket code currently does nothing

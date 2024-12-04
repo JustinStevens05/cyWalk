@@ -41,7 +41,7 @@ public class ImageUploadActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        UPLOAD_URL = "http://coms-3090-072.class.las.iastate.edu:8080/users/images/" + key;
+        UPLOAD_URL = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + key;
 
         // select image from gallery
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),

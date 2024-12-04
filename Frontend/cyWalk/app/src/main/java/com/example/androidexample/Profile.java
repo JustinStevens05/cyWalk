@@ -128,7 +128,6 @@ public class Profile extends AppCompatActivity {
             }
         });
         makeUsernameReq();
-        makeImageRequest();
 
         URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
 
@@ -149,7 +148,6 @@ public class Profile extends AppCompatActivity {
                 Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
-                makeImageRequest();
             }
         });
 
@@ -171,6 +169,10 @@ public class Profile extends AppCompatActivity {
                             // Parse JSON object data
                             username = response.getString("username");
                             txt_username.setText(username);
+
+                            URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + username;
+                            makeImageRequest();
+
                             //img_profile_avatar.setBackgroundResource(R.drawable.bronze_border);
                         } catch (JSONException e) {
                             e.printStackTrace();
