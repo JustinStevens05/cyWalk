@@ -15,7 +15,7 @@
         android:ems="10"
         android:paddingVertical="15dp"
         android:fontFamily="sans-serif-black"
-        android:text="SOCIAL"
+        android:text="LEADERBOARD"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"

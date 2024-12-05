@@ -146,6 +146,7 @@ public class Profile extends AppCompatActivity {
                 Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
                 intent.putExtra("key", key);
                 startActivity(intent);
+                makeImageRequest();
             }
         });
 
