@@ -21,12 +21,13 @@ public class OrganizationService {
     @Autowired
     private LeaderboardService leaderboardService;
 
-    public Optional<Organization> createOrganization(String name) {
-        if (organizationRepository.findByName(name).isPresent()) {
-            return Optional.empty();
+    public Organization createOrganization(String name) {
+        Optional<Organization> orgOpt = organizationRepository.findByName(name);
+        if (orgOpt.isPresent()) {
+            return orgOpt.get();
         }
         Organization organization = new Organization(name);
-        return Optional.of(organizationRepository.save(organization));
+        return organizationRepository.save(organization);
     }
 
     public boolean joinOrganization(Long orgId, String username) {

@@ -5,6 +5,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.cywalk.spring_boot.Organizations.CreateOrganizationRequest;
+import com.cywalk.spring_boot.Organizations.Organization;
+import com.cywalk.spring_boot.Organizations.OrganizationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -25,6 +32,8 @@ import java.util.Optional;
 public class SignUpController {
 
     private final PeopleService peopleService;
+    @Autowired
+    OrganizationService organizationService;
 
     @Autowired
     public SignUpController(PeopleService peopleService) {
@@ -78,15 +87,16 @@ public class SignUpController {
     @PostMapping("/organization")
     @Operation(summary = "sign up for organization", description = "sign up an organization and create an admin if one exists")
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "201", description = "Created an organization and a corresponding admin"),
-            @ApiResponse(responseCode = "202", description = "Created a user for an  existing organization"),
+            @ApiResponse(responseCode = "200", description = "Created a user for an  existing organization"),
             @ApiResponse(responseCode = "405", description = "Admin already exists for an organization")
-    }
-    )
+    })
     public ResponseEntity<Void> SignupOrganizationAndAdmin(
             @RequestBody @Parameter(name = "organization", description = "The origanization") CreateOrganizationRequest organization,
             @RequestBody @Parameter(name = "admin", description = "the admin") UserRequest admin
     ) {
+        Organization org = organizationService.createOrganization(organization.getName());
+
+        if
 
         // TODO: implement
         return ResponseEntity.status(511).build();
