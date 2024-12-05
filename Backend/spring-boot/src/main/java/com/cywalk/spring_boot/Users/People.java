@@ -54,6 +54,9 @@ public class People {
   @Enumerated(EnumType.STRING)
   private League league;
 
+  @Schema(description = "the user's bio on their profile")
+  private String bio;
+
   // Constructors, getters, and setters
 
   public People(@NonNull String username, String email, List<LocationDay> locations) {
@@ -146,6 +149,14 @@ public class People {
     this.receivedRequests = receivedRequests;
   }
 
+  public String getBio() {
+    return bio;
+  }
+
+  public void setBio(String bio) {
+    this.bio = bio;
+  }
+
   public League getLeague() {
     return league;
   }
@@ -173,6 +184,7 @@ public class People {
             ", locations=" + locations +
             ", image=" + image +
             ", league=" + league +
+            ", bio='" + bio + '\'' +
             '}';
   }
 }

@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
 class FriendControllerTest {
     /*
     @Autowired
@@ -62,28 +62,30 @@ class FriendControllerTest {
     private FriendRequestRepository friendRequestRepository;
      */
 
+    /*
     @MockBean
     private FriendService friendService;
 
+*/
     @MockBean
     private PeopleService peopleService;
 
+    /*
     @Autowired
     private PeopleController peopleController;
 
     @Autowired
     private FriendController friendController;
-    /*
 
     @Before
+    @Order(1)
     public void setup() {
         RestAssured.baseURI = BASE_URL;
         RestAssured.port = port;
-
     }
 
     @Test
-    @Order(1)
+    @Order(2)
     void cleanupExistingUsers() {
         if (peopleService.getUserByUsername(USER_ONE).isPresent()) {
             peopleService.deleteUserByName(USER_ONE);
@@ -91,17 +93,25 @@ class FriendControllerTest {
         if (peopleService.getUserByUsername(BASE_USER).isPresent()) {
             peopleService.deleteUserByName(BASE_USER);
         }
-        assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
-    }
 
-    @Test
-    @Order(2)
-    void signupUsers() {
+        setup();
+
+        System.out.println("\n\nPORT: " + port);
+
+        System.out.println(given().basePath("/users").contentType("application/json").when().get().andReturn().prettyPrint());
+
+        assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
+        String jsonPayload = "{\"id\": 0, \"username\": \"caleb\", \"password\": \"one\"}";
+
         // Sign up base user
         Response baseSignup = RestAssured.given()
+                .basePath("/signup")
                 .header("Content-Type", "application/json")
-                .body(asJsonString(createPersonRequest(BASE_USER)))
-                .post("/signup");
+                .body(jsonPayload)
+                .when()
+                .post().andReturn();
+
+        System.out.println(baseSignup.body().prettyPrint());
         assertEquals(200, baseSignup.getStatusCode());
         keyBase = extractKeyFromResponse(baseSignup);
 
@@ -112,11 +122,6 @@ class FriendControllerTest {
                 .post("/signup");
         assertEquals(200, testSignup.getStatusCode());
         keyTest = extractKeyFromResponse(testSignup);
-    }
-
-    @Test
-    @Order(3)
-    void handleFriendRequest() {
         // Send friend request
         Response friendRequest = RestAssured.given().header("Content-Type", "application/json").body("").post("/friends/" + keyTest + "/request/" + BASE_USER);
         assertEquals(200, friendRequest.getStatusCode());
@@ -138,11 +143,7 @@ class FriendControllerTest {
         Response friendsOfTest = RestAssured.get("/friends/" + keyTest);
         assertEquals(200, friendsOfTest.getStatusCode());
         assertTrue(friendsOfTest.getBody().asString().contains(BASE_USER));
-    }
 
-    @Test
-    @Order(4)
-    void cleanup() {
         // Delete both users
         Response deleteBase = RestAssured.delete("/users/" + keyBase);
         assertEquals(200, deleteBase.getStatusCode());
@@ -170,6 +171,5 @@ class FriendControllerTest {
         // Assumes response body contains the key
         return Long.parseLong(response.getBody().asString());
     }
-     */
-
+    */
 }

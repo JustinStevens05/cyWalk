@@ -168,6 +168,31 @@ public class PeopleService {
     }
 
     /**
+     * updates the bio of a user
+     */
+    public People updateBio(People people, String bio) {
+        people.setBio(bio);
+        return peopleRepository.save(people);
+    }
+
+    /**
+     * Updates the username of a user
+     */
+    public People updateUsername(People people, String newUsername) {
+        peopleRepository.delete(people);
+        people.setUsername(newUsername);
+        return peopleRepository.save(people);
+    }
+
+    /**
+     * Updates the email of a user
+     */
+    public People updateEmail(People people, String newEmail) {
+        people.setEmail(newEmail);
+        return peopleRepository.save(people);
+    }
+
+    /**
      * updates and returns the league that the current user is in.
      * This function calculates the user's global ranking relative to everyone else and then returns that
      * @param username the username of the user.
