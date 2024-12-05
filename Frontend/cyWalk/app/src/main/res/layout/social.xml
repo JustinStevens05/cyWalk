@@ -7,18 +7,19 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75sp"
         android:background="@color/cywalkRed"
         android:ems="10"
+        android:paddingVertical="15dp"
         android:fontFamily="sans-serif-black"
-        android:text="SOCIAL"
+        android:text="LEADERBOARD"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="25dp" />
 
     <LinearLayout
@@ -31,9 +32,9 @@
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/black"
+            android:backgroundTint="@color/cywalkRed"
             android:id="@+id/tabLayout"
-            app:tabSelectedTextColor="@android:color/holo_orange_light"
+            app:tabSelectedTextColor="#FFEB3B"
             app:tabTextColor="@color/white">
 
             <com.google.android.material.tabs.TabItem
@@ -57,13 +58,13 @@
 
         <ListView
             android:id="@+id/lv_leaderboard"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:divider="@color/black"
-            android:layout_gravity="center"
-            android:dividerHeight="1dp">
-        </ListView>
+            android:divider="@color/cywalkRed"
+            android:dividerHeight="1dp"
+            android:layout_margin="16dp"
+            android:scrollingCache="false"
+            android:layout_gravity="center"/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:layout_width="match_parent"
@@ -93,9 +94,8 @@
         android:id="@+id/friendsButton"
         android:layout_width="125dp"
         android:layout_height="50dp"
-        android:background="@color/white"
         android:text="Friends"
-        android:textColor="@color/black"
+        android:backgroundTint="@color/cywalkRed"
         android:layout_above="@id/bottomNavigation"
         android:layout_alignParentRight="true"/>
 

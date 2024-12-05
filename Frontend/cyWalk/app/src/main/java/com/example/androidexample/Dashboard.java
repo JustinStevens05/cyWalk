@@ -46,13 +46,69 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.Task;
+
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Dashboard class for the users
  * */
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
     private String key = "";
-    private final int LOCATION_REQUEST_CODE = 100;
+    private static final int FINE_PERMISSION_CODE = 1;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationCallback locationCallback;
     private GoogleMap gMap;
     private String totalDistance;
     TextView txt_daily_distance;
@@ -65,19 +121,22 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private Button btn_increment_auto_route;
     private SwitchCompat switch_auto_route;
     Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
     private boolean isTracking = false;
     String server_url_chunk;
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
     long locationTick = 3000;
-    Runnable runnable;
+    private Runnable locationRunnable;
+    private Handler locationHandler = new Handler();
+    private Marker userMarker; // Marker for the user's location
+    private boolean isCameraMoved = false; // To track if the camera was moved initially
 
     private String URL_JSON_GET_DISTANCE = null;
     private String URL_JSON_GET_USER = null;
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_SOCKET = null;
+    private Marker friendMarker;
 
     /**
      * creates the dashboard view for for the user to see
@@ -85,10 +144,17 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);
+        setContentView(R.layout.dashboard);                             // link to Main activity XML
+        txt_daily_distance = findViewById(R.id.txt_daily_distance);
+        txt_greeting = findViewById(R.id.txt_greeting);
+        btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        setupLocationCallback();
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+
         server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
         URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
@@ -96,64 +162,42 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
         URL_WS_SOCKET = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
 
-        txt_daily_distance = findViewById(R.id.txt_daily_distance);
-        txt_greeting = findViewById(R.id.txt_greeting);
-        txt_websocket_test = findViewById(R.id.txt_websocket_test);
-        btn_start_auto_route = findViewById(R.id.btn_start_auto_route);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
-
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(Dashboard.this);
-        }
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        checkLocationPermission();
-
-//        handler = new Handler();
-//        handler.postDelayed(runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                handler.postDelayed(runnable, locationTick);
-//                getUserLocation();
-//            }
-//        }, locationTick);
-
-
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
 
         // Establish WebSocket connection and set listener
         WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
 
+        // Initialize location runnable
+        locationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (isTracking && currentLocation != null) {
+                    sendLocationThroughWebSocket(currentLocation);
+                    locationHandler.postDelayed(this, locationTick); // Repeat every LOCATION_TICK ms
+                }
+            }
+        };
+
         /* click listener on auto route button pressed */
         btn_start_auto_route.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isTracking = !isTracking;
+                isTracking = !isTracking; // Toggle tracking state
+
                 if (isTracking) {
-                    handler = new Handler();
-                    handler.postDelayed(runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            handler.postDelayed(runnable, locationTick);
-                            getUserLocation();
-                        }
-                    }, locationTick);
-                }
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("latitude", currentLocation.getLatitude());
-                    jsonObject.put("longitude", currentLocation.getLongitude());
-                    jsonObject.put("elevation", 0);
-                    runOnUiThread(() -> {
-                        WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
-                    });
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    Toast.makeText(Dashboard.this, "Auto-route started", Toast.LENGTH_SHORT).show();
+                    createLocationRequest();
+                    locationHandler.postDelayed(locationRunnable, locationTick);
+                } else {
+                    Toast.makeText(Dashboard.this, "Auto-route stopped", Toast.LENGTH_SHORT).show();
+                    stopLocationUpdates();
+                    locationHandler.removeCallbacks(locationRunnable);
                 }
             }
-       });
+        });
+
+        initializeMap();
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -193,73 +237,22 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             }
         });
         requestUsername();
-
-
-    }
-
-    private void checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            getUserLocation();
-        }
-        else {
-            requestForPermissions();
-        }
-    }
-
-    private void requestForPermissions() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
     }
 
     /**
-     *Deals with the response to the program asking for the permissions to access the users location
+     * Get the last known location of the user.
      */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Location Enabled", Toast.LENGTH_SHORT).show();
-                getUserLocation();
-            }
-            else {
-                Toast.makeText(this, "Location Disabled", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     *Retrieves the last known location of the user from the database. If the permission is not already granted for
-     * the program to get the location it will then request permission.
-     */
-    private void getUserLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+    private void getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
             return;
         }
+
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    currentLocation = location;
-                    latitude = currentLocation.getLatitude();
-                    longitude = currentLocation.getLongitude();
-                    Log.i("location", latitude + ", " + longitude);
-                    currentCoords = new LatLng(latitude, longitude);
-                    gMap.moveCamera(CameraUpdateFactory.newLatLng(currentCoords));
-                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 18.0f));
-                }
+        task.addOnSuccessListener(location -> {
+            if (location != null) {
+                currentLocation = location;
+                initializeMap();
             }
         });
     }
@@ -271,7 +264,126 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         gMap = googleMap;
-        gMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        if(currentLocation != null) {
+            updateMapWithLocation(currentLocation);
+        }
+
+        createLocationRequest();
+    }
+
+    /**
+     * Initialize the map and set up tracking.
+     */
+    private void initializeMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
+    }
+
+    /**
+     * Creates the location request and starts location updates.
+     */
+    private void createLocationRequest() {
+        LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
+                .setMinUpdateIntervalMillis(1500)
+                .build();
+
+        LocationSettingsRequest.Builder settingsBuilder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+
+        settingsClient.checkLocationSettings(settingsBuilder.build())
+                .addOnSuccessListener(locationSettingsResponse -> startLocationUpdates(locationRequest))
+                .addOnFailureListener(e -> Toast.makeText(this, "Please enable location services.", Toast.LENGTH_SHORT).show());
+    }
+
+
+    /**
+     * Retrieves the last known location of the user from the database. If the permission is not already granted for
+     * the program to get the location it will then request permission.
+     */
+    private void startLocationUpdates(LocationRequest locationRequest) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+            return;
+        }
+
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+    }
+
+    private void stopLocationUpdates() {
+        if (locationCallback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+        }
+    }
+
+    /**
+     * Updates the map with the user's current location and moves the marker.
+     */
+    private void updateMapWithLocation(Location location) {
+        if (gMap != null) {
+            LatLng currentCoords = new LatLng(location.getLatitude(), location.getLongitude());
+            if (userMarker == null) {
+                userMarker = gMap.addMarker(new MarkerOptions().position(currentCoords).title("You are here"));
+                if (!isCameraMoved) {
+                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentCoords, 20.0f));
+                    isCameraMoved = true;
+                }
+            } else {
+                userMarker.setPosition(currentCoords);
+            }
+        }
+    }
+
+    private void sendLocationThroughWebSocket(Location location) {
+        if(location != null && isTracking) { // Ensure only sending location if tracking
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("latitude", location.getLatitude());
+                jsonObject.put("longitude", location.getLongitude());
+                jsonObject.put("elevation", 0);
+                WebSocketManagerLocation.getInstance().sendMessage(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private void setupLocationCallback() {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(@NonNull LocationResult locationResult) {
+                if (locationResult != null && !locationResult.getLocations().isEmpty()) {
+                    currentLocation = locationResult.getLastLocation();
+                    updateMapWithLocation(currentLocation);
+
+                    if (isTracking) {
+                        sendLocationThroughWebSocket(currentLocation); // Only send location if tracking
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * Handle the result of permission requests.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == FINE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (isTracking) {
+                    createLocationRequest();
+                }
+            } else {
+                Toast.makeText(this, "Location permission is required to use this feature.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
@@ -279,6 +391,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      * retrieves the double from the database and then changes the text on the screen to reflect this new distance.
      */
     private void requestDailyDistance() {
+        String URL_JSON_GET_DISTANCE = "http://" + server_url_chunk + "/"+key+"/location/total";
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET, URL_JSON_GET_DISTANCE,
                 new Response.Listener<String>() {
@@ -364,6 +477,19 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    private void updateFriendLocation(String friendUsername, double latitude, double longitude) {
+        LatLng friendLocation = new LatLng(latitude, longitude);
+
+        if (friendMarker == null) {
+            friendMarker = gMap.addMarker(new MarkerOptions()
+                    .position(friendLocation)
+                    .title(friendUsername));
+        } else {
+            friendMarker.setPosition(friendLocation);  // Update the friend's marker position
+        }
+    }
+
+
     /**
      * required websocket code currently does nothing
      */
@@ -377,9 +503,24 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        txt_daily_distance.setText("Daily Distance: " + message);
+        try {
+            JSONObject jsonMessage = new JSONObject(message);
+            String friendUsername = jsonMessage.getString("username");  // or any other identifier
+            double latitude = jsonMessage.getDouble("latitude");
+            double longitude = jsonMessage.getDouble("longitude");
 
+            // Check if the message is for the friend (based on userId)
+            if (!friendUsername.equals(key)) {  // If not your own location, it's a friend's location
+                updateFriendLocation(friendUsername, latitude, longitude);
+            } else {
+                // Update your own location
+                txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", jsonMessage.getDouble("distance")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     /**
      * required websocket code currently does nothing

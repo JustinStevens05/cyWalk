@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -162,7 +164,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeUsernameReq();
-        globalLeaderboardReq();
+        //globalLeaderboardReq();
     }
 
     /**
@@ -179,8 +181,8 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                             // Parse JSON object data
                             username = response.getString("username");
 
-                            // Populate text views with the parsed data
-                            title.setText(username + "'S SOCIAL");
+//                            // Populate text views with the parsed data
+//                            title.setText(username + "'S SOCIAL");
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -252,8 +254,42 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 }
                             }
                         }
-                        ArrayAdapter adapter = new ArrayAdapter(Social.this, R.layout.lb_textview, R.id.tv_leaderboard, lbList);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(Social.this, R.layout.list_item_leaderboard, R.id.entryUsername, lbList) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                View view = convertView;
+
+                                // If the view is null, inflate the custom layout
+                                if (view == null) {
+                                    view = LayoutInflater.from(getContext()).inflate(R.layout.list_item_leaderboard, parent, false);
+                                }
+
+                                // Get references to the views in the custom layout
+                                TextView usernameTextView = view.findViewById(R.id.entryUsername);
+                                TextView distanceTextView = view.findViewById(R.id.entryDistance);
+                                ImageView profileImageView = view.findViewById(R.id.entryImage);
+
+                                // Set data for each item (example: lbList stores "username | distance")
+                                String userEntry = lbList.get(position);
+                                String[] parts = userEntry.split(" \\| ");
+                                String username = parts[0];
+                                String distance = parts[1];
+
+                                // Set the username and distance text
+                                usernameTextView.setText(username);
+                                distanceTextView.setText(distance); // Correct distance format
+
+                                // Set a placeholder profile image (replace this with actual images if available)
+                                profileImageView.setImageResource(R.drawable.default_avatar);
+
+                                return view;
+                            }
+
+                        };
+
+// Set the adapter to the ListView
                         lb_listView.setAdapter(adapter);
+
                     }
                 },
                 new Response.ErrorListener() {

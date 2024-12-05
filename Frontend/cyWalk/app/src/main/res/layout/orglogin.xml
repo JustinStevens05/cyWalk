@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="40sp" />
 
     <TextView
@@ -178,24 +178,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/switchDevView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="Dev sign-up/log-in"
-            android:textColor="#AAAAAA"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="100dp"/>
-
-        <TextView
             android:id="@+id/switchUserView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:text="User sign-up/log-in"
             android:textColor="#AAAAAA"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/switchDevView"/>
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

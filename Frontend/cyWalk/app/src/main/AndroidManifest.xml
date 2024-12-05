@@ -35,6 +35,9 @@
             android:name=".OrganizationLookUp"
             android:exported="false" />
         <activity
+            android:name=".ImageUploadActivity"
+            android:exported="false" />
+        <activity
             android:name=".Login"
             android:exported="true">
             <intent-filter>
@@ -47,16 +50,16 @@
             android:name=".OrgLogin"
             android:exported="false" />
         <activity
-            android:name=".orgSetGoals"
+            android:name=".OrgSetGoals"
             android:exported="false" />
         <activity
             android:name=".OrgProfile"
             android:exported="false" />
         <activity
-            android:name=".orgLeaderboards"
+            android:name=".OrgLeaderboards"
             android:exported="false" />
         <activity
-            android:name=".orgUsers"
+            android:name=".OrgUsers"
             android:exported="false" />
         <activity
             android:name=".Profile"
@@ -64,9 +67,6 @@
         <activity
             android:name=".Friends"
             android:exported="false" />
-        <activity
-            android:name=".DevLogin"
-            android:exported="false"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
