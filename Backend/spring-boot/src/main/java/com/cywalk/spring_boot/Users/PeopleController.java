@@ -200,7 +200,7 @@ public class PeopleController {
         People user = peopleResult.get();
 
         try {
-            File destinationFile = new File(directory + File.separator + imageFile.getOriginalFilename());
+            File destinationFile = new File(directory + File.separator + user.getUsername() + imageFile.getOriginalFilename());
             imageFile.transferTo(destinationFile);
 
             Image image = new Image();
