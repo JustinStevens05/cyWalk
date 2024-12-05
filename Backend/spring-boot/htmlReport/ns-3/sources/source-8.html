@@ -1,0 +1,145 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > LocationUtils</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Locations</a>
+</div>
+
+<h1>Coverage Summary for Class: LocationUtils (com.cywalk.spring_boot.Locations)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LocationUtils</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Locations;
+&nbsp;
+&nbsp;import java.math.BigDecimal;
+&nbsp;
+<b class="nc">&nbsp;public class LocationUtils {</b>
+&nbsp;
+&nbsp;    private static final double EARTH_RADIUS_METERS = 6371000.0; // used for getting the distance between objects
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Computes the distance between two points on a sphere (the earth) using the Haverisne equation {@linkplain &lt;a href=&quot;https://en.wikipedia.org/wiki/Haversine_formula&quot;&gt;...&lt;/a&gt;}
+&nbsp;     *
+&nbsp;     * @param location1 the first location point
+&nbsp;     * @param location2 the second location point
+&nbsp;     * @return the distance in meters between the points
+&nbsp;     */
+&nbsp;    public static double calculateDistance(Location location1, Location location2) {
+&nbsp;        // Convert latitude and longitude from degrees to radians for caclulation
+<b class="nc">&nbsp;        double lat1 = Math.toRadians(location1.getLatitude());</b>
+<b class="nc">&nbsp;        double lon1 = Math.toRadians(location1.getLongitude());</b>
+<b class="nc">&nbsp;        double lat2 = Math.toRadians(location2.getLatitude());</b>
+<b class="nc">&nbsp;        double lon2 = Math.toRadians(location2.getLongitude());</b>
+&nbsp;
+&nbsp;        // Differences in latitude and longitude
+<b class="nc">&nbsp;        double dLat = lat2 - lat1;</b>
+<b class="nc">&nbsp;        double dLon = lon2 - lon1;</b>
+&nbsp;
+&nbsp;        // Haversine formula
+<b class="nc">&nbsp;        double a = Math.sin(dLat / 2d) * Math.sin(dLat / 2d) + Math.cos(lat1) * Math.cos(lat2) *</b>
+<b class="nc">&nbsp;                Math.sin(dLon / 2d) * Math.sin(dLon / 2d);</b>
+<b class="nc">&nbsp;        double c = 2d * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));</b>
+&nbsp;
+&nbsp;        // Distance in meters (without considering elevation)
+<b class="nc">&nbsp;        double distance = EARTH_RADIUS_METERS * c;</b>
+&nbsp;
+<b class="nc">&nbsp;        double elevationDiff = location2.getElevation() - location1.getElevation();</b>
+<b class="nc">&nbsp;        distance = Math.sqrt(Math.pow(distance, 2d) + Math.pow(elevationDiff, 2d));</b>
+&nbsp;
+<b class="nc">&nbsp;        return distance; // Distance in kilometers</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 23:24</div>
+</div>
+</body>
+</html>
