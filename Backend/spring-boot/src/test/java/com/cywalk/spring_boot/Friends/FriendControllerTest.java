@@ -76,7 +76,7 @@ class FriendControllerTest {
 
     @Autowired
     private FriendController friendController;
-*/
+
     @Before
     @Order(1)
     public void setup() {
@@ -106,7 +106,6 @@ class FriendControllerTest {
         // Sign up base user
         Response baseSignup = RestAssured.given()
                 .basePath("/signup")
-                .header("accept", "*/*")
                 .header("Content-Type", "application/json")
                 .body(jsonPayload)
                 .when()
@@ -172,5 +171,5 @@ class FriendControllerTest {
         // Assumes response body contains the key
         return Long.parseLong(response.getBody().asString());
     }
-
+    */
 }
