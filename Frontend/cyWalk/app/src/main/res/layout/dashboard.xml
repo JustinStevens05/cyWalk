@@ -28,7 +28,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:background="@drawable/rounded_background_textview"
+        android:background="@color/white"
         android:padding="16dp">
 
         <TextView
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:textSize="15sp"
         android:textColor="@color/cywalkRed"
-        android:text="Daily Distance: \n ----------------------" />
+        android:text="Daily Distance:\n" />
     </LinearLayout>
 
     <Button

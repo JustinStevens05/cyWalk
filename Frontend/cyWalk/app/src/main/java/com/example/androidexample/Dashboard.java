@@ -126,7 +126,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 3000;
+    long locationTick = 7500;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
@@ -503,23 +503,13 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        try {
-            JSONObject jsonMessage = new JSONObject(message);
-            String friendUsername = jsonMessage.getString("username");  // or any other identifier
-            double latitude = jsonMessage.getDouble("latitude");
-            double longitude = jsonMessage.getDouble("longitude");
-
-            // Check if the message is for the friend (based on userId)
-            if (!friendUsername.equals(key)) {  // If not your own location, it's a friend's location
-                updateFriendLocation(friendUsername, latitude, longitude);
-            } else {
+        Log.d("WebSocket", "Raw Message: " + message);
                 // Update your own location
-                txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", jsonMessage.getDouble("distance")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                runOnUiThread(() -> {
+                    txt_daily_distance.setText(String.format("Daily Distance: \n%.2f", Double.parseDouble(message)));
+                });
     }
+
 
 
     /**
