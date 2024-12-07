@@ -166,8 +166,19 @@ public class Friends extends AppCompatActivity {
                                     tempText.setTextColor(Color.parseColor("#000000"));
                                     tempText.setText(current);
 
-                                    // Handle clicks on friend's name to show profile
-                                    tempText.setOnClickListener(v -> showProfileCard(tempText.getText().toString()));
+                                    Button viewProfileButton = new Button(Friends.this);
+                                    viewProfileButton.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    viewProfileButton.setText("View Profile");
+                                    viewProfileButton.setTextSize(16);
+
+                                    viewProfileButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            showProfileCard(current);
+                                        }
+                                    });
 
                                     friendTable.addView(tempText);
                                 } catch (JSONException e) {
