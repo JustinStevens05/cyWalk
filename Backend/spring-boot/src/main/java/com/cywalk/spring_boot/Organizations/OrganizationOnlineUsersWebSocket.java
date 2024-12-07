@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.websocket;
+package com.cywalk.spring_boot.Organizations;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.*;
