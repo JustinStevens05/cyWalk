@@ -158,33 +158,45 @@ public class Friends extends AppCompatActivity {
                             for (int i = 0; i < response.length(); i++) {
                                 try {
                                     String current = response.getString(i);
+
+                                    // Create a container layout for each friend row
+                                    LinearLayout row = new LinearLayout(Friends.this);
+                                    row.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    row.setOrientation(LinearLayout.HORIZONTAL);
+
+                                    // Create and configure the username TextView
                                     TextView tempText = new TextView(Friends.this);
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
-                                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                                            0, // Width weight 1 for text
+                                            LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
                                     tempText.setTextSize(20);
-                                    tempText.setTextColor(Color.parseColor("#000000"));
+                                    tempText.setTextColor(Color.BLACK);
                                     tempText.setText(current);
 
-                                    Button viewProfileButton = new Button(Friends.this);
-                                    viewProfileButton.setLayoutParams(new LinearLayout.LayoutParams(
+                                    // Create and configure the button
+                                    Button profileButton = new Button(Friends.this);
+                                    profileButton.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
                                             LinearLayout.LayoutParams.WRAP_CONTENT));
-                                    viewProfileButton.setText("View Profile");
-                                    viewProfileButton.setTextSize(16);
-
-                                    viewProfileButton.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            showProfileCard(current);
-                                        }
+                                    profileButton.setText("View Profile");
+                                    profileButton.setOnClickListener(v -> {
+                                        showProfileCard(current); // Pass the username to the method
                                     });
 
-                                    friendTable.addView(tempText);
+                                    // Add TextView and Button to the row
+                                    row.addView(tempText);
+                                    row.addView(profileButton);
+
+                                    // Add the row to the friendsTable
+                                    friendTable.addView(row);
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+
                         }
                     }
                 },

@@ -182,8 +182,8 @@
 
             <ImageView
                 android:id="@+id/profilePicture"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_gravity="center"
                 android:src="@drawable/default_avatar" />
 
