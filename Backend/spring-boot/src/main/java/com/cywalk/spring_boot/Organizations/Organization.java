@@ -23,7 +23,8 @@ public class Organization {
     @JsonManagedReference
     private Set<People> users = new HashSet<>();
 
-    @OneToMany(mappedBy = "admin_organization", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Admin> admins;
 
     public Organization() {}

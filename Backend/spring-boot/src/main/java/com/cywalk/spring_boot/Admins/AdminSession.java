@@ -1,11 +1,9 @@
 package com.cywalk.spring_boot.Admins;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 
+@Entity
 public class AdminSession {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +23,10 @@ public class AdminSession {
 
     public AdminSession(Admin admin) {
         this.admin = admin;
+    }
+
+    public AdminSession() {
+
     }
 
     public Long getKey() {

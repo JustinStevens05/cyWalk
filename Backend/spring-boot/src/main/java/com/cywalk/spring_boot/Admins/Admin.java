@@ -1,10 +1,13 @@
 package com.cywalk.spring_boot.Admins;
 
 import com.cywalk.spring_boot.Organizations.Organization;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "requestID")
 public class Admin {
     @ManyToOne
     @JoinColumn(name = "organization_id")
@@ -12,7 +15,6 @@ public class Admin {
     private Organization organization;
 
     @Schema(description = "Admin name", example = "John Doe")
-    @Column(unique = false, nullable = false)
     private String name;
 
     @Schema(description = "Admin combined name", example = "ISU John Doe")
