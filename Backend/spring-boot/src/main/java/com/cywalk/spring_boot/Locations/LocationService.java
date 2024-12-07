@@ -345,7 +345,7 @@ public class LocationService {
                 return Optional.of(0.0);
             }
             double total = 0.0;
-            for (int i = locationDays.size() - 1; i > locationDays.size() - 8; i--) {
+            for (int i = locationDays.size() - 1; i > locationDays.size() - 8 && i >= 0; i--) {
                 total += locationDays.get(i).getTotalDistance();
             }
             return Optional.of(total);
