@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 /**
  * Friends page for the users to see
- * */
+ */
 public class Friends extends AppCompatActivity {
 
     private Button backButton;
@@ -46,7 +47,9 @@ public class Friends extends AppCompatActivity {
     private ImageView profilePicture;
     private TextView profileUsername;
     private TextView profileDistance;
+    private RelativeLayout profileOverlay; // Overlay for the profile card
 
+    // URLs for the API requests
     private static String URL_JSON_FRIENDS = null;
     private static String URL_JSON_PENDING = null;
     private static String URL_NEW_FRIEND = null;
@@ -58,7 +61,9 @@ public class Friends extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.friends);
+        setContentView(R.layout.friends); // Load the layout
+
+        // Initialize views
         backButton = findViewById(R.id.returnButton);
         friendsSubmitButton = findViewById(R.id.friendSubmitBtn);
         acceptFriendSubmitButton = findViewById(R.id.acceptFriendSubmitBtn);
@@ -71,57 +76,66 @@ public class Friends extends AppCompatActivity {
         profilePicture = findViewById(R.id.profilePicture);
         profileUsername = findViewById(R.id.profileUsername);
         profileDistance = findViewById(R.id.profileDistance);
+        profileOverlay = findViewById(R.id.profileOverlay); // Initialize overlay
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
 
-        URL_JSON_FRIENDS = "http://coms-3090-072.class.las.iastate.edu:8080/friends/"+key;
-        URL_JSON_PENDING = "http://coms-3090-072.class.las.iastate.edu:8080/friends/requests/"+key;
+        // Set the URLs for the API calls
+        URL_JSON_FRIENDS = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key;
+        URL_JSON_PENDING = "http://coms-3090-072.class.las.iastate.edu:8080/friends/requests/" + key;
 
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Friends.this, Social.class);
-                intent.putExtra("key", key);
-                startActivity(intent);
-            }
+        // Return button click listener
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Friends.this, Social.class);
+            intent.putExtra("key", key);
+            startActivity(intent);
         });
 
-        friendsSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                newFriendUsername = friendUsername.getText().toString();
-                URL_NEW_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key +"/request/" + newFriendUsername;
-
-                makeFriendRequest();
-            }
+        // Friend submit button
+        friendsSubmitButton.setOnClickListener(view -> {
+            newFriendUsername = friendUsername.getText().toString();
+            URL_NEW_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key + "/request/" + newFriendUsername;
+            makeFriendRequest();
         });
 
-        acceptFriendSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                acceptFriendUsername = acceptedFriendUsername.getText().toString();
-                URL_ACCEPT_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key +"/request/approve/" + acceptFriendUsername;
-
-                makeFriendApproval();
-            }
+        // Accept friend submit button
+        acceptFriendSubmitButton.setOnClickListener(view -> {
+            acceptFriendUsername = acceptedFriendUsername.getText().toString();
+            URL_ACCEPT_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key + "/request/approve/" + acceptFriendUsername;
+            makeFriendApproval();
         });
 
-        profileCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profileCard.setVisibility(View.GONE);
-            }
-        });
+        // Handle clicks on the profile card to close it
+        profileCard.setOnClickListener(v -> profileCard.setVisibility(View.GONE));
 
+        // Handle clicks outside of the profile card to close the overlay
+        profileOverlay.setOnClickListener(v -> closeProfileOverlay());
 
+        // Fetch friends and pending requests
         makeJsonFriendReq();
         makeJsonPendingReq();
     }
 
+    // Function to show the profile card
+    private void showProfileCard(String username) {
+        // Make the overlay and profile card visible
+        profileOverlay.setVisibility(View.VISIBLE);
+        profileCard.setVisibility(View.VISIBLE);
+
+        // Set the profile details (You can update this to show actual data)
+        profileUsername.setText("Username: " + username);
+        profileDistance.setText("Distance:\n" + profileDistance); // Example static distance
+    }
+
+    // Function to close the profile overlay
+    private void closeProfileOverlay() {
+        profileOverlay.setVisibility(View.GONE); // Hide the overlay
+        profileCard.setVisibility(View.GONE); // Hide the profile card
+    }
+
     /**
-     *gets the list of current friends for a user from the database using a volley request
+     * Gets the list of current friends for a user from the database using a volley request
      */
     private void makeJsonFriendReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
@@ -132,9 +146,8 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        //newFriendTitle.setText(response.toString());
 
-                        if(response.length() > 0) {
+                        if (response.length() > 0) {
                             friendTable.removeAllViews();
                             for (int i = 0; i < response.length(); i++) {
                                 try {
@@ -143,27 +156,19 @@ public class Friends extends AppCompatActivity {
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
                                             LinearLayout.LayoutParams.WRAP_CONTENT));
-
                                     tempText.setTextSize(20);
                                     tempText.setTextColor(Color.parseColor("#000000"));
                                     tempText.setText(current);
 
-                                    tempText.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            String clickedUsername = tempText.getText().toString();
-                                            showProfileCard(clickedUsername);
-                                        }
-                                    });
+                                    // Handle clicks on friend's name to show profile
+                                    tempText.setOnClickListener(v -> showProfileCard(tempText.getText().toString()));
 
                                     friendTable.addView(tempText);
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -172,41 +177,14 @@ public class Friends extends AppCompatActivity {
                         Log.e("Volley Error", error.toString());
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
+        );
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
-    // Function to show the profile card
-    private void showProfileCard(String username) {
-        // Make the profile card visible
-        CardView profileCard = findViewById(R.id.profileCard);
-        profileCard.setVisibility(View.VISIBLE);
-
-        // Set the profile details
-        TextView profileUsername = findViewById(R.id.profileUsername);
-        profileUsername.setText("Username: " + username);
-    }
-
     /**
-     *gets the list of current pending friend requests for a user from the database using a volley request
+     * Gets the list of current pending friend requests for a user from the database using a volley request
      */
     private void makeJsonPendingReq() {
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
@@ -218,14 +196,12 @@ public class Friends extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
 
-                        if(response.length() > 0) {
+                        if (response.length() > 0) {
                             requestsTable.removeAllViews();
                             for (int i = 0; i < response.length(); i++) {
-
                                 try {
                                     String current = response.getString(i);
                                     TextView tempText = new TextView(Friends.this);
-
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
                                             LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -234,7 +210,6 @@ public class Friends extends AppCompatActivity {
                                     tempText.setText(current);
 
                                     requestsTable.addView(tempText);
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -246,38 +221,19 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
+        );
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
     }
 
     /**
-     *sends a friend request to the username stored in the newFriendUsername variable
+     * Sends a friend request to the username stored in the newFriendUsername variable
      */
     private void makeFriendRequest() {
-        //JSONObject jsonObject = new JSONObject();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-
                 Request.Method.POST,
                 URL_NEW_FRIEND,
                 null,
@@ -285,7 +241,6 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response", response.toString());
-                        //newFriendTitle.setText("Request sent successfully would you like to add another friend");
                     }
                 },
                 new Response.ErrorListener() {
@@ -293,39 +248,19 @@ public class Friends extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
                         friendUsername.setText("");
-                        //temp.setText(error.toString());
-                        //newFriendTitle.setText("couldn't find that user try again");
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
+        );
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
     /**
-     *approves a friend request from the username stored in the acceptedFriendUsername variable
+     * Approves a friend request from the username stored in the acceptedFriendUsername variable
      */
     private void makeFriendApproval() {
-        //JSONObject jsonObject = new JSONObject();
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-
                 Request.Method.PUT,
                 URL_ACCEPT_FRIEND,
                 null,
@@ -340,30 +275,11 @@ public class Friends extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
                         acceptedFriendUsername.setText("");
-                        //newFriendTitle.setText(error.toString());
-                        //newFriendTitle.setText("couldn't find that user try again");
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
+        );
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
-
 }
