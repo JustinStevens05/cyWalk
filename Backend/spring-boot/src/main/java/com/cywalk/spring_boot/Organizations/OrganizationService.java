@@ -1,9 +1,9 @@
-package com.cywalk.spring_boot.Organizations;
+package com.cywalk.spring_boot.organizations;
 
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
-import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
-import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
+import com.cywalk.spring_boot.leaderboard.LeaderboardEntry;
+import com.cywalk.spring_boot.leaderboard.LeaderboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,12 @@ public class OrganizationService {
     @Autowired
     private LeaderboardService leaderboardService;
 
-    public Organization createOrganization(String name) {
-        Optional<Organization> orgOpt = organizationRepository.findByName(name);
-        if (orgOpt.isPresent()) {
-            return orgOpt.get();
+    public Optional<Organization> createOrganization(String name) {
+        if (organizationRepository.findByName(name).isPresent()) {
+            return Optional.empty();
         }
         Organization organization = new Organization(name);
-        return organizationRepository.save(organization);
+        return Optional.of(organizationRepository.save(organization));
     }
 
     public boolean joinOrganization(Long orgId, String username) {
@@ -89,10 +88,6 @@ public class OrganizationService {
             }
         }
         return Optional.empty();
-    }
-
-    public boolean organizationExists(String name) {
-        return organizationRepository.findByName(name).isPresent();
     }
 
 }

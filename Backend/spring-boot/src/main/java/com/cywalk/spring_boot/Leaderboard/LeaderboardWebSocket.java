@@ -1,7 +1,7 @@
-package com.cywalk.spring_boot.Leaderboard;
+package com.cywalk.spring_boot.websocket;
 
-import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
-import com.cywalk.spring_boot.Leaderboard.LeaderboardUpdate;
+import com.cywalk.spring_boot.leaderboard.LeaderboardService;
+import com.cywalk.spring_boot.leaderboard.LeaderboardUpdate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;

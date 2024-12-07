@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Organizations;
+package com.cywalk.spring_boot.organizations;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
