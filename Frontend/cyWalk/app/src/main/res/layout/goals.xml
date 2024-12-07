@@ -107,6 +107,7 @@
             android:progressTint="#FFEB3B" />
 
         <TextView
+            android:id="@+id/orgGoalTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Organization Goals"

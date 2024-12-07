@@ -54,6 +54,7 @@ public class Friends extends AppCompatActivity {
 
     private String newFriendUsername;
     private String acceptFriendUsername;
+    private String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +75,7 @@ public class Friends extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        userType = extras.getString("userType");
 
         URL_JSON_FRIENDS = "http://coms-3090-072.class.las.iastate.edu:8080/friends/"+key;
         URL_JSON_PENDING = "http://coms-3090-072.class.las.iastate.edu:8080/friends/requests/"+key;
@@ -84,6 +86,7 @@ public class Friends extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Friends.this, Social.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });

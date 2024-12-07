@@ -51,6 +51,7 @@ public class Profile extends AppCompatActivity {
     private Button btn_logout;
     private Button btn_edit_avatar;
     public String URL_IMAGE = null;
+    private String userType;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -82,6 +83,7 @@ public class Profile extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        userType = extras.getString("userType");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
@@ -97,6 +99,7 @@ public class Profile extends AppCompatActivity {
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Profile.this, Dashboard.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -104,6 +107,7 @@ public class Profile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Profile.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -111,6 +115,7 @@ public class Profile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Profile.this, Social.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -118,6 +123,7 @@ public class Profile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Profile.this, Profile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -145,6 +151,7 @@ public class Profile extends AppCompatActivity {
                 // Navigate to ImageUploadActivity
                 Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 makeImageRequest();
             }

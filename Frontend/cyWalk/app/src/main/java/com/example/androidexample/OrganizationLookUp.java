@@ -42,6 +42,7 @@ public class OrganizationLookUp extends AppCompatActivity {
     private JSONArray orgs;
     private EditText org_name;
     private TextView title;
+    private String userType;
 
     private static String URL_ORGANIZATIONS_JOIN= null;
     private static String URL_ORGANIZATIONS_FIND= null;
@@ -57,6 +58,7 @@ public class OrganizationLookUp extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        userType = extras.getString("userType");
         username = extras.getString("username");
 
         URL_ORGANIZATIONS_FIND = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/get-id";
@@ -67,6 +69,7 @@ public class OrganizationLookUp extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });
