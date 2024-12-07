@@ -1,6 +1,7 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +20,10 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +57,8 @@ public class Friends extends AppCompatActivity {
     private static String URL_JSON_PENDING = null;
     private static String URL_NEW_FRIEND = null;
     private static String URL_ACCEPT_FRIEND = null;
+    private static String URL_FRIEND_WEEKLY_DISTANCE = null;
+    private static String URL_FRIEND_IMAGE = null;
 
     private String newFriendUsername;
     private String acceptFriendUsername;
@@ -106,9 +111,6 @@ public class Friends extends AppCompatActivity {
             makeFriendApproval();
         });
 
-        // Handle clicks on the profile card to close it
-        profileCard.setOnClickListener(v -> profileCard.setVisibility(View.GONE));
-
         // Handle clicks outside of the profile card to close the overlay
         profileOverlay.setOnClickListener(v -> closeProfileOverlay());
 
@@ -122,10 +124,13 @@ public class Friends extends AppCompatActivity {
         // Make the overlay and profile card visible
         profileOverlay.setVisibility(View.VISIBLE);
         profileCard.setVisibility(View.VISIBLE);
+        URL_FRIEND_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/week/total";
+        URL_FRIEND_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
 
         // Set the profile details (You can update this to show actual data)
+        makeFriendDistanceRequest();
+        makeFriendImageRequest();
         profileUsername.setText("Username: " + username);
-        profileDistance.setText("Distance:\n" + profileDistance); // Example static distance
     }
 
     // Function to close the profile overlay
@@ -227,6 +232,61 @@ public class Friends extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
+    private void makeFriendDistanceRequest() {
+        StringRequest stringReq = new StringRequest(
+                Request.Method.GET,
+                URL_FRIEND_WEEKLY_DISTANCE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Volley Response for distance request", response.toString());
+                        profileDistance.setText("Weekly Distance:\n" + response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringReq);
+    }
+
+    /**
+     * Making image request for friend's profile picture
+     * */
+    private void makeFriendImageRequest() {
+
+        ImageRequest imageRequest = new ImageRequest(
+                URL_FRIEND_IMAGE,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        // Display the image in the ImageView
+                        profilePicture.setImageBitmap(response);
+                    }
+                },
+                0, // Width, set to 0 to get the original width
+                0, // Height, set to 0 to get the original height
+                ImageView.ScaleType.FIT_XY, // ScaleType
+                Bitmap.Config.RGB_565, // Bitmap config
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors here
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
     }
 
     /**
