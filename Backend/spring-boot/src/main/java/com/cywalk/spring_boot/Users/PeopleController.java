@@ -5,19 +5,17 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.cywalk.spring_boot.websocket.OnlineUserService;
-import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
+import com.cywalk.spring_boot.Organizations.OnlineUserService;
+import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import javax.swing.plaf.nimbus.State;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

@@ -1,8 +1,8 @@
-package com.cywalk.spring_boot.organizations;
+package com.cywalk.spring_boot.Organizations;
 import java.util.HashMap;
 import java.util.Map;
 import com.cywalk.spring_boot.Users.People;
-import com.cywalk.spring_boot.leaderboard.LeaderboardEntry;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +18,8 @@ public class OrganizationController {
 
     @PostMapping
     public ResponseEntity<Organization> createOrganization(@RequestBody CreateOrganizationRequest request) {
-        Optional<Organization> orgOpt = organizationService.createOrganization(request.getName());
-        if (orgOpt.isPresent()) {
-            return ResponseEntity.ok(orgOpt.get());
-        } else {
-            return ResponseEntity.badRequest().build(); // Name already exists
-        }
+        return ResponseEntity.ok(organizationService.createOrganization(request.getName()));
+
     }
 
     @PostMapping("/get-id")
