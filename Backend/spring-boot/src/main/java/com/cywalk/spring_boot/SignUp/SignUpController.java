@@ -90,7 +90,7 @@ public class SignUpController {
             @ApiResponse(responseCode = "405", description = "Admin already exists for an organization", content = @Content)
     })
     public ResponseEntity<AdminSession> SignupOrganizationAndAdmin(
-            @RequestBody @Parameter(name = "organization", description = "The origanization") CreateOrganizationRequest organization,
+            @RequestBody @Parameter(name = "organization", description = "The organization") CreateOrganizationRequest organization,
             @RequestBody @Parameter(name = "admin", description = "the admin") AdminModel admin
     ) {
         Organization org = organizationService.createOrganization(organization.getName());

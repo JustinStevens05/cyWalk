@@ -91,4 +91,8 @@ public class OrganizationService {
         return Optional.empty();
     }
 
+    public boolean organizationExists(String name) {
+        return organizationRepository.findByName(name).isPresent();
+    }
+
 }

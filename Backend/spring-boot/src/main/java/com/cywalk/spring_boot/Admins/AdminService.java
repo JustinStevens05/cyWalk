@@ -39,7 +39,21 @@ public class AdminService {
         AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
         return adminSessionRepository.save(adminSession);
     }
-    
 
+    public boolean adminExists(AdminModel adminModel) {
+        return adminCredentialRepository.findById(adminModel.getUsername()).isEmpty();
+    }
 
+    public Optional<AdminSession> loginAdmin(AdminModel adminModel) {
+        Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findById(adminModel.getUsername());
+        if (adminCredentialsResult.isEmpty()) {
+            return Optional.empty();
+        }
+        AdminCredentials adminCredentials = adminCredentialsResult.get();
+        if (adminCredentials.getPassword().equals(adminModel.getPassword())) {
+            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
+            return Optional.of(adminSessionRepository.save(adminSession));
+        }
+        return Optional.empty();
+    }
 }
