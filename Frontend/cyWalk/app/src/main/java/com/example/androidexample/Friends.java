@@ -124,13 +124,14 @@ public class Friends extends AppCompatActivity {
         // Make the overlay and profile card visible
         profileOverlay.setVisibility(View.VISIBLE);
         profileCard.setVisibility(View.VISIBLE);
-        URL_FRIEND_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/week/total";
+        //URL_FRIEND_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/week/total";
+        URL_FRIEND_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
         URL_FRIEND_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
 
         // Set the profile details (You can update this to show actual data)
         makeFriendDistanceRequest();
         makeFriendImageRequest();
-        profileUsername.setText("Username: " + username);
+        profileUsername.setText(username);
     }
 
     // Function to close the profile overlay
@@ -242,7 +243,19 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Volley Response for distance request", response.toString());
-                        profileDistance.setText("Weekly Distance:\n" + response.toString());
+                        try {
+                            // Convert the string into a JSONObject
+                            JSONObject jsonObject = new JSONObject(response);
+
+
+                                // Access the 'totalDistance' field before the 'activities' array
+                                double totalDistance = jsonObject.getDouble("totalDistance");
+
+                            profileDistance.setText("Weekly Distance:\n" + totalDistance);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -256,6 +269,34 @@ public class Friends extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringReq);
     }
+
+//    private void makeFriendDistanceRequest() {
+//        JsonArrayRequest stringReq = new JsonArrayRequest(
+//                Request.Method.GET,
+//                URL_FRIEND_WEEKLY_DISTANCE,
+//                null,
+//                new Response.Listener<JSONArray>() {
+//                    @Override
+//                    public void onResponse(JSONArray response) {
+//                        Log.d("Volley Response for distance request", response.toString());
+//                        try {
+//                            profileDistance.setText("Weekly Distance:\n" + response.get(0).toString());
+//                        } catch (JSONException e) {
+//                            throw new RuntimeException(e);
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.e("Volley Error", error.toString());
+//                    }
+//                }
+//        );
+//
+//        // Adding request to request queue
+//        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringReq);
+//    }
 
     /**
      * Making image request for friend's profile picture
