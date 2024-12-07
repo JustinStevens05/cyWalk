@@ -2,7 +2,7 @@ package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Friends.FriendRequest;
 import com.cywalk.spring_boot.Locations.LocationDay;
-import com.cywalk.spring_boot.Organizations.Organization;
+import com.cywalk.spring_boot.organizations.Organization;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Leaderboard;
+package com.cywalk.spring_boot.leaderboard;
 
 public class LeaderboardEntry {
     private String username;

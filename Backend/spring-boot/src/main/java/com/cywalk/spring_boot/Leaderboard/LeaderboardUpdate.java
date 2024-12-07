@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Leaderboard;
+package com.cywalk.spring_boot.leaderboard;
 
 import java.util.List;
 

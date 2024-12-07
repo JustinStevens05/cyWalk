@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Leaderboard;
+package com.cywalk.spring_boot.leaderboard;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
