@@ -86,11 +86,20 @@ public class LocationController {
         return locationService.getTodaysLocation(Long.valueOf(key));
     }
 
-    @Operation(summary = "get the LocationDay from a today")
+    @Operation(summary = "get the LocationDay from today")
     @ApiResponse(useReturnTypeSchema = true)
     @GetMapping("/total")
     public Optional<LocationDay> getDistanceFromDay(@PathVariable @Parameter(name = "key", description = "the user's session key") Long key) {
         return locationService.totalDistanceFromUser(key);
+    }
+
+
+    @Operation(summary = "get the LocationDay from today")
+    @ApiResponse(useReturnTypeSchema = true)
+    @GetMapping("/user/{username}/total")
+    public Optional<LocationDay> getDistanceFromDayUsername(@PathVariable @Parameter(name = "key", description = "ignore for this just give a 0", example = "0") Long key,
+                                                            @PathVariable @Parameter(name = "username", description = "the user's username", example = "ckugel") String username) {
+        return locationService.totalDistanceFromUser(username);
     }
 
     @GetMapping("/week/total")
@@ -98,6 +107,15 @@ public class LocationController {
     @ApiResponse(useReturnTypeSchema = true)
     public Optional<Double> getTotalDistancePastWeek(@PathVariable Long key) {
         return locationService.totalDistanceFromUserWeek(key);
+    }
+
+
+    @GetMapping("/user/{username}/week/total")
+    @Operation(summary = "Weekly distance", description = "gets the total distance traveled by a user over the course of the past week")
+    @ApiResponse(useReturnTypeSchema = true)
+    public Optional<Double> getTotalDistancePastWeek(@PathVariable @Parameter(name = "key", description = "ignore, fill 0", example = "0") Long key,
+                                                     @PathVariable @Parameter(name = "username", description = "the user's id", example = "1") String username) {
+        return locationService.totalDistanceFromUserWeek(username);
     }
 
 
