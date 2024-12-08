@@ -18,12 +18,8 @@ public class OrganizationController {
 
     @PostMapping
     public ResponseEntity<Organization> createOrganization(@RequestBody CreateOrganizationRequest request) {
-        Optional<Organization> orgOpt = organizationService.createOrganization(request.getName());
-        if (orgOpt.isPresent()) {
-            return ResponseEntity.ok(orgOpt.get());
-        } else {
-            return ResponseEntity.badRequest().build(); // Name already exists
-        }
+        return ResponseEntity.ok(organizationService.createOrganization(request.getName()));
+
     }
 
     @PostMapping("/get-id")
