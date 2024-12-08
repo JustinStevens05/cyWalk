@@ -35,13 +35,22 @@ public class PeopleService {
 
     public PeopleService() {}
 
+    @Transactional
     public Optional<People> createUser(People user) {
-        if (peopleRepository.findByUsername(user.getUsername()).isPresent()) {
-            logger.warn("Issue: username already in use");
+        try {
+            if (peopleRepository.findByUsername(user.getUsername()).isPresent()) {
+                logger.warn("Issue: username already in use");
+                return Optional.empty();
+            }
+            People savedUser = peopleRepository.save(user);
+            logger.info("User saved successfully: {}", savedUser);
+            return Optional.of(savedUser);
+        } catch (Exception e) {
+            logger.error("Error saving user: {}", e.getMessage(), e);
             return Optional.empty();
         }
-        return Optional.of(peopleRepository.save(user));
     }
+
 
     @Transactional
     public void saveUserRequest(UserRequest userRequest) {
@@ -64,7 +73,9 @@ public class PeopleService {
      */
     @Transactional
     public void deleteUserByName(String name) {
-        if (getUserByUsername(name).isPresent()) {
+        Optional<People> peopleResult = getUserByUsername(name);
+        if (peopleResult.isPresent()) {
+            userModelRepository.deleteByPeople(peopleResult.get());
             peopleRepository.deleteByUsername(name);
         }
     }
@@ -76,6 +87,7 @@ public class PeopleService {
      * @param username the People key in the entity
      * @return a valid auth key
      */
+    @Transactional
     public Optional<Long> generateAuthKey(String username) {
         Optional<People> userResult = peopleRepository.findByUsername(username);
         if (userResult.isPresent()) {
@@ -107,6 +119,7 @@ public class PeopleService {
      * @param key the secret temporary key
      * @return A user if it's available
      */
+    @Transactional
     public Optional<People> getUserFromKey(Long key) {
         Optional<UserModel> userModelResult = userModelRepository.findBySecretKey(key);
 
