@@ -57,7 +57,7 @@ public class AdminService {
         }
         AdminCredentials adminCredentials = adminCredentialsResult.get();
         if (adminCredentials.getPassword().equals(adminModel.getPassword())) {
-            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
+            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), adminCredentials.getAdmin().getOrganization().getId());
             return Optional.of(adminSessionRepository.save(adminSession));
         }
         return Optional.empty();
