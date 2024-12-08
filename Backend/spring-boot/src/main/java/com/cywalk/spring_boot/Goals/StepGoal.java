@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CascadeType;
 @Entity
 public class StepGoal {
     @Id
@@ -16,7 +17,7 @@ public class StepGoal {
     private int dailyGoal;
     private int weeklyGoal;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "username", referencedColumnName = "username")
     @JsonIgnore
     private People people;
