@@ -8,7 +8,7 @@ import com.cywalk.spring_boot.Friends.FriendService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Users.PeopleService;
-import com.cywalk.spring_boot.leaderboard.LeaderboardService;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

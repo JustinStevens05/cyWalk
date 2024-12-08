@@ -2,8 +2,8 @@ package com.cywalk.spring_boot.Organizations;
 
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
-import com.cywalk.spring_boot.leaderboard.LeaderboardEntry;
-import com.cywalk.spring_boot.leaderboard.LeaderboardService;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
