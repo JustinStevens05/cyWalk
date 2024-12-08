@@ -208,7 +208,7 @@ public class GuestLogin extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        errorMsg.setText(error.toString());
+                        errorMsg.setText("User already exists");
                     }
                 }
         ) {

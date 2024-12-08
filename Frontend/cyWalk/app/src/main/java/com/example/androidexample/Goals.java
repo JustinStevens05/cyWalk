@@ -18,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONException;
@@ -55,6 +56,9 @@ public class Goals extends AppCompatActivity {
     private static String URL_GET_GOALS = null;
     private static String URL_NEW_GOALS = null;
     private static String URL_GET_USERNAME = null;
+    private static String URL_GET_DAILY_DIST = null;
+    private static String URL_GET_WEEKLY_DIST = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +131,8 @@ public class Goals extends AppCompatActivity {
         key = extras.getString("key");
         userType = extras.getString("userType");
         URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"locations/today";
+        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"locations/week/total";
 
         if(userType.equals("guest")){
             orgGoalTitle.setVisibility(View.INVISIBLE);
@@ -248,6 +254,9 @@ public class Goals extends AppCompatActivity {
                             daily_bar.setProgress(dailyStepCount);
                             weekly_bar.setProgress(weeklyStepCount);
 
+                            getJsonObjDailyDist();
+                            getJsonObjWeeklyDist();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -308,6 +317,7 @@ public class Goals extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                        weekly_step_disp.setText(error.toString());
                     }
                 }
         ) {
@@ -384,5 +394,97 @@ public class Goals extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void getJsonObjDailyDist() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET,
+                URL_GET_DAILY_DIST,
+                null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            String dDist = response.getString("totalDistance");
+
+                            // Populate text views with the parsed data
+                            daily_step_disp.setText(dDist + "/" + dailyGoal);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        daily_step_disp.setText(error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void getJsonObjWeeklyDist() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GET_WEEKLY_DIST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        weekly_step_disp.setText(response + "/" + weeklyGoal);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 }
