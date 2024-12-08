@@ -131,8 +131,7 @@ public class Goals extends AppCompatActivity {
         key = extras.getString("key");
         userType = extras.getString("userType");
         URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
-        URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"locations/today";
-        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"locations/week/total";
+        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/week/total";
 
         if(userType.equals("guest")){
             orgGoalTitle.setVisibility(View.INVISIBLE);
@@ -192,6 +191,7 @@ public class Goals extends AppCompatActivity {
                             username = response.getString("username");
                             URL_GET_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
                             URL_NEW_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
+                            URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
 
                             getJsonObjStepGoals();
 
@@ -266,7 +266,8 @@ public class Goals extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        daily_step_disp.setText(error.toString());
+                        daily_step_disp.setText("set goals below");
+                        weekly_step_disp.setText("set goals below");
                     }
                 }
         ) {
