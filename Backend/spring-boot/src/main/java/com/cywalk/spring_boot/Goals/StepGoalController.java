@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.goals;
+package com.cywalk.spring_boot.Goals;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

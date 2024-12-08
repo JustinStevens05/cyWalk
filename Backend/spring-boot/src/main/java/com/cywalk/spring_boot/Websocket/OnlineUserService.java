@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.websocket;
+package com.cywalk.spring_boot.Websocket;
 
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.leaderboard;
+package com.cywalk.spring_boot.Leaderboard;
 
 import com.cywalk.spring_boot.Locations.Location;
 import com.cywalk.spring_boot.Locations.LocationActivity;
@@ -6,7 +6,7 @@ import com.cywalk.spring_boot.Locations.LocationDay;
 import com.cywalk.spring_boot.Locations.LocationUtils;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
-import com.cywalk.spring_boot.websocket.LeaderboardWebSocket;
+import com.cywalk.spring_boot.Leaderboard.LeaderboardWebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,6 @@ public class LeaderboardService {
     private PeopleRepository peopleRepository;
 
     private List<LeaderboardEntry> currentLeaderboard = new ArrayList<>();
-
     // Existing method for the global leaderboard
     public List<LeaderboardEntry> getLeaderboard() {
         List<People> users = peopleRepository.findAll();
@@ -37,7 +36,7 @@ public class LeaderboardService {
     }
 
     // New method for organization-specific leaderboards
-    public List<LeaderboardEntry> getLeaderboard(Set<People> users) {
+    public List<com.cywalk.spring_boot.Leaderboard.LeaderboardEntry> getLeaderboard(Set<People> users) {
         return calculateLeaderboard(users);
     }
 

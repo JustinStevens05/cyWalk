@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.organizations;
+package com.cywalk.spring_boot.Organizations;
 import java.util.HashMap;
 import java.util.Map;
 import com.cywalk.spring_boot.Users.People;

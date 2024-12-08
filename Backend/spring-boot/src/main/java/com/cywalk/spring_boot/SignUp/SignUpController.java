@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.Users.SignUp;
+package com.cywalk.spring_boot.SignUp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

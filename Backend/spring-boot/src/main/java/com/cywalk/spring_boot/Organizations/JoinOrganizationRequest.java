@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.organizations;
+package com.cywalk.spring_boot.Organizations;
 
 public class JoinOrganizationRequest {
     private String username;

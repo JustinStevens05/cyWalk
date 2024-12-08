@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.organizations;
+package com.cywalk.spring_boot.Organizations;
 
 import com.cywalk.spring_boot.Users.People;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

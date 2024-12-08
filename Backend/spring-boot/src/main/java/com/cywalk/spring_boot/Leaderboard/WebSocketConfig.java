@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.config;
+package com.cywalk.spring_boot.Leaderboard;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
