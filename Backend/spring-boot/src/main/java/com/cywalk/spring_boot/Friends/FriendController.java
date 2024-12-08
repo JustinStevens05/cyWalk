@@ -151,9 +151,9 @@ public class FriendController {
         return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
-
+    @Operation(summary = "get Friend Leaderboard using session Key. Returns Leaderboard", description = "Returns Leaderboard")
     @GetMapping("/leaderboard")
-    public ResponseEntity<List<LeaderboardEntry>> getFriendLeaderboard(@RequestHeader("Authorization") Long sessionKey) {
+    public ResponseEntity<List<LeaderboardEntry>> getFriendLeaderboard(@RequestHeader("User Key") Long sessionKey) {
         Optional<People> userOpt = peopleService.getUserFromKey(sessionKey);
         if (userOpt.isPresent()) {
             People user = userOpt.get();
