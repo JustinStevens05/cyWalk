@@ -22,12 +22,12 @@ public class StepGoalController {
         }
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<StepGoal> getStepGoal(@PathVariable String username) {
-        Optional<StepGoal> stepGoalOpt = stepGoalService.getStepGoal(username);
-        return stepGoalOpt.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+        @GetMapping("/{username}")
+        public ResponseEntity<StepGoal> getStepGoal(@PathVariable String username) {
+            Optional<StepGoal> stepGoalOpt = stepGoalService.getStepGoal(username);
+            return stepGoalOpt.map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity.notFound().build());
+        }
 
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteStepGoal(@PathVariable String username) {

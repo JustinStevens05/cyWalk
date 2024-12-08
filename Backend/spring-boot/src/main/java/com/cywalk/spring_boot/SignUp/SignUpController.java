@@ -28,16 +28,12 @@ import java.util.Optional;
 @RequestMapping("/signup")
 public class SignUpController {
 
-    private final PeopleService peopleService;
+    @Autowired
+     PeopleService peopleService;
     @Autowired
     OrganizationService organizationService;
     @Autowired
     private AdminService adminService;
-
-    @Autowired
-    public SignUpController(PeopleService peopleService) {
-        this.peopleService = peopleService;
-    }
 
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
