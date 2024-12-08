@@ -20,7 +20,6 @@ public class LeaderboardService {
     private PeopleRepository peopleRepository;
 
     private List<LeaderboardEntry> currentLeaderboard = new ArrayList<>();
-
     // Existing method for the global leaderboard
     public List<LeaderboardEntry> getLeaderboard() {
         List<People> users = peopleRepository.findAll();
@@ -37,7 +36,7 @@ public class LeaderboardService {
     }
 
     // New method for organization-specific leaderboards
-    public List<LeaderboardEntry> getLeaderboard(Set<People> users) {
+    public List<com.cywalk.spring_boot.Leaderboard.LeaderboardEntry> getLeaderboard(Set<People> users) {
         return calculateLeaderboard(users);
     }
 

@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Users;
 
+import com.cywalk.spring_boot.Achievements.Achievement;
 import com.cywalk.spring_boot.Friends.FriendRequest;
 import com.cywalk.spring_boot.Locations.LocationDay;
 import com.cywalk.spring_boot.Organizations.Organization;
@@ -42,6 +43,13 @@ public class People {
   @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
   @NonNull
   private Set<FriendRequest> receivedRequests = new HashSet<>();
+
+  @ManyToMany
+  @JoinTable(name = "user_achievements",
+          joinColumns = @JoinColumn(name = "username", referencedColumnName = "username"),
+          inverseJoinColumns = @JoinColumn(name = "achievement_id"))
+  private Set<Achievement> achievements = new HashSet<>();
+
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @Schema(description = "All of the locations, organized as measurements in days, that a user has logged")
@@ -107,6 +115,15 @@ public class People {
   public void setEmail(String email) {
     this.email = email;
   }
+
+  public Set<Achievement> getAchievements() {
+    return achievements;
+  }
+
+  public void addAchievement(Achievement achievement) {
+    this.achievements.add(achievement);
+  }
+
 
   // Organization
   public Organization getOrganization() {

@@ -1,0 +1,459 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > PeopleController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Users</a>
+</div>
+
+<h1>Coverage Summary for Class: PeopleController (com.cywalk.spring_boot.Users)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PeopleController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (2/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.4%
+  </span>
+  <span class="absValue">
+    (3/87)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Users;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.media.Content;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponses;
+&nbsp;import org.apache.catalina.User;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import com.cywalk.spring_boot.websocket.OnlineUserService;
+&nbsp;import com.cywalk.spring_boot.websocket.OrganizationOnlineUsersWebSocket;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;
+&nbsp;
+&nbsp;import javax.swing.plaf.nimbus.State;
+&nbsp;import java.io.File;
+&nbsp;import java.io.IOException;
+&nbsp;import java.nio.file.Files;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;import static com.cywalk.spring_boot.Friends.FriendController.asJsonString;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/users&quot;)
+<b class="fc">&nbsp;public class PeopleController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PeopleService peopleService;
+&nbsp;    @Autowired
+&nbsp;    private UserModelRepository userModelRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OnlineUserService onlineUserService;
+&nbsp;
+<b class="fc">&nbsp;    private Logger logger = LoggerFactory.getLogger(PeopleController.class);</b>
+&nbsp;
+<b class="fc">&nbsp;    private static String directory = &quot;/target/profileImages/&quot;;</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ImageRepository imageRepository;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;retrieves a People model for a corresponding username in the database&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/username/{username}&quot;)
+&nbsp;    public Optional&lt;People&gt; getUserByUsername(@PathVariable @Parameter(name = &quot;username&quot;, description = &quot;the username of a user used when signed in&quot;, example = &quot;ckugel&quot;) String username) {
+<b class="nc">&nbsp;        return peopleService.getUserByUsername(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;gets all of the users&quot;, description = &quot;Retrieves all of the users from the database and returns those entitys&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping
+&nbsp;    public List&lt;People&gt; getAllUsers() {
+<b class="nc">&nbsp;        return peopleService.getAllPeople();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;creates a new user with a person schema&quot;)
+&nbsp;    @PostMapping
+&nbsp;    public Optional&lt;People&gt; createUser(@RequestBody People people) {
+<b class="nc">&nbsp;        return peopleService.createUser(people);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public Optional&lt;People&gt; getUserBySessionKey(@PathVariable Long id) {
+<b class="nc">&nbsp;        return peopleService.getUserFromKey(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/username/{username}&quot;)
+&nbsp;    public void deleteUserByName(@PathVariable String username) {
+<b class="nc">&nbsp;        peopleService.deleteUserByName(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @param userRequest username password combo
+&nbsp;     * @return the key to be used during the session
+&nbsp;     */
+&nbsp;    @Operation(summary = &quot;Log in a user with the corresponding user request&quot;)
+&nbsp;    @PutMapping
+&nbsp;    public ResponseEntity&lt;Key&gt; login(@RequestBody @Parameter(name = &quot;userRequest&quot;, description = &quot;the username password combination to sign in&quot;) UserRequest userRequest) {
+<b class="nc">&nbsp;        return peopleService.login(userRequest);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * log out a user and delete the cooresponding usermodel from the database
+&nbsp;     *
+&nbsp;     * @param key the key that was used for the login session
+&nbsp;     * @return the
+&nbsp;     */
+&nbsp;    @Operation(summary = &quot;Log out an instance of a user&quot;)
+&nbsp;    @ApiResponses( value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;successfully logged out the user&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No logged in users found&quot;)
+&nbsp;    })
+&nbsp;    @DeleteMapping(&quot;/{key}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; logout(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;user key&quot;, example = &quot;1&quot;) Long key) {
+<b class="nc">&nbsp;        Optional&lt;UserModel&gt; toDelete = userModelRepository.findBySecretKey(key);</b>
+<b class="nc">&nbsp;        if (toDelete.isPresent()) {</b>
+<b class="nc">&nbsp;            People user = toDelete.get().getUser();</b>
+<b class="nc">&nbsp;            userModelRepository.deleteBySecretKey(key);</b>
+&nbsp;
+&nbsp;            // Update online users
+<b class="nc">&nbsp;            if (user.getOrganization() != null) {</b>
+<b class="nc">&nbsp;                Long orgId = user.getOrganization().getId();</b>
+<b class="nc">&nbsp;                onlineUserService.userLoggedOut(user.getUsername(), orgId);</b>
+&nbsp;                // Broadcast update
+<b class="nc">&nbsp;                OrganizationOnlineUsersWebSocket.broadcastOnlineUsers(</b>
+<b class="nc">&nbsp;                        orgId, onlineUserService.getOnlineUsers(orgId));</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok().build();</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Log out all instances of a user including the current one
+&nbsp;     * @param key session key
+&nbsp;     * @return a successful key
+&nbsp;     */
+&nbsp;    @Operation(summary = &quot;Log out all instances of a user including the current one&quot;)
+&nbsp;    @ApiResponses( value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;successfully logged out any logged in users&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No logged in users found&quot;)
+&nbsp;    })
+&nbsp;    @DeleteMapping(&quot;/logins/{key}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; logoutAllOfUser(@PathVariable Long key) {
+<b class="nc">&nbsp;       ResponseEntity&lt;List&lt;UserModel&gt;&gt; result = getActiveSessions(key);</b>
+<b class="nc">&nbsp;       if (result.getStatusCode().value() == 200) {</b>
+<b class="nc">&nbsp;           List&lt;UserModel&gt; elements = result.getBody();</b>
+<b class="nc">&nbsp;           if (elements == null) {</b>
+<b class="nc">&nbsp;               return ResponseEntity.notFound().build();</b>
+&nbsp;           }
+&nbsp;           else {
+<b class="nc">&nbsp;               for (UserModel userModel : elements) {</b>
+<b class="nc">&nbsp;                   peopleService.logout(userModel.getSecretKey());</b>
+<b class="nc">&nbsp;               }</b>
+<b class="nc">&nbsp;               return ResponseEntity.ok().build();</b>
+&nbsp;           }
+&nbsp;       }
+&nbsp;       else {
+<b class="nc">&nbsp;           return ResponseEntity.status(result.getStatusCode()).build();</b>
+&nbsp;       }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets all the current UserModels in the database. intended to be wiped out with {@link #logoutAllOfUser(Long)}
+&nbsp;     *
+&nbsp;     * Bad request if there is no user corresponding to the passed in key
+&nbsp;     * not found if there are no other active sessions for the user
+&nbsp;     *
+&nbsp;     * @param key the session key from {@link #login(UserRequest)}
+&nbsp;     * @return all the sessions of a user
+&nbsp;     */
+&nbsp;    @Operation(summary = &quot;Gets all the current User Models in the database. Intended to be cleared using logoutAllOfUser&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Got all active sessions&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;No logged in users found&quot;)
+&nbsp;    })
+&nbsp;    @GetMapping(&quot;/logins/{key}&quot;)
+&nbsp;    public ResponseEntity&lt;List&lt;UserModel&gt;&gt; getActiveSessions(@PathVariable Long key) {
+<b class="nc">&nbsp;        Optional&lt;UserModel&gt; userRequest = userModelRepository.findBySecretKey(key);</b>
+<b class="nc">&nbsp;        if (userRequest.isPresent()) {</b>
+<b class="nc">&nbsp;            List&lt;UserModel&gt; current = userModelRepository.findAllByPeople(userRequest.get().getUser());</b>
+<b class="nc">&nbsp;            if (current.isEmpty()) {</b>
+<b class="nc">&nbsp;                return ResponseEntity.notFound().build();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                return ResponseEntity.ok(current);</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;upload a photo to be used as the profile image&quot;, description = &quot;uploads a new profile image, replaces one if it currently exists&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;successfully uploaded the image&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;512&quot;, description = &quot;could not write image on server end&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;user not found&quot;)
+&nbsp;    })
+&nbsp;    @PostMapping(&quot;/image/{key}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; uploadImage(
+&nbsp;            @RequestParam(&quot;image&quot;)
+&nbsp;            @Parameter(name = &quot;imageFile&quot;, description = &quot;The image as a file? look at springboot tutorials to send&quot;)
+&nbsp;            MultipartFile imageFile,
+&nbsp;            @PathVariable @Parameter(name = &quot;key&quot;, description = &quot;The user&#39;s session key&quot;, example = &quot;/1&quot;)
+&nbsp;            Long key
+&nbsp;            ) {
+&nbsp;
+<b class="nc">&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);</b>
+<b class="nc">&nbsp;        if (peopleResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(404).build();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        People user = peopleResult.get();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            File destinationFile = new File(directory + File.separator + user.getUsername() + imageFile.getOriginalFilename());</b>
+<b class="nc">&nbsp;            imageFile.transferTo(destinationFile);</b>
+&nbsp;
+<b class="nc">&nbsp;            Image image = new Image();</b>
+<b class="nc">&nbsp;            image.setFilepath(destinationFile.getAbsolutePath());</b>
+&nbsp;
+<b class="nc">&nbsp;            image = imageRepository.save(image);</b>
+&nbsp;
+&nbsp;            // now remove from a user if they have one and add new to user
+<b class="nc">&nbsp;            if (user.getImage() != null &amp;&amp; user.getImage().getFilepath() != null &amp;&amp; !user.getImage().getFilepath().isEmpty()) {</b>
+<b class="nc">&nbsp;                imageRepository.delete(user.getImage());</b>
+&nbsp;                // also remove the file
+<b class="nc">&nbsp;                File file = new File(user.getImage().getFilepath());</b>
+<b class="nc">&nbsp;                if (!file.delete()) {</b>
+<b class="nc">&nbsp;                    logger.warn(&quot;could not delete file at location: {}&quot;, user.getImage().getFilepath());</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            user.setImage(image);</b>
+<b class="nc">&nbsp;            peopleService.saveUser(user);</b>
+&nbsp;
+<b class="nc">&nbsp;            return ResponseEntity.ok().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e) {</b>
+<b class="nc">&nbsp;            logger.error(&quot;Could not write data to file: {}&quot;, imageFile.getOriginalFilename());</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(512).build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(value = &quot;/image/{username}&quot;, produces = MediaType.IMAGE_JPEG_VALUE)
+&nbsp;    @Operation(summary = &quot;get profile picture&quot;, description = &quot;gets a profile picture for a particular user&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;104&quot;, description = &quot;Image not found for user&quot;, useReturnTypeSchema = false),
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Status ok, request fulfilled&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;User not found for given username&quot;, useReturnTypeSchema = false),
+&nbsp;            @ApiResponse(responseCode = &quot;512&quot;, description = &quot;Allegedly there is an image, however we couldn&#39;t read it&quot;)
+&nbsp;    })
+&nbsp;    public ResponseEntity&lt;byte[]&gt; getImageByUsername(
+&nbsp;            @PathVariable @Parameter(name = &quot;username&quot;, description = &quot;the username of the profile image to get&quot;, example = &quot;ckugel&quot;)
+&nbsp;            String username
+&nbsp;    ) {
+<b class="nc">&nbsp;        Optional&lt;People&gt; personResult = peopleService.getUserByUsername(username);</b>
+<b class="nc">&nbsp;        if (personResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(404).build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Image image = personResult.get().getImage();</b>
+<b class="nc">&nbsp;        if (image != null &amp;&amp; image.getFilepath() != null &amp;&amp; !image.getFilepath().isEmpty()) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                File imageFile = new File(image.getFilepath());</b>
+<b class="nc">&nbsp;                return ResponseEntity.ok(Files.readAllBytes(imageFile.toPath()));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            catch (IOException e) {</b>
+<b class="nc">&nbsp;                logger.error(&quot;Could not recover from reading path: {}.\n Error: {}&quot;, image.getFilepath(), e.getMessage());</b>
+<b class="nc">&nbsp;                return ResponseEntity.status(512).build();</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            return ResponseEntity.status(104).build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(value = &quot;{key}/profile&quot;)
+&nbsp;    @Operation(summary = &quot;add a bio&quot;, description = &quot;whatever String is passed through the body will be added as a bio&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;status ok, request fulfilled&quot;),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;user not found&quot;),
+&nbsp;    })
+&nbsp;    public ResponseEntity&lt;Void&gt; updateProfile(
+&nbsp;            @PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user session key&quot;) Long key,
+&nbsp;            @RequestHeader(&quot;bio&quot;) @Parameter(description = &quot;the bio to update, null or empty string to keep same&quot;, example = &quot;I loves to walk!&quot;) String bio,
+&nbsp;            @RequestHeader(&quot;username&quot;) @Parameter(description = &quot;the updated username, null or empty string to keep the same&quot;, example = &quot;jeb&quot;) String username,
+&nbsp;            @RequestHeader(&quot;email&quot;) @Parameter(description = &quot;the updated email, null or empty to keep the same&quot;, example = &quot;userOne@email.com&quot;) String email) {
+<b class="nc">&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);</b>
+<b class="nc">&nbsp;        if (peopleResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.notFound().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        People people = peopleResult.get();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (bio != null &amp;&amp; !bio.isEmpty()) {</b>
+<b class="nc">&nbsp;            people = peopleService.updateBio(people, bio);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (username != null &amp;&amp; !username.isEmpty()) {</b>
+<b class="nc">&nbsp;            people = peopleService.updateUsername(people, username);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (email != null &amp;&amp; !email.isEmpty()) {</b>
+<b class="nc">&nbsp;            peopleService.updateEmail(people, email);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return ResponseEntity.ok().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;{key}/profile/email&quot;)
+&nbsp;    @Operation(summary = &quot;email of user&quot;, description = &quot;fetches the email of a given user&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;status ok, request fulfilled&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;user not found&quot;),
+&nbsp;    })
+&nbsp;    public ResponseEntity&lt;String&gt; getEmail(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user session key&quot;) Long key) {
+<b class="nc">&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);</b>
+<b class="nc">&nbsp;        if (peopleResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.of(Optional.of(asJsonString(peopleResult.get().getEmail())));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;{key}/profile/bio&quot;)
+&nbsp;    @Operation(summary = &quot;bio of user&quot;, description = &quot;fetches the bio of a given user&quot;)
+&nbsp;    @ApiResponses(value = {
+&nbsp;            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;status ok, request fulfilled&quot;, content = @Content),
+&nbsp;            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;user not found&quot;),
+&nbsp;    })
+&nbsp;    public ResponseEntity&lt;String&gt; getBio(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user session key&quot;) Long key) {
+<b class="nc">&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);</b>
+<b class="nc">&nbsp;        if (peopleResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().build();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.of(Optional.of(asJsonString(peopleResult.get().getUsername())));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the current league a user is in
+&nbsp;     * @param key the key of said user
+&nbsp;     * @return the current league of the user
+&nbsp;     */
+&nbsp;    /*
+&nbsp;    @GetMapping(&quot;/league&quot;)
+&nbsp;    public Optional&lt;League&gt; getCurrentLeague(@PathVariable Long key) {
+&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);
+&nbsp;        if (peopleResult.isEmpty()) {
+&nbsp;            return Optional.empty();
+&nbsp;        }
+&nbsp;        return Optional.of(peopleResult.get().getLeague());
+&nbsp;    }
+&nbsp;*/
+&nbsp;
+&nbsp;    /**
+&nbsp;     * updates or generates the league for the current user.
+&nbsp;     * WARNING THIS IS VERY SLOW SO USE GET WHEN YOU CAN AND AVOID FREQUENT CALLS
+&nbsp;     * @param key the user&#39;s session key
+&nbsp;     * @return the league the user is in or nothing if there was an issue
+&nbsp;     */
+&nbsp;    /*
+&nbsp;    @PutMapping(&quot;/league&quot;)
+&nbsp;    public Optional&lt;League&gt; updateAndGetLeague(@PathVariable Long key) {
+&nbsp;        Optional&lt;People&gt; peopleResult = peopleService.getUserFromKey(key);
+&nbsp;        return peopleResult.map(people -&gt; peopleService.updateLeagueForUser(people.getUsername()));
+&nbsp;    }
+&nbsp;*/
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 23:24</div>
+</div>
+</body>
+</html>

@@ -1,16 +1,19 @@
 package com.cywalk.spring_boot.Locations;
 
+import com.cywalk.spring_boot.Achievements.Achievement;
+import com.cywalk.spring_boot.Achievements.AchievementService;
+
 import com.cywalk.spring_boot.Friends.FriendLocationController;
 import com.cywalk.spring_boot.Friends.FriendService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Users.PeopleService;
+import com.cywalk.spring_boot.leaderboard.LeaderboardService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +25,12 @@ public class LocationService {
 
     @Autowired
     private LocationRepository locationRepository;
+
+
+    @Autowired
+    private AchievementService achievementService;
+
+
 
     @Autowired
     private LocationDayRepository locationDayRepository;
@@ -247,13 +256,6 @@ public class LocationService {
         endSession(peopleService.getUserByUsername(username).get());
     }
 
-    @Transactional
-    public void endSession(People people) {
-        getCurrentActivity(people).setFinished(true);
-
-        // Update leaderboard after ending the session
-        leaderboardService.getLeaderboard();
-    }
 
     @Transactional
     public Optional<LocationDay> getTodaysLocation(String username) {
@@ -351,5 +353,21 @@ public class LocationService {
             return Optional.of(total);
         }
     }
+
+
+    @Transactional
+    public void endSession(People people) {
+        getCurrentActivity(people).setFinished(true);
+
+        // Recalculate total distance for today's LocationDay
+        Optional<LocationDay> ldOpt = getTodaysLocation(people);
+        if (ldOpt.isPresent()) {
+            totalDistance(ldOpt.get().getId()); // This updates the totalDistance field
+        }
+
+        leaderboardService.getLeaderboard();
+        achievementService.checkAndAwardAchievements(people);
+    }
+
 }
 

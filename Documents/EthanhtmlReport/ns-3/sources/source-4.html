@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > LocationDay</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Locations</a>
+</div>
+
+<h1>Coverage Summary for Class: LocationDay (com.cywalk.spring_boot.Locations)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LocationDay</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.7%
+  </span>
+  <span class="absValue">
+    (1/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (1/18)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LocationDay$HibernateInstantiator$vbJa2TkG</td>
+  </tr>
+  <tr>
+    <td class="name">LocationDay$HibernateProxy$DFuhssUu</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    7.7%
+  </span>
+  <span class="absValue">
+    (1/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.6%
+  </span>
+  <span class="absValue">
+    (1/18)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Locations;
+&nbsp;
+&nbsp;import com.cywalk.spring_boot.Users.People;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;/**
+&nbsp; * The total locations from the entire day.
+&nbsp; * Stores a list of recorded logged locations from throughout the day
+&nbsp; * Also store the total distance traveled by a people as calculated from the locations
+&nbsp; */
+&nbsp;@Entity
+&nbsp;@Schema(description = &quot;All of the location activity&#39;s logged in a day&quot;)
+&nbsp;public class LocationDay {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The date the data was recorded on
+&nbsp;     */
+&nbsp;    @Schema(description = &quot;the date the location day logs&quot;)
+&nbsp;    private LocalDate date;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The total distance that was traveled in the day
+&nbsp;     */
+&nbsp;    @Schema(description = &quot;The total distance traveled in the day&quot;)
+&nbsp;    private double totalDistance;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A list of keys to the location table in the database
+&nbsp;     */
+&nbsp;    @Schema(description = &quot;The list of activity&#39;s throughout the day&quot;)
+&nbsp;    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+&nbsp;    private List&lt;LocationActivity&gt; activities;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * The people who took traveled took this route
+&nbsp;     */
+&nbsp;    @Schema(description = &quot;The user who logged these activity&#39;s&quot;)
+&nbsp;    @ManyToOne
+&nbsp;    // @JoinColumn(name = &quot;people_username&quot;)
+&nbsp;    private People people;
+&nbsp;
+<b class="nc">&nbsp;    public LocationDay(LocalDate date) {</b>
+<b class="nc">&nbsp;        this.date = date;</b>
+<b class="nc">&nbsp;        totalDistance = 0;</b>
+<b class="nc">&nbsp;        activities = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public LocationDay() {</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    public LocalDate getDate() {
+<b class="nc">&nbsp;        return date;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDate(LocalDate date) {
+<b class="nc">&nbsp;        this.date = date;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public People getUser() {
+<b class="nc">&nbsp;        return people;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(People people) {
+<b class="nc">&nbsp;        this.people = people;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(Long id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Long getId() {
+<b class="nc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getTotalDistance() {
+<b class="nc">&nbsp;        return totalDistance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTotalDistance(double totalDistance) {
+<b class="nc">&nbsp;        this.totalDistance = totalDistance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;LocationActivity&gt; getActivities() {
+<b class="nc">&nbsp;        return activities;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setActivities(List&lt;LocationActivity&gt; locations) {
+<b class="nc">&nbsp;        this.activities = locations;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the last activity or the current depending on it&#39;s state
+&nbsp;     * @return the most recent activity
+&nbsp;     */
+&nbsp;    public Optional&lt;LocationActivity&gt; getLastActivity() {
+<b class="nc">&nbsp;        if (!activities.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.of(activities.get(activities.size() - 1));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Optional.empty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-04 23:24</div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.cywalk.spring_boot.goals;
+package com.cywalk.spring_boot.Goals;
 
 import com.cywalk.spring_boot.Users.People;
 import jakarta.persistence.Entity;
