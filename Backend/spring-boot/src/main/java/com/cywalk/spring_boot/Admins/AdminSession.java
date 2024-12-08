@@ -12,6 +12,7 @@ public class AdminSession {
     private Long key;
 
     @JoinColumn(name = "admin_id")
+    @ManyToOne
     @Schema(description = "Admin entity pointer")
     private Admin admin;
 
