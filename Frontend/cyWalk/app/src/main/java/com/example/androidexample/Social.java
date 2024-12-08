@@ -73,7 +73,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         lbList = new ArrayList<String>();
 
-        tabLayout = findViewById(R.id.tabLayout);
+        //tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
         myViewPagerAdapter = new myViewPagerAdapter(this);
         viewPager2.setAdapter(myViewPagerAdapter);
@@ -139,30 +139,30 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         // Establish WebSocket connection and set listener
         WebSocketManagerLeaderboard.getInstance().connectWebSocket(URL_WS_SOCKET);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
-            }
-        });
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                viewPager2.setCurrentItem(tab.getPosition());
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {
+//
+//            }
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {
+//
+//            }
+//        });
+//
+//        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                super.onPageSelected(position);
+//                tabLayout.getTabAt(position).select();
+//            }
+//        });
 
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +175,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeUsernameReq();
-        //globalLeaderboardReq();
+        globalLeaderboardReq();
     }
 
     /**

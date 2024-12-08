@@ -23,38 +23,42 @@
         android:textSize="25dp" />
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/title"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_filter_global"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/cywalkRed"
+            android:layout_marginRight="3dp"
+            android:layout_marginLeft="3dp"
+            android:text="Global" />
+
+        <Button
+            android:id="@+id/btn_filter_friends"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="@color/cywalkRed"
+            android:layout_marginRight="3dp"
+            android:layout_marginLeft="3dp"
+            android:text="Friends" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
         android:id="@+id/tabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:translationY="75sp">
-
-        <com.google.android.material.tabs.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/cywalkRed"
-            android:id="@+id/tabLayout"
-            app:tabSelectedTextColor="#FFEB3B"
-            app:tabTextColor="@color/white">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/friendsTab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Friends" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/localTab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Local" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/globalTab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Global" />
-        </com.google.android.material.tabs.TabLayout>
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="75dp">
 
         <ListView
             android:id="@+id/lv_leaderboard"
@@ -97,6 +101,7 @@
         android:text="Friends"
         android:backgroundTint="@color/cywalkRed"
         android:layout_above="@id/bottomNavigation"
+        android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

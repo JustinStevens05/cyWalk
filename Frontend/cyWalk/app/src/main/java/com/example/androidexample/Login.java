@@ -135,7 +135,7 @@ public class Login extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("Volley Response", response.toString());
+                        Log.d("Volley Response after login attempt: ", response.toString());
                         try {
                             // Parse JSON object data
                             key = response.getString("key");
