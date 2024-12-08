@@ -160,7 +160,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        errorMsg.setText("an error has occured please try again later");
+                        errorMsg.setText("Error invalid username/password");
                     }
                 }
         ) {
@@ -224,7 +224,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        errorMsg.setText(error.toString());
+                        errorMsg.setText("User already exists");
                     }
                 }
         ) {

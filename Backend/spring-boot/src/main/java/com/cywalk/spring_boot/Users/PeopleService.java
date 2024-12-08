@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.cywalk.spring_boot.Websocket.OnlineUserService;
-import com.cywalk.spring_boot.Websocket.OrganizationOnlineUsersWebSocket;
+import com.cywalk.spring_boot.Organizations.OnlineUserService;
+import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 
 import java.util.List;
 import java.util.Optional;

@@ -428,8 +428,6 @@ public class Friends extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
                         acceptedFriendUsername.setText("");
-                        //newFriendTitle.setText(error.toString());
-                        //newFriendTitle.setText("couldn't find that user try again");
                     }
                 }
         ) {
