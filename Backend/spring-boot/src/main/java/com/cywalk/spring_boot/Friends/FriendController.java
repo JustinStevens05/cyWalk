@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Friends;
 
+import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -147,6 +149,23 @@ public class FriendController {
         // resultingMessage.append("]}");
 
         return ResponseEntity.of(Optional.of(asJsonString(usernames)));
+    }
+
+
+    @GetMapping("/leaderboard")
+    public ResponseEntity<List<LeaderboardEntry>> getFriendLeaderboard(@RequestHeader("Authorization") Long sessionKey) {
+        Optional<People> userOpt = peopleService.getUserFromKey(sessionKey);
+        if (userOpt.isPresent()) {
+            People user = userOpt.get();
+            Optional<List<LeaderboardEntry>> leaderboardOpt = friendService.getFriendLeaderboard(user);
+            if (leaderboardOpt.isPresent()) {
+                return ResponseEntity.ok(leaderboardOpt.get());
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); //
+        }
     }
 
     /**
