@@ -42,7 +42,7 @@ public class AdminService {
         adminRepository.save(adminCredentials.getAdmin());
         organization = organizationRepository.save(organization);
 
-        AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
+        AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), organization.getId());
         return adminSessionRepository.save(adminSession);
     }
 
