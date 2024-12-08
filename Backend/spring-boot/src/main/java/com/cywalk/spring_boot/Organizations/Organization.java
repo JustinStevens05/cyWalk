@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "organization")
 public class Organization {
 
     @Id
@@ -25,7 +25,7 @@ public class Organization {
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<Admin> admins;
+    private Set<Admin> admins = new HashSet<>();
 
     public Organization() {}
 
@@ -76,6 +76,11 @@ public class Organization {
 
     public void setAdmins(Set<Admin> admins) {
         this.admins = admins;
+    }
+
+    public void addAdmin(Admin admin) {
+        this.admins.add(admin);
+        admin.setOrganization(this);
     }
 
     public void removeUser(People user) {

@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Admins;
 
 import com.cywalk.spring_boot.Organizations.Organization;
+import com.cywalk.spring_boot.Organizations.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ public class AdminService {
 
     @Autowired
     AdminSessionRepository adminSessionRepository;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     public boolean adminExistsForOrganization(String combinedName) {
         return adminRepository.findById(combinedName).isEmpty();
@@ -34,7 +37,10 @@ public class AdminService {
     public AdminSession signUpAdmin(AdminModel adminModel, Organization organization) {
         AdminCredentials adminCredentials = fromAdminModel(adminModel, organization);
         adminCredentials.setAdmin(adminRepository.save(adminCredentials.getAdmin()));
+        organization.addAdmin(adminCredentials.getAdmin());
         adminCredentials = adminCredentialRepository.save(adminCredentials);
+        adminRepository.save(adminCredentials.getAdmin());
+        organization = organizationRepository.save(organization);
 
         AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
         return adminSessionRepository.save(adminSession);
