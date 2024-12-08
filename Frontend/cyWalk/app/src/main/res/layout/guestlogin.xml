@@ -14,7 +14,7 @@
         android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
-        android:text="Login"
+        android:text="Guest Login"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -116,25 +116,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/switchOrgView"
+            android:id="@+id/switchUserView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:text="organization sign-up/log-in"
+            android:text="user sign-up/log-in"
             android:textColor="#AAAAAA"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp"/>
-
-        <TextView
-            android:id="@+id/switchGuestView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="guest sign-up/log-in"
-            android:textColor="#AAAAAA"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
-            android:layout_below="@+id/switchOrgView"/>
+            android:layout_centerInParent="true"
+            android:layout_marginTop="150dp"/>
 
     </RelativeLayout>
 

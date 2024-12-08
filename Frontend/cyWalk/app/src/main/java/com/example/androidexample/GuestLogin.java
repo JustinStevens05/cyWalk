@@ -1,9 +1,5 @@
 package com.example.androidexample;
 
-import static java.lang.Double.isNaN;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,45 +8,42 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Login page for all users to see upon opening the app
  * */
-public class Login extends AppCompatActivity {
+public class GuestLogin extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
-    private TextView orgSwitch;
-    private TextView guestSwitch;
-    private Button loginButton;         // define login button variable
-    private String server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
-    private String local_url_chunk = "10.0.2.2:8080";
+    private TextView userSwitch;
+    private Button loginButton;
     private String URL_LOGIN = null;
     private String URL_SIGNUP = null;
     private String key = "";
     private String username;
     private String password;
-    private String userType = "user";
+    private String userType = "guest";
     private Button signUpButton;        // define signup button variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);            // link to Login activity XML
+        setContentView(R.layout.guestlogin);            // link to Login activity XML
 
         /* initialize UI elements */
         usernameEditText = findViewById(R.id.login_username_edt);
@@ -58,8 +51,7 @@ public class Login extends AppCompatActivity {
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
-        orgSwitch = findViewById(R.id.switchOrgView);
-        guestSwitch = findViewById(R.id.switchGuestView);
+        userSwitch = findViewById(R.id.switchUserView);
 
         URL_LOGIN = "http://coms-3090-072.class.las.iastate.edu:8080/users";
         URL_SIGNUP = "http://coms-3090-072.class.las.iastate.edu:8080/signup";
@@ -99,18 +91,10 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        orgSwitch.setOnClickListener(new View.OnClickListener() {
+        userSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Login.this, OrgLogin.class);
-                startActivity(intent);
-            }
-        });
-
-        guestSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Login.this, GuestLogin.class);
+                Intent intent = new Intent(GuestLogin.this, Login.class);
                 startActivity(intent);
             }
         });
@@ -141,7 +125,7 @@ public class Login extends AppCompatActivity {
                             key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
-                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                Intent intent = new Intent(GuestLogin.this, Dashboard.class);
                                 intent.putExtra("key", key);
                                 intent.putExtra("userType", userType);
                                 //errorMsg.setText("success " + key);
@@ -208,7 +192,7 @@ public class Login extends AppCompatActivity {
                             key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
-                                Intent intent = new Intent(Login.this, Dashboard.class);
+                                Intent intent = new Intent(GuestLogin.this, Dashboard.class);
                                 intent.putExtra("key", key);
                                 intent.putExtra("userType", userType);
                                 //errorMsg.setText("success " + userKey);

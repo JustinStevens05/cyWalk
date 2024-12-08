@@ -323,6 +323,21 @@ public class LocationService {
      */
     public Optional<Double> totalDistanceFromUserWeek(Long key) {
         Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        return getDistanceFromWeek(peopleResult);
+    }
+
+
+    /**
+     * gets the total distance from the entire week
+     * @param username the username for the user to check
+     * @return an optional double of the distance traveled in the week. Optional.empty() for an issues. 0 for no distance.
+     */
+    public Optional<Double> totalDistanceFromUserWeek(String username) {
+        Optional<People> peopleResult = peopleService.getUserByUsername(username);
+        return getDistanceFromWeek(peopleResult);
+    }
+
+    private Optional<Double> getDistanceFromWeek(Optional<People> peopleResult) {
         if (peopleResult.isEmpty()) {
             return Optional.empty();
         }
@@ -332,7 +347,7 @@ public class LocationService {
                 return Optional.of(0.0);
             }
             double total = 0.0;
-            for (int i = locationDays.size() - 1; i > locationDays.size() - 8; i--) {
+            for (int i = locationDays.size() - 1; i > locationDays.size() - 8 && i >= 0; i--) {
                 total += locationDays.get(i).getTotalDistance();
             }
             return Optional.of(total);

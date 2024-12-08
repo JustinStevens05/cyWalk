@@ -126,11 +126,12 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 3000;
+    long locationTick = 7500;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
     private boolean isCameraMoved = false; // To track if the camera was moved initially
+    private String userType;
 
     private String URL_JSON_GET_DISTANCE = null;
     private String URL_JSON_GET_USER = null;
@@ -154,6 +155,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        userType = extras.getString("userType");
 
         server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
@@ -207,6 +209,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Dashboard.this, Dashboard.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -214,6 +217,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Dashboard.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -221,6 +225,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Dashboard.this, Social.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -228,6 +233,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
             else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Dashboard.this, Profile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -503,23 +509,13 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
-        try {
-            JSONObject jsonMessage = new JSONObject(message);
-            String friendUsername = jsonMessage.getString("username");  // or any other identifier
-            double latitude = jsonMessage.getDouble("latitude");
-            double longitude = jsonMessage.getDouble("longitude");
-
-            // Check if the message is for the friend (based on userId)
-            if (!friendUsername.equals(key)) {  // If not your own location, it's a friend's location
-                updateFriendLocation(friendUsername, latitude, longitude);
-            } else {
+        Log.d("WebSocket", "Raw Message: " + message);
                 // Update your own location
-                txt_daily_distance.setText("Daily Distance: " + String.format("%.1f", jsonMessage.getDouble("distance")));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                runOnUiThread(() -> {
+                    txt_daily_distance.setText(String.format("Daily Distance: \n%.2f", Double.parseDouble(message)));
+                });
     }
+
 
 
     /**

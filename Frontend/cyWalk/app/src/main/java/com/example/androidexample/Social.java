@@ -52,6 +52,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private Button friendsButton;
     private String key;
     private String username;
+    private String userType;
     private ArrayList<String> lbList;
 
     private static String URL_JSON_OBJECT = null;
@@ -79,6 +80,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
+        userType = extras.getString("userType");
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -88,6 +90,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Social.this, Dashboard.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -95,6 +98,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Social.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -102,6 +106,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Social.this, Social.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -109,6 +114,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Social.this, Profile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -118,6 +124,10 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             }
         });
         //makeUsernameReq();
+
+        if(userType.equals("guest")){
+            friendsButton.setVisibility(View.INVISIBLE);
+        }
 
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
@@ -159,6 +169,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             public void onClick(View v) {
                 Intent intent = new Intent(Social.this, Friends.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
             }
         });

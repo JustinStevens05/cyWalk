@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -33,6 +34,7 @@ public class Goals extends AppCompatActivity {
     private TextView daily_step_disp;
     private TextView weekly_step_disp;
     private TextView title;
+    private TextView orgGoalTitle;
     private ProgressBar daily_bar;
     private ProgressBar weekly_bar;
     private int dailyStepCount = 0;
@@ -45,10 +47,12 @@ public class Goals extends AppCompatActivity {
     private EditText newDaily;
     private EditText newWeekly;
     private LinearLayout newGoalLayout;
+    private RelativeLayout addPlanLayout;
     private String key;
     private String username;
+    private String userType;
 
-    private static String URL_JSON_OBJECT = null;
+    private static String URL_GET_GOALS = null;
     private static String URL_NEW_GOALS = null;
     private static String URL_GET_USERNAME = null;
 
@@ -71,6 +75,8 @@ public class Goals extends AppCompatActivity {
         daily_bar = findViewById(R.id.dailyprogressBar);
         weekly_bar = findViewById(R.id.weeklyprogressBar);
         title = findViewById(R.id.title);
+        orgGoalTitle = findViewById(R.id.orgGoalTitle);
+        addPlanLayout = findViewById(R.id.addPlanBtnLayout);
 
         daily_bar.setMax(dailyGoal);
         weekly_bar.setMax(weeklyGoal);
@@ -83,6 +89,7 @@ public class Goals extends AppCompatActivity {
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Goals.this, Dashboard.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -90,6 +97,7 @@ public class Goals extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Goals.this, Goals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -97,6 +105,7 @@ public class Goals extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Goals.this, Social.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -104,6 +113,7 @@ public class Goals extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Goals.this, Profile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
@@ -115,9 +125,13 @@ public class Goals extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
-        URL_JSON_OBJECT = "https://a7d1bdb7-5276-4165-951c-f32dee760766.mock.pstmn.io/users?userId=1";
-        URL_NEW_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
+        userType = extras.getString("userType");
         URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+
+        if(userType.equals("guest")){
+            orgGoalTitle.setVisibility(View.INVISIBLE);
+            addPlanLayout.setVisibility(View.INVISIBLE);
+        }
 
         newPlanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +159,8 @@ public class Goals extends AppCompatActivity {
                 dailyGoal = Integer.parseInt(newDaily.getText().toString());
                 weeklyGoal = Integer.parseInt(newWeekly.getText().toString());
 
-                daily_step_disp.setText(dailyStepCount + "/" + dailyGoal);
-                weekly_step_disp.setText(weeklyStepCount + "/" + weeklyGoal);
+                daily_step_disp.setText("0 /" + dailyGoal);
+                weekly_step_disp.setText("0 /" + weeklyGoal);
 
                 daily_bar.setMax(dailyGoal);
                 weekly_bar.setMax(weeklyGoal);
@@ -157,16 +171,63 @@ public class Goals extends AppCompatActivity {
             }
         });
 
-        getJsonObjStepGoals();
+        requestUsername();
+    }
+
+    private void requestUsername() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET, URL_GET_USERNAME, null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse JSON object data
+                            username = response.getString("username");
+                            URL_GET_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
+                            URL_NEW_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
+
+                            getJsonObjStepGoals();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
     /**
-     *gets the current progress towards the users goals and updates their progress bars based on that progress
+     *gets the current step goals for the user
      */
     private void getJsonObjStepGoals() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.GET,
-                URL_JSON_OBJECT,
+                URL_GET_GOALS,
                 null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -174,15 +235,15 @@ public class Goals extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            String dsteps = response.getString("dailySteps");
-                            String wsteps = response.getString("weeklySteps");
+                            String dsteps = response.getString("dailyGoal");
+                            String wsteps = response.getString("weeklyGoal");
 
-                            dailyStepCount = Integer.parseInt(dsteps);
-                            weeklyStepCount = Integer.parseInt(wsteps);
+                            dailyGoal = Integer.parseInt(dsteps);
+                            weeklyGoal = Integer.parseInt(wsteps);
 
                             // Populate text views with the parsed data
-                            daily_step_disp.setText(dailyStepCount + "/" + dailyGoal);
-                            weekly_step_disp.setText(weeklyStepCount + "/" + weeklyGoal);
+                            daily_step_disp.setText("0 /" + dailyGoal);
+                            weekly_step_disp.setText("0 /" + weeklyGoal);
 
                             daily_bar.setProgress(dailyStepCount);
                             weekly_bar.setProgress(weeklyStepCount);
@@ -196,6 +257,7 @@ public class Goals extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                        daily_step_disp.setText(error.toString());
                     }
                 }
         ) {
@@ -288,6 +350,7 @@ public class Goals extends AppCompatActivity {
                             Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
                             intent.putExtra("key", key);
                             intent.putExtra("username", username);
+                            intent.putExtra("userType", userType);
                             startActivity(intent);
 
                         } catch (JSONException e) {
