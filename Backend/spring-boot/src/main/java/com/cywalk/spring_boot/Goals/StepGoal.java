@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Goals;
 
 import com.cywalk.spring_boot.Users.People;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -16,8 +17,10 @@ public class StepGoal {
     private int weeklyGoal;
 
     @OneToOne
-    @JoinColumn(name = "people_username")
+    @JoinColumn(name = "username", referencedColumnName = "username")
+    @JsonIgnore
     private People people;
+
 
 
     public StepGoal() {}
