@@ -29,14 +29,18 @@ public class OrgLogin extends AppCompatActivity {
 
     private EditText usernameEditText;  // define username edittext variable
     private EditText passwordEditText;  // define password edittext variable
+    private EditText companyUsernameEditText;  // define username edittext variable
+    private EditText companyPasswordEditText;
     private TextView errorMsg;
     private Button loginButton;         // define login button variable
-    private static String URL_LOGIN = "http://coms-3090-072.class.las.iastate.edu:8080/users";
-    private static String URL_SIGNUP = "http://coms-3090-072.class.las.iastate.edu:8080/signup";
+    private static String URL_LOGIN = "http://coms-3090-072.class.las.iastate.edu:8080/admin/login";
+    private static String URL_SIGNUP = "http://coms-3090-072.class.las.iastate.edu:8080/admin/login";
     private String userKey = "";
     private String orgId="";
     private String username;
     private String password;
+    private String orgUsername;
+    private String orgPassword;
     private Button signUpButton;        // define signup button variable
     private TextView userSwitch;
 
@@ -51,6 +55,8 @@ public class OrgLogin extends AppCompatActivity {
         /* initialize UI elements */
         usernameEditText = findViewById(R.id.login_username_edt);
         passwordEditText = findViewById(R.id.login_password_edt);
+        companyUsernameEditText = findViewById(R.id.company_username_edit);
+        companyPasswordEditText = findViewById(R.id.company_password_edit);
         loginButton = findViewById(R.id.login_login_btn);
         errorMsg = findViewById(R.id.errorMsg);
         signUpButton = findViewById(R.id.login_signup_btn);
@@ -64,6 +70,8 @@ public class OrgLogin extends AppCompatActivity {
                 /* grab strings from user inputs */
                 username = usernameEditText.getText().toString();
                 password = passwordEditText.getText().toString();
+                orgUsername = companyUsernameEditText.getText().toString();
+                orgPassword = companyPasswordEditText.getText().toString();
 
                 try {
                     makeLoginReq();
@@ -82,6 +90,8 @@ public class OrgLogin extends AppCompatActivity {
                 /* grab strings from user inputs */
                 username = usernameEditText.getText().toString();
                 password = passwordEditText.getText().toString();
+                orgUsername = companyUsernameEditText.getText().toString();
+                orgPassword = companyPasswordEditText.getText().toString();
 
                 try {
                     makeSignUpReq();;
