@@ -16,10 +16,18 @@ public class AdminSession {
     @Schema(description = "Admin entity pointer")
     private Admin admin;
 
+    @Schema(description = "Organization id", example = "1")
+    private Long orgId;
 
-    public AdminSession(Long key, Admin admin) {
+    public AdminSession(Admin admin, Long orgId) {
+        this.admin = admin;
+        this.orgId = orgId;
+    }
+
+    public AdminSession(Long key, Admin admin, Long orgId) {
         this.key = key;
         this.admin = admin;
+        this.orgId = orgId;
     }
 
     public AdminSession(Admin admin) {
@@ -28,6 +36,14 @@ public class AdminSession {
 
     public AdminSession() {
 
+    }
+
+    public Long getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(Long orgId) {
+        this.orgId = orgId;
     }
 
     public Long getKey() {

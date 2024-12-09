@@ -42,7 +42,7 @@ public class AdminService {
         adminRepository.save(adminCredentials.getAdmin());
         organization = organizationRepository.save(organization);
 
-        AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
+        AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), organization.getId());
         return adminSessionRepository.save(adminSession);
     }
 
@@ -57,7 +57,7 @@ public class AdminService {
         }
         AdminCredentials adminCredentials = adminCredentialsResult.get();
         if (adminCredentials.getPassword().equals(adminModel.getPassword())) {
-            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin());
+            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), adminCredentials.getAdmin().getOrganization().getId());
             return Optional.of(adminSessionRepository.save(adminSession));
         }
         return Optional.empty();
