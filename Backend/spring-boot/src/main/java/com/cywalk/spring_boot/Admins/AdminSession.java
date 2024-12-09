@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Admins;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
@@ -12,6 +13,7 @@ public class AdminSession {
     private Long key;
 
     @JoinColumn(name = "admin_id")
+    @JsonManagedReference
     @ManyToOne
     @Schema(description = "Admin entity pointer")
     private Admin admin;

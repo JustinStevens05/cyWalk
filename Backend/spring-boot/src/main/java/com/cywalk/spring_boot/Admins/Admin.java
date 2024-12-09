@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Admins;
 
 import com.cywalk.spring_boot.Organizations.Organization;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,6 +20,7 @@ public class Admin implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")
+    @JsonBackReference
     @Schema(description = "Organization", example = "ISU")
     private Organization organization;
 
