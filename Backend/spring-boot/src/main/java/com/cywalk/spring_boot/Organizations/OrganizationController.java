@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,5 +76,12 @@ public class OrganizationController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/all")
+    @Schema(description = "Get all organizations")
+    @ApiResponse(responseCode = "200", description = "List of all organizations")
+    public ResponseEntity<List<Organization>> listAllOrganizations() {
+        return ResponseEntity.ok(organizationService.listAllOrganizations());
     }
 }
