@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.SignUp;
 
 import com.cywalk.spring_boot.Admins.AdminModel;
+import com.cywalk.spring_boot.Admins.AdminOrganizationCredModel;
 import com.cywalk.spring_boot.Admins.AdminService;
 import com.cywalk.spring_boot.Admins.AdminSession;
 import com.cywalk.spring_boot.Organizations.CreateOrganizationRequest;
@@ -86,13 +87,13 @@ public class SignUpController {
             @ApiResponse(responseCode = "405", description = "Admin already exists for an organization", content = @Content)
     })
     public ResponseEntity<AdminSession> SignupOrganizationAndAdmin(
-            @RequestBody @Parameter(name = "organization", description = "The organization") CreateOrganizationRequest organization,
-            @RequestBody @Parameter(name = "admin", description = "the admin") AdminModel admin
+            @RequestBody @Parameter(name = "credentials", description = "The combined credentials") AdminOrganizationCredModel credentials
     ) {
-        Organization org = organizationService.createOrganization(organization.getName());
+        Organization org = organizationService.createOrganization(credentials.getOrganizationName());
 
-        if (adminService.adminExistsForOrganization(organization.getName() + " " + admin.getUsername())) {
-            return ResponseEntity.ok(adminService.signUpAdmin(admin, org));
+        if (adminService.adminExistsForOrganization(credentials.getAdminName(), org)) {
+            AdminModel adminModel = new AdminModel(credentials.getAdminName(), credentials.getPassword());
+            return ResponseEntity.ok(adminService.signUpAdmin(adminModel, org));
         }
 
         return ResponseEntity.status(405).build();
