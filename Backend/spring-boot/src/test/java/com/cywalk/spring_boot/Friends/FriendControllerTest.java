@@ -97,9 +97,7 @@ class FriendControllerTest {
     @Test
     @Order(2)
     void signUpUsers() {
-
         setup();
-        cleanupExistingUsers();
 
         assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
 
