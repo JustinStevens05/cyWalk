@@ -1,10 +1,16 @@
 package com.cywalk.spring_boot.Organizations;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.cywalk.spring_boot.Admins.Admin;
+import com.cywalk.spring_boot.Admins.AdminService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
+import com.cywalk.spring_boot.Users.PeopleService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +23,11 @@ public class OrganizationController {
 
     @Autowired
     private OrganizationService organizationService;
+
+    @Autowired
+    private AdminService adminService;
+    @Autowired
+    private PeopleService peopleService;
 
     @PostMapping
     public ResponseEntity<Organization> createOrganization(@RequestBody CreateOrganizationRequest request) {
@@ -83,5 +94,30 @@ public class OrganizationController {
     @ApiResponse(responseCode = "200", description = "List of all organizations")
     public ResponseEntity<List<Organization>> listAllOrganizations() {
         return ResponseEntity.ok(organizationService.listAllOrganizations());
+    }
+
+    @PostMapping("/remove/{key}/{username}")
+    @Schema(description = "Remove a user from an organization")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User removed from organization"),
+            @ApiResponse(responseCode = "421", description = "organization not found"),
+            @ApiResponse(responseCode = "422", description = "user not found")
+    })
+    public ResponseEntity<Void> removeUserFromOrganization(
+            @PathVariable @Parameter(name = "key", description = "admin session key", example = "1") Long key,
+            @PathVariable @Parameter(name = "username", description = "Username to remove", example = "cdp") String username) {
+       Optional<Admin> admin = adminService.getAdminFromSession(key);
+       if (admin.isEmpty()) {
+           return ResponseEntity.status(421).build();
+       }
+       Organization organization = admin.get().getOrganization();
+       Optional<People> toRemove = peopleService.getUserByUsername(username);
+       if (toRemove.isEmpty()) {
+           return ResponseEntity.status(422).build();
+       }
+       organization.removeUser(toRemove.get());
+       organizationService.saveOrganization(organization);
+       peopleService.saveUser(toRemove.get());
+       return ResponseEntity.ok().build();
     }
 }
