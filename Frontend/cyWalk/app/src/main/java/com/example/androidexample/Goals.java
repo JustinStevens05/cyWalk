@@ -422,7 +422,7 @@ public class Goals extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        daily_step_disp.setText(error.toString());
+                        daily_step_disp.setText("0.0/" + dailyGoal);
                     }
                 }
         ) {
