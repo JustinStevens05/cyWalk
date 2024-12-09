@@ -4,6 +4,7 @@ import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,10 @@ public class OrganizationService {
             }
         }
         return Optional.empty();
+    }
+
+    public List<Organization> listAllOrganizations() {
+        return organizationRepository.findAll();
     }
 
     public boolean organizationExists(String name) {

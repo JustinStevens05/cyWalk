@@ -15,13 +15,13 @@ import java.net.URI;
  * This instance ensures that there is only one WebSocketManager throughout
  * the application's lifecycle, allowing for centralized WebSocket handling.
  */
-public class WebSocketManagerLocation {
+public class WebSocketManagerFriendLocation {
 
-    private static WebSocketManagerLocation instance;
+    private static WebSocketManagerFriendLocation instance;
     private MyWebSocketClient webSocketClient;
     private WebSocketListener webSocketListener;
 
-    private WebSocketManagerLocation() {}
+    private WebSocketManagerFriendLocation() {}
 
     /**
      * Retrieves a synchronized instance of the WebSocketManager, ensuring that
@@ -30,9 +30,9 @@ public class WebSocketManagerLocation {
      *
      * @return A synchronized instance of WebSocketManager.
      */
-    public static synchronized WebSocketManagerLocation getInstance() {
+    public static synchronized WebSocketManagerFriendLocation getInstance() {
         if (instance == null) {
-            instance = new WebSocketManagerLocation();
+            instance = new WebSocketManagerFriendLocation();
         }
         return instance;
     }
@@ -139,7 +139,7 @@ public class WebSocketManagerLocation {
             Log.d("WebSocket", "Received message: " + message);
             if (webSocketListener != null) {
                 try {
-                    webSocketListener.onWebSocketMessage("u\n" + message);
+                    webSocketListener.onWebSocketMessage("f\n" + message);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

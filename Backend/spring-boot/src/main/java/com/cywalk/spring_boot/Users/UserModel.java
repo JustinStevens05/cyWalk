@@ -9,7 +9,7 @@ import org.springframework.lang.NonNull;
 public class UserModel {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "the secret key to be used in endpoints for a user")
     private long secretKey;
 

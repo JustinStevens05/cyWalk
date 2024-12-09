@@ -35,15 +35,7 @@ public class OrgProfile extends AppCompatActivity {
     private String username;
     private String orgId = "";
     private String orgName;
-    private Button usersButton;
-    private Button leaderboardButton;
-    private Button goalsButton;
-    private Button profileButton;
-    private Button createOrgButton;
-    private Button findOrgButton;
     private TextView txt_username;
-    private EditText createOrgName;
-    private EditText findOrgName;
 
 
     /**
@@ -53,10 +45,6 @@ public class OrgProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orgprofile);
-        createOrgButton = findViewById(R.id.createOrg);
-        findOrgButton = findViewById(R.id.getOrg);
-        createOrgName = findViewById(R.id.newOrgName);
-        findOrgName = findViewById(R.id.findOrgName);
 
 
         Bundle extras = getIntent().getExtras();
@@ -65,32 +53,6 @@ public class OrgProfile extends AppCompatActivity {
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
         txt_username = findViewById(R.id.profile_txt_username);
-
-        createOrgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                orgName = createOrgName.getText().toString();
-                URL_CREATE_ORG = "http://10.0.2.2:8080/organizations";
-                try {
-                    makeOrgReq();
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        findOrgButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                orgName = findOrgName.getText().toString();
-                URL_FIND_ORG = "http://10.0.2.2:8080/organizations/get-id";
-                try {
-                    findOrgReq();
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);
@@ -156,111 +118,6 @@ public class OrgProfile extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
-
-        // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
-    }
-
-    /**
-     * takes the input from the new organization name box and attempts to create a new organization with that name.
-     * if successful sets the orgId var equal to the newly created organization's Id number
-     */
-    private void makeOrgReq() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", orgName);
-
-        txt_username.setText(jsonObject.toString());
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.POST, URL_CREATE_ORG, jsonObject, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Volley Response", response.toString());
-                        try {
-                            // Parse JSON object data
-                            orgId = response.getString("id");
-                            txt_username.setText(orgId);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley Error", error.toString());
-                        //txt_username.setText(error.toString());
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
-
-        // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
-    }
-
-    /**
-     * takes the input from the organization lookup box and sets the orgId var to the id associated with that organizations
-     */
-    private void findOrgReq() throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", orgName);
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
-                Request.Method.POST, URL_FIND_ORG, jsonObject, // Pass null as the request body since it's a GET request
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Volley Response", response.toString());
-                        try {
-                            // Parse JSON object data
-                            orgId = response.getString("id");
-                            txt_username.setText(orgId);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley Error", error.toString());
-                        //txt_username.setText(error.toString());
                     }
                 }
         ) {

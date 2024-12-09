@@ -35,12 +35,15 @@ public class AdminController {
             @ApiResponse(responseCode = "401", description = "no existing admin"),
             @ApiResponse(responseCode = "402", description = "Unauthorized")
     })
-    public ResponseEntity<AdminSession> loginAdmin(@RequestBody @Parameter(description = "organization request") CreateOrganizationRequest organization,
-                                                   @RequestBody @Parameter(description = "log in a user and get back a key") AdminModel adminModel) {
+    public ResponseEntity<AdminSession> loginAdmin(
+            @RequestBody @Parameter(name = "credentials", description = "The combined credentials") AdminOrganizationCredModel credentials
+    ) {
         // first check is if the organization exists
-        if (!organizationService.organizationExists(organization.getName())) {
+        if (!organizationService.organizationExists(credentials.getOrganizationName())) {
             return ResponseEntity.status(400).build();
         }
+
+        AdminModel adminModel = new AdminModel(credentials.getAdminName(), credentials.getPassword());q
         // second check is if the admin exists
         if (!adminService.adminExists(adminModel)) {
             return ResponseEntity.status(401).build();

@@ -1,6 +1,7 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -58,6 +60,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private static String URL_JSON_OBJECT = null;
     private static String URL_GLOBAL_LEADERBOARD = null;
     private String URL_WS_SOCKET = null;
+    private String URL_FRIEND_IMAGE = null;
 
     /**
      * creates the social page for the user to see
@@ -73,7 +76,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         lbList = new ArrayList<String>();
 
-        tabLayout = findViewById(R.id.tabLayout);
+        //tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
         myViewPagerAdapter = new myViewPagerAdapter(this);
         viewPager2.setAdapter(myViewPagerAdapter);
@@ -139,31 +142,6 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         // Establish WebSocket connection and set listener
         WebSocketManagerLeaderboard.getInstance().connectWebSocket(URL_WS_SOCKET);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager2.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
-            }
-        });
-
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +153,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
 
         makeUsernameReq();
-        //globalLeaderboardReq();
+        globalLeaderboardReq();
     }
 
     /**
@@ -232,6 +210,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
      * retrieves the global leaderboard from the database and then prints it out onto the screen
      */
     private void globalLeaderboardReq() {
+
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
                 Request.Method.GET, URL_GLOBAL_LEADERBOARD, null, // Pass null as the request body since it's a GET request
                 new Response.Listener<JSONArray>() {
@@ -290,8 +269,33 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 usernameTextView.setText(username);
                                 distanceTextView.setText(distance); // Correct distance format
 
-                                // Set a placeholder profile image (replace this with actual images if available)
-                                profileImageView.setImageResource(R.drawable.default_avatar);
+                                URL_FRIEND_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
+
+                                ImageRequest imageRequest = new ImageRequest(
+                                        URL_FRIEND_IMAGE,
+                                        new Response.Listener<Bitmap>() {
+                                            @Override
+                                            public void onResponse(Bitmap response) {
+                                                // Display the image in the ImageView
+                                                profileImageView.setImageBitmap(response);
+                                            }
+                                        },
+                                        0, // Width, set to 0 to get the original width
+                                        0, // Height, set to 0 to get the original height
+                                        ImageView.ScaleType.FIT_XY, // ScaleType
+                                        Bitmap.Config.RGB_565, // Bitmap config
+
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                // Handle errors here
+                                                Log.e("Volley Error", error.toString());
+                                            }
+                                        }
+                                );
+
+                                // Adding request to request queue
+                                VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
 
                                 return view;
                             }

@@ -21,8 +21,8 @@ public class AdminService {
     @Autowired
     private OrganizationRepository organizationRepository;
 
-    public boolean adminExistsForOrganization(String combinedName) {
-        return adminRepository.findById(combinedName).isEmpty();
+    public boolean adminExistsForOrganization(String name, Organization organization) {
+        return adminRepository.findByNameAndOrganization(name, organization).isEmpty();
     }
 
     public Optional<Admin> getAdminByCombinedName(String combinedName) {
