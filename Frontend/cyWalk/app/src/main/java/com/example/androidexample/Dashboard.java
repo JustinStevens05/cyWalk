@@ -136,7 +136,8 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private String URL_JSON_GET_DISTANCE = null;
     private String URL_JSON_GET_USER = null;
     private String URL_JSON_POST_LOCATION = null;
-    private String URL_WS_SOCKET = null;
+    private String URL_WS_LOCATION = null;
+    private String URL_WS_FRIEND_LOCATION = null;
     private Marker friendMarker;
 
     /**
@@ -162,13 +163,17 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
         URL_JSON_GET_USER = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
-        URL_WS_SOCKET = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
+        URL_WS_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
+        URL_WS_FRIEND_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/friends?key="+key;
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
+        //WebSocketManagerFriendLocation.getInstance().setWebSocketListener(Dashboard.this);
+
 
         // Establish WebSocket connection and set listener
-        WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_SOCKET);
+        WebSocketManagerLocation.getInstance().connectWebSocket(URL_WS_LOCATION);
+        //WebSocketManagerFriendLocation.getInstance().connectWebSocket(URL_WS_FRIEND_LOCATION);
 
         // Initialize location runnable
         locationRunnable = new Runnable() {
@@ -495,7 +500,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         }
     }
 
-
     /**
      * required websocket code currently does nothing
      */
@@ -515,8 +519,6 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                     txt_daily_distance.setText(String.format("Daily Distance: \n%.2f", Double.parseDouble(message)));
                 });
     }
-
-
 
     /**
      * required websocket code currently does nothing
