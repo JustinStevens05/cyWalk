@@ -11,10 +11,7 @@ import org.antlr.v4.runtime.atn.SemanticContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -51,7 +48,7 @@ public class AdminController {
         }
 
         // third check is if the admin cooresponding to the admin model, has credential consistent with the adminCredential object for a given admin
-        Optional<AdminSession> adminSession = adminService.loginAdmin(adminModel);
+        Optional<AdminSession> adminSession = adminService.loginAdmin(adminModel, credentials.getOrganizationName());
         return adminSession.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(402).build());
     }
 
@@ -63,7 +60,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "no existing session key"),
     })
     public ResponseEntity<Void> logoutAdmin(
-            @Parameter(name = "sessionKey", description = "The session key") Long sessionKey
+          @PathVariable @Parameter(name = "sessionKey", description = "The session key") Long sessionKey
     ) {
         if (adminService.logoutAdmin(sessionKey)) {
             return ResponseEntity.ok().build();

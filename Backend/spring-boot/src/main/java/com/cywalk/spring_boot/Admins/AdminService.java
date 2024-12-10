@@ -36,12 +36,12 @@ public class AdminService {
         return new AdminCredentials(newAdmin, adminModel.getPassword());
     }
 
+    @Transactional
     public AdminSession signUpAdmin(AdminModel adminModel, Organization organization) {
         AdminCredentials adminCredentials = fromAdminModel(adminModel, organization);
         adminCredentials.setAdmin(adminRepository.save(adminCredentials.getAdmin()));
         organization.addAdmin(adminCredentials.getAdmin());
         adminCredentials = adminCredentialRepository.save(adminCredentials);
-        adminRepository.save(adminCredentials.getAdmin());
         organization = organizationRepository.save(organization);
 
         AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), organization.getId());
@@ -53,8 +53,12 @@ public class AdminService {
     }
 
     @Transactional
-    public Optional<AdminSession> loginAdmin(AdminModel adminModel) {
-        Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findById(adminModel.getUsername());
+    public Optional<AdminSession> loginAdmin(AdminModel adminModel, String orgname) {
+        Optional<Admin> adminResult = adminRepository.findByNameAndOrganization(adminModel.getUsername(), organizationRepository.findByName(orgname).get());
+        if (adminResult.isEmpty()) {
+            return Optional.empty();
+        }
+        Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findAdminCredentialsByAdmin(adminResult.get());
         if (adminCredentialsResult.isEmpty()) {
             return Optional.empty();
         }
