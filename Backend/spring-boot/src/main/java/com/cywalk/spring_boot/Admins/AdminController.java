@@ -43,7 +43,7 @@ public class AdminController {
             return ResponseEntity.status(400).build();
         }
 
-        AdminModel adminModel = new AdminModel(credentials.getAdminName(), credentials.getPassword());q
+        AdminModel adminModel = new AdminModel(credentials.getAdminName(), credentials.getPassword());
         // second check is if the admin exists
         if (!adminService.adminExists(adminModel)) {
             return ResponseEntity.status(401).build();
