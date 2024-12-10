@@ -1,13 +1,15 @@
 package com.cywalk.spring_boot.Organizations;
 
+import com.cywalk.spring_boot.Admins.Admin;
 import com.cywalk.spring_boot.Users.People;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "organizations")
+@Table(name = "organization")
 public class Organization {
 
     @Id
@@ -21,11 +23,26 @@ public class Organization {
     @JsonManagedReference
     private Set<People> users = new HashSet<>();
 
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Admin> admins = new HashSet<>();
 
     public Organization() {}
 
     public Organization(String name) {
         this.name = name;
+    }
+
+    public Organization(Set<Admin> admin, String name) {
+        this.admins = admin;
+        this.name = name;
+    }
+
+    public Organization(Long id, String name, Set<People> users, Set<Admin> admin) {
+        this.id = id;
+        this.name = name;
+        this.users = users;
+        this.admins = admin;
     }
 
     public Long getId() {
@@ -53,10 +70,24 @@ public class Organization {
         user.setOrganization(this);
     }
 
+    public Set<Admin> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(Set<Admin> admins) {
+        this.admins = admins;
+    }
+
+    public void addAdmin(Admin admin) {
+        this.admins.add(admin);
+        admin.setOrganization(this);
+    }
+
     public void removeUser(People user) {
         this.users.remove(user);
         user.setOrganization(null);
     }
+
 
     @Override
     public String toString() {
@@ -64,6 +95,7 @@ public class Organization {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", users=" + users +
+                ", admins=" + admins +
                 '}';
     }
 }

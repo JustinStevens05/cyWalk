@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Friends;
 
+import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import com.cywalk.spring_boot.Users.Key;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleService;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -149,6 +151,23 @@ public class FriendController {
         return ResponseEntity.of(Optional.of(asJsonString(usernames)));
     }
 
+    @Operation(summary = "get Friend Leaderboard using session Key. Returns Leaderboard", description = "Returns Leaderboard")
+    @GetMapping("/leaderboard")
+    public ResponseEntity<List<LeaderboardEntry>> getFriendLeaderboard(@RequestHeader("User Key") Long sessionKey) {
+        Optional<People> userOpt = peopleService.getUserFromKey(sessionKey);
+        if (userOpt.isPresent()) {
+            People user = userOpt.get();
+            Optional<List<LeaderboardEntry>> leaderboardOpt = friendService.getFriendLeaderboard(user);
+            if (leaderboardOpt.isPresent()) {
+                return ResponseEntity.ok(leaderboardOpt.get());
+            } else {
+                return ResponseEntity.noContent().build();
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); //
+        }
+    }
+
     /**
      *
      * @param key User session key
@@ -225,6 +244,23 @@ public class FriendController {
         }
         else {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+    @Operation(summary = "suggested friends", description = "gets a list of suggested friends for a given user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully got a list of suggested friends"),
+            @ApiResponse(responseCode = "510", description = "User not found")
+    })
+    @PutMapping("/{key}/suggested")
+    public ResponseEntity<List<String>> getSuggestedFriends(@PathVariable @Parameter(name = "key", description = "the session key of the user") Long key) {
+        Optional<People> user = peopleService.getUserFromKey(key);
+        if (user.isPresent()) {
+            List<String> suggestedFriends = friendService.getSuggestedFriends(user.get());
+            return ResponseEntity.ok(suggestedFriends);
+        } else {
+            return ResponseEntity.status(510).build();
         }
     }
 }

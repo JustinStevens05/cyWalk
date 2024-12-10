@@ -2,30 +2,22 @@ package com.cywalk.spring_boot.Friends;
 
 import com.cywalk.spring_boot.Users.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.AssertTrue;
-import org.h2.engine.User;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -51,8 +43,8 @@ class FriendControllerTest {
     private static Long keyBase;
     private static Long keyTest;
 
-    private static final String USER_ONE = "userOne";
-    private static final String BASE_USER = "base";
+    private static final String USER_ONE = "test";
+    private static final String BASE_USER = "uhhhh";
 
     /*
     @Mock
@@ -62,20 +54,26 @@ class FriendControllerTest {
     private FriendRequestRepository friendRequestRepository;
      */
 
-    /*
-    @MockBean
-    private FriendService friendService;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-*/
-    @MockBean
+    @Autowired
     private PeopleService peopleService;
 
-    /*
     @Autowired
-    private PeopleController peopleController;
+    private FriendRequestRepository friendRequestRepository;
 
     @Autowired
-    private FriendController friendController;
+    private UserModelRepository userModelRepository;
+
+    @Autowired
+    private UserRequestRepository userRequestRepository;
+
+    @Autowired
+    private PeopleRepository peopleRepository;
+
+    @Autowired
+    private FriendService friendService;
 
     @Before
     @Order(1)
@@ -85,7 +83,8 @@ class FriendControllerTest {
     }
 
     @Test
-    @Order(2)
+    @Transactional
+    @Order(1)
     void cleanupExistingUsers() {
         if (peopleService.getUserByUsername(USER_ONE).isPresent()) {
             peopleService.deleteUserByName(USER_ONE);
@@ -93,25 +92,26 @@ class FriendControllerTest {
         if (peopleService.getUserByUsername(BASE_USER).isPresent()) {
             peopleService.deleteUserByName(BASE_USER);
         }
+    }
 
+    @Test
+    @Order(2)
+    @Transactional
+    void signUpUsers() {
         setup();
-
-        System.out.println("\n\nPORT: " + port);
-
-        System.out.println(given().basePath("/users").contentType("application/json").when().get().andReturn().prettyPrint());
-
+        cleanupExistingUsers();
         assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
-        String jsonPayload = "{\"id\": 0, \"username\": \"caleb\", \"password\": \"one\"}";
+
+        String jsonPayload = "{\"id\": 0, \"username\": \"base\", \"password\": \"one\"}";
 
         // Sign up base user
-        Response baseSignup = RestAssured.given()
-                .basePath("/signup")
-                .header("Content-Type", "application/json")
-                .body(jsonPayload)
-                .when()
-                .post().andReturn();
 
-        System.out.println(baseSignup.body().prettyPrint());
+        Response baseSignup = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(asJsonString(createPersonRequest(BASE_USER)))
+                .post("/signup");
+
+
         assertEquals(200, baseSignup.getStatusCode());
         keyBase = extractKeyFromResponse(baseSignup);
 
@@ -122,8 +122,15 @@ class FriendControllerTest {
                 .post("/signup");
         assertEquals(200, testSignup.getStatusCode());
         keyTest = extractKeyFromResponse(testSignup);
+    }
+
+
+    @Test
+    @Order(3)
+    @Transactional
+    void handleFriendRequest() {
         // Send friend request
-        Response friendRequest = RestAssured.given().header("Content-Type", "application/json").body("").post("/friends/" + keyTest + "/request/" + BASE_USER);
+        Response friendRequest = RestAssured.post("/friends/" + keyTest + "/request/" + BASE_USER);
         assertEquals(200, friendRequest.getStatusCode());
 
         // Check friend requests for BASE_USER
@@ -143,13 +150,20 @@ class FriendControllerTest {
         Response friendsOfTest = RestAssured.get("/friends/" + keyTest);
         assertEquals(200, friendsOfTest.getStatusCode());
         assertTrue(friendsOfTest.getBody().asString().contains(BASE_USER));
+    }
 
+
+    @Test
+    @Order(4)
+    void cleanup() {
         // Delete both users
+        /*
         Response deleteBase = RestAssured.delete("/users/" + keyBase);
         assertEquals(200, deleteBase.getStatusCode());
 
         Response deleteTest = RestAssured.delete("/users/" + keyTest);
         assertEquals(200, deleteTest.getStatusCode());
+        */
     }
 
     private UserRequest createPersonRequest(String username) {
@@ -168,8 +182,12 @@ class FriendControllerTest {
     }
 
     private Long extractKeyFromResponse(Response response) {
-        // Assumes response body contains the key
-        return Long.parseLong(response.getBody().asString());
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody().asString());
+            return root.path("key").asLong();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
-    */
 }

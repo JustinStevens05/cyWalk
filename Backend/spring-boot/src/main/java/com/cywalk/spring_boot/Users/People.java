@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Users;
 
 import com.cywalk.spring_boot.Achievements.Achievement;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.cywalk.spring_boot.Friends.FriendRequest;
 import com.cywalk.spring_boot.Locations.LocationDay;
 import com.cywalk.spring_boot.Organizations.Organization;
@@ -28,6 +29,7 @@ public class People {
 
   @ManyToOne
   @JoinColumn(name = "organization_id")
+  @JsonBackReference
   @Schema(description = "The organization a user is apart of")
   private Organization organization;
 
@@ -48,7 +50,9 @@ public class People {
   @JoinTable(name = "user_achievements",
           joinColumns = @JoinColumn(name = "username", referencedColumnName = "username"),
           inverseJoinColumns = @JoinColumn(name = "achievement_id"))
+  @JsonBackReference
   private Set<Achievement> achievements = new HashSet<>();
+
 
 
   @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

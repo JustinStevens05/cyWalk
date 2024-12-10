@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Schema(description = "User request Entity. Stores a username password pair")
-public class UserRequest {
+public class  UserRequest {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
