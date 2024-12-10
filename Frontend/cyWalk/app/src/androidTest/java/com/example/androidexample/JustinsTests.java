@@ -30,8 +30,8 @@ public class JustinsTests {
 
     @Rule
     public ActivityScenarioRule<Login> login = new ActivityScenarioRule<>(Login.class);
-    @Rule
-    public ActivityScenarioRule<Goals> goals = new ActivityScenarioRule<>(Goals.class);
+    //@Rule
+    //public ActivityScenarioRule<Goals> goals = new ActivityScenarioRule<>(Goals.class);
 
     /**
      * Start the server and run this test
@@ -85,12 +85,12 @@ public class JustinsTests {
             Thread.sleep(SIMULATED_DELAY_MS);
         } catch (InterruptedException e) {}
 
-        goals.getScenario().onActivity(activity -> {
-            activity.newDaily.setText(setGoalAmount);
-            activity.newWeekly.setText(setGoalAmount);
-        });
-        // onView(withId(R.id.new_weekly)).perform(typeText(setGoalAmount));
-        // onView(withId(R.id.new_daily)).perform(typeText(setGoalAmount));
+        //goals.getScenario().onActivity(activity -> {
+        //    activity.newDaily.setText(setGoalAmount);
+        //    activity.newWeekly.setText(setGoalAmount);
+        //});
+        onView(withId(R.id.new_weekly)).perform(typeText(setGoalAmount));
+        onView(withId(R.id.new_daily)).perform(typeText(setGoalAmount));
 
         // Put thread to sleep to allow volley to handle the request
         try {
