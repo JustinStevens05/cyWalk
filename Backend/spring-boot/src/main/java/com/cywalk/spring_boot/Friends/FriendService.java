@@ -167,4 +167,46 @@
         public Optional<FriendRequest> getFriendRequestFrom(People user_requesting, People user_getting_requested) {
             return friendRequestRepository.findBySenderAndReceiver(user_requesting, user_getting_requested);
         }
+
+        /**
+         * Makes and returns a list of suggested friends for a given user
+         * @param people the people to check against
+         * @return the suggested friends
+         */
+        @Transactional
+        public List<String> getSuggestedFriends(People people) {
+            HashMap<People, Long> friendConnections = new HashMap<>();
+            List<People> friends = getFriends(people);
+            for (People p : friends) {
+                List<People> friendsOfFriends = getFriends(p);
+                for (People fof : friendsOfFriends) {
+                    if (fof.getUsername().equals(people.getUsername())) {
+                        continue;
+                    }
+                    if (!friendConnections.containsKey(fof)) {
+                        friendConnections.put(fof, 1L);
+                    }
+                    else {
+                        friendConnections.put(fof, friendConnections.get(fof) + 1);
+                    }
+                }
+            }
+            List<String> suggestedFriends = new ArrayList<>();
+            // now we put the top 5 friends into the list
+            for (int i = 0; i < 5; i++) {
+                long max = 0;
+                People maxPerson = null;
+                for (People p : friendConnections.keySet()) {
+                    if (friendConnections.get(p) > max) {
+                        max = friendConnections.get(p);
+                        maxPerson = p;
+                    }
+                }
+                if (maxPerson != null) {
+                    suggestedFriends.add(maxPerson.getUsername());
+                    friendConnections.remove(maxPerson);
+                }
+            }
+            return suggestedFriends;
+        }
     }

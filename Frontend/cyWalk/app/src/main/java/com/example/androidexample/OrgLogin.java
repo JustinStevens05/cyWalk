@@ -111,15 +111,10 @@ public class OrgLogin extends AppCompatActivity {
      * or the credentials are wrong will throw an error and let the user know that something went wrong
      */
     private void makeLoginReq() throws JSONException {
-        JSONObject org = new JSONObject();
-        org.put("name", orgUsername);
-        JSONObject admin = new JSONObject();
-        admin.put("id",0);
-        admin.put("username", username);
-        admin.put("password", password);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("organization",org);
-        jsonObject.put("adminModel", admin);
+        jsonObject.put("organizationName", orgUsername);
+        jsonObject.put("adminName", username);
+        jsonObject.put("password", password);
 
         final String requestBody = jsonObject.toString();
 
@@ -185,18 +180,13 @@ public class OrgLogin extends AppCompatActivity {
      * if there is an issue like the organization already exists it will throw an error and let the user know that something went wrong
      */
     private void makeSignUpReq() throws JSONException {
-        JSONObject org = new JSONObject();
-        org.put("name", orgUsername);
-        JSONObject admin = new JSONObject();
-        admin.put("id",0);
-        admin.put("username", username);
-        admin.put("password", password);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("organization",org);
-        jsonObject.put("admin", admin);
+        jsonObject.put("organizationName", orgUsername);
+        jsonObject.put("adminName", username);
+        jsonObject.put("password", password);
 
-        final String requestBody = jsonObject.toString();
-        errorMsg.setText(requestBody);
+        //final String requestBody = jsonObject.toString();
+        //errorMsg.setText(requestBody);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
                 Request.Method.POST, URL_SIGNUP, jsonObject,

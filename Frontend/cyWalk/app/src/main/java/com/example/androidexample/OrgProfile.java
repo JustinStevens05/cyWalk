@@ -62,6 +62,7 @@ public class OrgProfile extends AppCompatActivity {
             if (item.getItemId() == R.id.nav_org_users) {
                 intent = new Intent(OrgProfile.this, OrgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -69,6 +70,7 @@ public class OrgProfile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_goals) {
                 intent = new Intent(OrgProfile.this, OrgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -76,6 +78,7 @@ public class OrgProfile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_social) {
                 intent = new Intent(OrgProfile.this, OrgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -83,6 +86,7 @@ public class OrgProfile extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_profile) {
                 intent = new Intent(OrgProfile.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;

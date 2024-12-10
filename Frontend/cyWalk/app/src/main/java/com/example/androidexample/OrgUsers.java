@@ -1,10 +1,12 @@
 package com.example.androidexample;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,18 +30,12 @@ import java.util.Map;
  * */
 public class OrgUsers extends AppCompatActivity {
 
-    private Button usersButton;
-    private Button leaderboardButton;
-    private Button goalsButton;
-    private Button profileButton;
     private String key;
     private String orgId="";
-    private TextView usersText;
+    private LinearLayout body;
+    private TextView title;
 
     private static String URL_ORG_USERS = null;
-
-    private String newFriendUsername;
-    private String acceptFriendUsername;
 
     /**
      * creates the page that shows the organization all the users included in their organization
@@ -48,13 +44,14 @@ public class OrgUsers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orgusers);
-        usersText = findViewById(R.id.usersText);
+        body = findViewById(R.id.body);
+        title = findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         orgId = extras.getString("orgId");
 
-        URL_ORG_USERS = "http://10.0.2.2:8080/organizations/"+orgId+"/users";
+        URL_ORG_USERS = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/"+orgId+"/users";
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);
@@ -64,6 +61,7 @@ public class OrgUsers extends AppCompatActivity {
             if (item.getItemId() == R.id.nav_org_users) {
                 intent = new Intent(OrgUsers.this, OrgUsers.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -71,6 +69,7 @@ public class OrgUsers extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_goals) {
                 intent = new Intent(OrgUsers.this, OrgSetGoals.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -78,6 +77,7 @@ public class OrgUsers extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_social) {
                 intent = new Intent(OrgUsers.this, OrgLeaderboards.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -85,6 +85,7 @@ public class OrgUsers extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_org_profile) {
                 intent = new Intent(OrgUsers.this, OrgProfile.class);
                 intent.putExtra("key", key);
+                intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
                 return true;
@@ -112,16 +113,38 @@ public class OrgUsers extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         //usersText.setText(response.toString());
 
-                        try {
-                            for(int j = 0; j<response.length(); j++) {
-                                JSONObject user = response.getJSONObject(j);
-                                String username = user.getString("username");
+                        if(response.length() > 0) {
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    JSONObject current = response.getJSONObject(i);
+                                    String user = current.getString("username");
 
-                                String current = usersText.getText().toString() + username + "\n";
-                                usersText.setText(current);
+                                    LinearLayout tempLayout = new LinearLayout(OrgUsers.this);
+                                    tempLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                    ));
+
+                                    tempLayout.setOrientation(LinearLayout.HORIZONTAL);
+                                    tempLayout.setPadding(10,10,10,10);
+
+                                    TextView tempText = new TextView(OrgUsers.this);
+                                    tempText.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+
+                                    tempText.setTextSize(20);
+                                    tempText.setTextColor(Color.parseColor("#000000"));
+                                    tempText.setPadding(25,25,25,25);
+                                    tempText.setText(user);
+
+                                    tempLayout.addView(tempText);
+                                    body.addView(tempLayout);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
                         }
 
                     }

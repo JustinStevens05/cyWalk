@@ -43,8 +43,8 @@ class FriendControllerTest {
     private static Long keyBase;
     private static Long keyTest;
 
-    private static final String USER_ONE = "userOne";
-    private static final String BASE_USER = "base";
+    private static final String USER_ONE = "test";
+    private static final String BASE_USER = "uhhhh";
 
     /*
     @Mock
@@ -96,22 +96,22 @@ class FriendControllerTest {
 
     @Test
     @Order(2)
+    @Transactional
     void signUpUsers() {
         setup();
-
+        cleanupExistingUsers();
         assertTrue(peopleService.getUserByUsername(USER_ONE).isEmpty());
 
         String jsonPayload = "{\"id\": 0, \"username\": \"base\", \"password\": \"one\"}";
 
         // Sign up base user
-        Response baseSignup = RestAssured.given()
-                .basePath("/signup")
-                .header("Content-Type", "application/json")
-                .body(jsonPayload)
-                .when()
-                .post().andReturn();
 
-        System.out.println(baseSignup.body().prettyPrint());
+        Response baseSignup = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(asJsonString(createPersonRequest(BASE_USER)))
+                .post("/signup");
+
+
         assertEquals(200, baseSignup.getStatusCode());
         keyBase = extractKeyFromResponse(baseSignup);
 
@@ -122,12 +122,12 @@ class FriendControllerTest {
                 .post("/signup");
         assertEquals(200, testSignup.getStatusCode());
         keyTest = extractKeyFromResponse(testSignup);
-
     }
 
 
     @Test
     @Order(3)
+    @Transactional
     void handleFriendRequest() {
         // Send friend request
         Response friendRequest = RestAssured.post("/friends/" + keyTest + "/request/" + BASE_USER);
