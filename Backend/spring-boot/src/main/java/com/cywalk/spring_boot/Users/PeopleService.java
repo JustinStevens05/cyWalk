@@ -205,6 +205,10 @@ public class PeopleService {
         return peopleRepository.save(people);
     }
 
+    public Boolean isUserLoggedIn(People people) {
+        return userModelRepository.findByPeople(people).isPresent();
+    }
+
     /**
      * updates and returns the league that the current user is in.
      * This function calculates the user's global ranking relative to everyone else and then returns that

@@ -1,15 +1,18 @@
 package com.cywalk.spring_boot.Admins;
 
-import com.cywalk.spring_boot.Friends.FriendRequestRepository;
-import com.cywalk.spring_boot.Friends.FriendService;
+import com.cywalk.spring_boot.Organizations.JoinOrganizationRequest;
 import com.cywalk.spring_boot.Organizations.OrganizationRepository;
-import com.cywalk.spring_boot.Users.*;
+import com.cywalk.spring_boot.Organizations.OrganizationService;
+import com.cywalk.spring_boot.Users.PeopleService;
+import com.cywalk.spring_boot.Users.UserRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import jakarta.transaction.Transactional;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -20,12 +23,11 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SignUpLoginTest {
+class AdminLoginLogoutTest {
     /*
     @Autowired
     private PeopleService peopleService;
@@ -38,8 +40,8 @@ class SignUpLoginTest {
 
     private static Long keyBase;
 
-    private static final String USER_ONE = "userOne";
-    private static final String user =  "cpd";
+    private static final String USER_ONE = "user2";
+    private static final String user =  "jimmothy";
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -61,6 +63,8 @@ class SignUpLoginTest {
 
     @Autowired
     private AdminSessionRepository adminSessionRepository;
+    @Autowired
+    private OrganizationService organizationService;
 
     @Before
     @Order(1)
@@ -72,7 +76,8 @@ class SignUpLoginTest {
 
     @Test
     @Order(2)
-    void SignUpAdmin() {
+    @Transactional
+    void removeUserFromOrg() throws JSONException {
         setup();
 
 
@@ -80,25 +85,47 @@ class SignUpLoginTest {
         Response testSignup = RestAssured.given()
                 .header("Content-Type", "application/json")
                 .body(asJsonString(createAdminRequest(USER_ONE)))
-                .post("/signup");
+                .post("/signup/organization");
         assertEquals(200, testSignup.getStatusCode());
-        double keyTest = extractKeyFromResponse(testSignup);
+        long keyTest = extractKeyFromResponse(testSignup);
 
-        // sign up model user to organization
-        Response testSignup2 = RestAssured.given()
+        Response logout = RestAssured.given()
                 .header("Content-Type", "application/json")
-                .body(asJsonString(createAdminRequest(user)))
-                .post("/signup");
-        assertEquals(200, testSignup2.getStatusCode());
-        double userKey = extractKeyFromResponse(testSignup2);
+                .delete("/admin/logout/" + keyTest);
+        assertEquals(200, logout.getStatusCode());
 
+        Response testLogin = RestAssured.given()
+                .header("Content-Type", "application/json")
+                .body(asJsonString(createAdminRequest(USER_ONE)))
+                .put("/admin/login");
+        assertEquals(200, testLogin.getStatusCode());
 
     }
 
-    private AdminModel createAdminRequest(String username) {
-        AdminModel request = new AdminModel();
-        request.setUsername(username);
+    private JSONObject findOrgIdRequest(String orgname) throws JSONException {
+        JSONObject request = new JSONObject();
+        request.put("name", orgname);
+        return request;
+    }
+
+    private AdminOrganizationCredModel createAdminRequest(String username) {
+        AdminOrganizationCredModel request = new AdminOrganizationCredModel();
+        request.setAdminName(username);
+        request.setOrganizationName("ISU");
         request.setPassword("password");
+        return request;
+    }
+
+    private JoinOrganizationRequest createJoinRequest(String username) {
+        JoinOrganizationRequest joinOrganizationRequest = new JoinOrganizationRequest();
+        joinOrganizationRequest.setUsername(username);
+        return joinOrganizationRequest;
+    }
+
+    private UserRequest createUserRequest(String username) {
+        UserRequest request = new UserRequest();
+        request.setUsername(username);
+        request.setPassword("pass");
         return request;
     }
 
@@ -115,6 +142,16 @@ class SignUpLoginTest {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
             return root.path("key").asLong();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private long extractIdFromResponse(Response response) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody().asString());
+            return root.path("id").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

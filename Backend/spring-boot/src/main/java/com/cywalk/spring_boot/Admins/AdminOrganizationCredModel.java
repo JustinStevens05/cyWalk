@@ -5,6 +5,9 @@ public class AdminOrganizationCredModel {
     String adminName;
     String password;
 
+    public AdminOrganizationCredModel() {
+    }
+
     public AdminOrganizationCredModel(String organizationName, String adminName, String password) {
         this.organizationName = organizationName;
         this.adminName = adminName;

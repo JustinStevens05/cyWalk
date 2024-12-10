@@ -96,7 +96,7 @@ public class OrganizationController {
         return ResponseEntity.ok(organizationService.listAllOrganizations());
     }
 
-    @PostMapping("/remove/{key}/{username}")
+    @DeleteMapping("/remove/{key}/{username}")
     @Schema(description = "Remove a user from an organization")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User removed from organization"),

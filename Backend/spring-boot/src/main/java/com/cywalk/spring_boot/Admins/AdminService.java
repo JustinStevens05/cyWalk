@@ -2,6 +2,7 @@ package com.cywalk.spring_boot.Admins;
 
 import com.cywalk.spring_boot.Organizations.Organization;
 import com.cywalk.spring_boot.Organizations.OrganizationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +30,18 @@ public class AdminService {
         return adminRepository.findById(combinedName);
     }
 
+    @Transactional
     AdminCredentials fromAdminModel(AdminModel adminModel, Organization organization) {
         Admin newAdmin = new Admin(organization, adminModel.getUsername());
         return new AdminCredentials(newAdmin, adminModel.getPassword());
     }
 
+    @Transactional
     public AdminSession signUpAdmin(AdminModel adminModel, Organization organization) {
         AdminCredentials adminCredentials = fromAdminModel(adminModel, organization);
         adminCredentials.setAdmin(adminRepository.save(adminCredentials.getAdmin()));
         organization.addAdmin(adminCredentials.getAdmin());
         adminCredentials = adminCredentialRepository.save(adminCredentials);
-        adminRepository.save(adminCredentials.getAdmin());
         organization = organizationRepository.save(organization);
 
         AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), organization.getId());
@@ -50,8 +52,13 @@ public class AdminService {
         return adminCredentialRepository.findById(adminModel.getUsername()).isEmpty();
     }
 
-    public Optional<AdminSession> loginAdmin(AdminModel adminModel) {
-        Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findById(adminModel.getUsername());
+    @Transactional
+    public Optional<AdminSession> loginAdmin(AdminModel adminModel, String orgname) {
+        Optional<Admin> adminResult = adminRepository.findByNameAndOrganization(adminModel.getUsername(), organizationRepository.findByName(orgname).get());
+        if (adminResult.isEmpty()) {
+            return Optional.empty();
+        }
+        Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findAdminCredentialsByAdmin(adminResult.get());
         if (adminCredentialsResult.isEmpty()) {
             return Optional.empty();
         }
@@ -70,5 +77,15 @@ public class AdminService {
 
     public Optional<Admin> getAdminFromName(String name) {
         return adminRepository.findById(name);
+    }
+
+    @Transactional
+    public boolean logoutAdmin(Long sessionKey) {
+        Optional<AdminSession> adminSession = adminSessionRepository.findById(sessionKey);
+        if (adminSession.isEmpty()) {
+            return false;
+        }
+        adminSessionRepository.delete(adminSession.get());
+        return true;
     }
 }
