@@ -40,16 +40,16 @@ public class Goals extends AppCompatActivity {
     private ProgressBar weekly_bar;
     private int dailyStepCount = 0;
     private int weeklyStepCount = 0;
-    private int dailyGoal = 10000;
-    private int weeklyGoal = 70000;
-    private Button newGoalsButton;
-    private Button submitButton;
+    private int dailyGoal = 10;
+    private int weeklyGoal = 70;
+    Button newGoalsButton;
+    Button submitButton;
     private Button newPlanButton;
-    private EditText newDaily;
-    private EditText newWeekly;
+    EditText newDaily;
+    EditText newWeekly;
     private LinearLayout newGoalLayout;
     private RelativeLayout addPlanLayout;
-    private String key;
+    private String key = "";
     private String username;
     private String userType;
 
@@ -164,15 +164,15 @@ public class Goals extends AppCompatActivity {
                 dailyGoal = Integer.parseInt(newDaily.getText().toString());
                 weeklyGoal = Integer.parseInt(newWeekly.getText().toString());
 
-                daily_step_disp.setText("0 /" + dailyGoal);
-                weekly_step_disp.setText("0 /" + weeklyGoal);
-
                 daily_bar.setMax(dailyGoal);
                 weekly_bar.setMax(weeklyGoal);
 
                 newDaily.setText("");
                 newWeekly.setText("");
                 newGoalLayout.setVisibility(View.INVISIBLE);
+
+                getJsonObjDailyDist();
+                getJsonObjWeeklyDist();
             }
         });
 
@@ -318,7 +318,7 @@ public class Goals extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        weekly_step_disp.setText(error.toString());
+                        //weekly_step_disp.setText(error.toString());
                     }
                 }
         ) {

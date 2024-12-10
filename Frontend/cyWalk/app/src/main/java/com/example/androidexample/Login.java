@@ -31,12 +31,12 @@ import java.util.concurrent.TimeUnit;
  * */
 public class Login extends AppCompatActivity {
 
-    private EditText usernameEditText;  // define username edittext variable
-    private EditText passwordEditText;  // define password edittext variable
+    EditText usernameEditText;  // define username edittext variable
+    EditText passwordEditText;  // define password edittext variable
     private TextView errorMsg;
     private TextView orgSwitch;
     private TextView guestSwitch;
-    private Button loginButton;         // define login button variable
+    Button loginButton;         // define login button variable
     private String server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
     private String local_url_chunk = "10.0.2.2:8080";
     private String URL_LOGIN = null;
