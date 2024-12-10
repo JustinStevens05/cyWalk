@@ -39,48 +39,6 @@
         android:layout_marginTop="5dp"
         android:text="Log Out" />
 
-    <EditText
-        android:id="@+id/newOrgName"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/black"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/profile_btn_logout"
-        android:padding="5dp"
-        android:background="@drawable/text_border"/>
-
-    <Button
-        android:id="@+id/createOrg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@+id/newOrgName"
-        android:layout_marginTop="5dp"
-        android:text="create" />
-
-    <EditText
-        android:id="@+id/findOrgName"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/black"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/createOrg"
-        android:padding="5dp"
-        android:background="@drawable/text_border"/>
-
-    <Button
-        android:id="@+id/getOrg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@+id/findOrgName"
-        android:layout_marginTop="5dp"
-        android:text="access" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/orgbottomNavigation"
         android:layout_width="match_parent"

@@ -246,4 +246,21 @@ public class FriendController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+
+    @Operation(summary = "suggested friends", description = "gets a list of suggested friends for a given user")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successfully got a list of suggested friends"),
+            @ApiResponse(responseCode = "510", description = "User not found")
+    })
+    @PutMapping("/{key}/suggested")
+    public ResponseEntity<List<String>> getSuggestedFriends(@PathVariable @Parameter(name = "key", description = "the session key of the user") Long key) {
+        Optional<People> user = peopleService.getUserFromKey(key);
+        if (user.isPresent()) {
+            List<String> suggestedFriends = friendService.getSuggestedFriends(user.get());
+            return ResponseEntity.ok(suggestedFriends);
+        } else {
+            return ResponseEntity.status(510).build();
+        }
+    }
 }

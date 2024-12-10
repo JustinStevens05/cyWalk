@@ -50,7 +50,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     ListView lb_listView;
 
     private LinearLayout leaderbaordTester;
-    private Button goalButton;
+    private LinearLayout tabBar;
+    private Button globalLeaderboardBtn;
+    private Button friendsLeaderboardBtn;
     private Button friendsButton;
     private String key;
     private String username;
@@ -73,6 +75,9 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         title = findViewById(R.id.title);
         temp = findViewById(R.id.temp);
         lb_listView = findViewById(R.id.lv_leaderboard);
+        globalLeaderboardBtn = findViewById(R.id.btn_filter_global);
+        friendsLeaderboardBtn = findViewById(R.id.btn_filter_friends);
+        tabBar = findViewById(R.id.tabBar);
 
         lbList = new ArrayList<String>();
 
@@ -130,7 +135,13 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         if(userType.equals("guest")){
             friendsButton.setVisibility(View.INVISIBLE);
+            globalLeaderboardBtn.setVisibility(View.INVISIBLE);
+            friendsLeaderboardBtn.setVisibility(View.INVISIBLE);
+            title.setText("Sign up for a membership to view leaderbaords");
+            title.setTextSize(15);
+            tabBar.setVisibility(View.INVISIBLE);
         }
+
 
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
