@@ -2,6 +2,7 @@ package com.cywalk.spring_boot.Admins;
 
 import com.cywalk.spring_boot.Organizations.Organization;
 import com.cywalk.spring_boot.Organizations.OrganizationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class AdminService {
         return adminRepository.findById(combinedName);
     }
 
+    @Transactional
     AdminCredentials fromAdminModel(AdminModel adminModel, Organization organization) {
         Admin newAdmin = new Admin(organization, adminModel.getUsername());
         return new AdminCredentials(newAdmin, adminModel.getPassword());
@@ -50,6 +52,7 @@ public class AdminService {
         return adminCredentialRepository.findById(adminModel.getUsername()).isEmpty();
     }
 
+    @Transactional
     public Optional<AdminSession> loginAdmin(AdminModel adminModel) {
         Optional<AdminCredentials> adminCredentialsResult = adminCredentialRepository.findById(adminModel.getUsername());
         if (adminCredentialsResult.isEmpty()) {
@@ -70,5 +73,15 @@ public class AdminService {
 
     public Optional<Admin> getAdminFromName(String name) {
         return adminRepository.findById(name);
+    }
+
+    @Transactional
+    public boolean logoutAdmin(Long sessionKey) {
+        Optional<AdminSession> adminSession = adminSessionRepository.findById(sessionKey);
+        if (adminSession.isEmpty()) {
+            return false;
+        }
+        adminSessionRepository.delete(adminSession.get());
+        return true;
     }
 }
