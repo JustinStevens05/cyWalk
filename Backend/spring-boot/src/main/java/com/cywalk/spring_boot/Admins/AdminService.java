@@ -67,4 +67,8 @@ public class AdminService {
         Optional<AdminSession> adminSession = adminSessionRepository.findById(key);
         return adminSession.map(AdminSession::getAdmin);
     }
+
+    public Optional<Admin> getAdminFromName(String name) {
+        return adminRepository.findById(name);
+    }
 }
