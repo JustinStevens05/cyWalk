@@ -62,4 +62,13 @@ public class AdminService {
         }
         return Optional.empty();
     }
+
+    public Optional<Admin> getAdminFromSession(Long key) {
+        Optional<AdminSession> adminSession = adminSessionRepository.findById(key);
+        return adminSession.map(AdminSession::getAdmin);
+    }
+
+    public Optional<Admin> getAdminFromName(String name) {
+        return adminRepository.findById(name);
+    }
 }

@@ -31,6 +31,10 @@ public class OrganizationService {
         return organizationRepository.save(organization);
     }
 
+    public void saveOrganization(Organization organization) {
+        organizationRepository.save(organization);
+    }
+
     public boolean joinOrganization(Long orgId, String username) {
         Optional<Organization> orgOpt = organizationRepository.findById(orgId);
         Optional<People> userOpt = peopleRepository.findByUsername(username);
