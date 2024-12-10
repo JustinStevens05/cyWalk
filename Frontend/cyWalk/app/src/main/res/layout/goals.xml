@@ -89,11 +89,11 @@
                 android:id="@+id/weeklySteps"
                 android:layout_width="1dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/cywalkRed"
+                android:layout_weight="1"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="textEnd"
-                android:layout_weight="1" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/cywalkRed" />
         </LinearLayout>
 
         <ProgressBar
