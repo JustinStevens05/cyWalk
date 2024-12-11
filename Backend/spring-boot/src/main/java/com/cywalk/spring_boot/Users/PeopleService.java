@@ -139,6 +139,7 @@ public class PeopleService {
      * @param request the username password combination
      * @return a key to be used throughout the session until the user logs out
      */
+    @Transactional
     public ResponseEntity<Key> login(UserRequest request) {
         Optional<UserRequest> userRequest = userRequestRepository.findByUsername(request.getUsername());
         if (userRequest.isPresent()) {
