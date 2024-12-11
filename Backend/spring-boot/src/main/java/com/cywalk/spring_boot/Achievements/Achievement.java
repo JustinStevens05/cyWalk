@@ -19,7 +19,7 @@ public class Achievement {
     private String imageUrl;
 
     @ManyToMany(mappedBy = "achievements")
-    @JsonIgnore
+    @JsonManagedReference
     private Set<People> users = new HashSet<>();
 
 
