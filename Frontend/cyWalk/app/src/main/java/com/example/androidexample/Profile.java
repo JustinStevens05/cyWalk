@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -54,6 +55,7 @@ public class Profile extends AppCompatActivity {
     private String userType;
 
     public String URL_LOG_OUT = null;
+    private String URL_GOAL_SWITCH = null;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -89,6 +91,7 @@ public class Profile extends AppCompatActivity {
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
         btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
@@ -108,11 +111,7 @@ public class Profile extends AppCompatActivity {
                 return true;
             }
             else if (item.getItemId() == R.id.nav_goals) {
-                intent = new Intent(Profile.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
-                finish();
+                getOrg();
                 return true;
             }
             else if (item.getItemId() == R.id.nav_social) {
@@ -285,5 +284,55 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(Profile.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 }
