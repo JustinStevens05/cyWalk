@@ -17,11 +17,9 @@ public class Location {
     private Long id;
 
     @Schema(description = "the latitude of the GPS position")
-    @NonNull
     private Double latitude;
 
     @Schema(description = "the longitude of the GPS position")
-    @NonNull
     private Double longitude;
 
     @Schema(description = "the elevation the Location was recorded at")

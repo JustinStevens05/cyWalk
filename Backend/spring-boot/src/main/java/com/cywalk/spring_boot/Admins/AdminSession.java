@@ -1,19 +1,18 @@
 package com.cywalk.spring_boot.Admins;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 
 @Entity
 public class AdminSession {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Admin session key", example = "1")
-    private Long key;
+    private Long id;
 
-    @JoinColumn(name = "admin_id")
     @ManyToOne
+    @JoinColumn(name = "admin_id")
     @Schema(description = "Admin entity pointer")
     private Admin admin;
 
@@ -26,7 +25,7 @@ public class AdminSession {
     }
 
     public AdminSession(Long key, Admin admin, Long orgId) {
-        this.key = key;
+        this.id = key;
         this.admin = admin;
         this.orgId = orgId;
     }
@@ -47,12 +46,12 @@ public class AdminSession {
         this.orgId = orgId;
     }
 
-    public Long getKey() {
-        return key;
+    public Long getId() {
+        return id;
     }
 
-    public void setKey(Long key) {
-        this.key = key;
+    public void setId(Long key) {
+        this.id = key;
     }
 
     public Admin getAdmin() {

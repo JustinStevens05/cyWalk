@@ -21,11 +21,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.annotation.Order;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@ActiveProfiles("test")
 class AdminActionTest {
     /*
     @Autowired
@@ -94,7 +96,7 @@ class AdminActionTest {
                 .body(asJsonString(createUserRequest(user)))
                 .post("/signup");
         assertEquals(200, testSignup2.getStatusCode());
-        double userKey = extractKeyFromResponse(testSignup2);
+        long userKey = extractKeyFromResponse(testSignup2);
 
         // make a request to get the organization ID
         /*
@@ -174,7 +176,7 @@ class AdminActionTest {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
-            return root.path("key").asLong();
+            return root.path("id").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

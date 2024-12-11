@@ -19,6 +19,7 @@ public class AdminService {
 
     @Autowired
     AdminSessionRepository adminSessionRepository;
+
     @Autowired
     private OrganizationRepository organizationRepository;
 
@@ -82,6 +83,7 @@ public class AdminService {
     @Transactional
     public boolean logoutAdmin(Long sessionKey) {
         Optional<AdminSession> adminSession = adminSessionRepository.findById(sessionKey);
+        System.out.println(adminSessionRepository.findAll());
         if (adminSession.isEmpty()) {
             return false;
         }
