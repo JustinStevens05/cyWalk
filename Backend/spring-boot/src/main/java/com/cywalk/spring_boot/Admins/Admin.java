@@ -20,7 +20,7 @@ public class Admin implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")
-    @JsonBackReference
+    @JsonBackReference(value = "organization_admins")
     @Schema(description = "Organization", example = "ISU")
     private Organization organization;
 

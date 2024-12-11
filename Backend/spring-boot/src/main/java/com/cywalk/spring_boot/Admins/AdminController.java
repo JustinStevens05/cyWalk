@@ -26,6 +26,7 @@ public class AdminController {
     OrganizationService organizationService;
 
 
+    @PutMapping("/login")
     @Operation(summary = "Log in an admin", description = "Log in an admin and get back a key")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin logged in"),

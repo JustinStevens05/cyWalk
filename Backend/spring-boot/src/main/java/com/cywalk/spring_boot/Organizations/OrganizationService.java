@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Organizations;
 
+import com.cywalk.spring_boot.Admins.AdminService;
 import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
@@ -22,6 +23,8 @@ public class OrganizationService {
 
     @Autowired
     private LeaderboardService leaderboardService;
+
+
 
     public Organization createOrganization(String name) {
         Optional<Organization> orgOpt = organizationRepository.findByName(name);
