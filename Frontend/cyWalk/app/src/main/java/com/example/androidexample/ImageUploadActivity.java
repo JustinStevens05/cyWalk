@@ -40,7 +40,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         selectBtn = findViewById(R.id.selectBtn);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         UPLOAD_URL = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + key;
 
         // select image from gallery
