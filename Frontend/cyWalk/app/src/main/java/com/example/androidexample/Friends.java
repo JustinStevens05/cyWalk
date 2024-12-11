@@ -269,6 +269,7 @@ public class Friends extends AppCompatActivity {
                                     tempText.setText(current);
 
                                     tempButton.setText("accept");
+                                    tempButton.setId(i);
                                     tempButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {

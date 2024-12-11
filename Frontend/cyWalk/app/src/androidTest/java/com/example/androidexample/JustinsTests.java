@@ -136,7 +136,6 @@ public class JustinsTests {
 
     @Test
     public void checkAcceptingFriendReq(){
-        String friendUsername = "jStevens";
         String username = "jStevans";
         String password = "123";
 
@@ -159,18 +158,7 @@ public class JustinsTests {
             Thread.sleep(SIMULATED_DELAY_MS);
         } catch (InterruptedException e) {}
 
-        onView(withId(R.id.acceptedFriendUsername)).perform(typeText(friendUsername));
-        onView(withId(R.id.acceptFriendSubmitBtn)).perform(click());
-
-
-        onView(withId(R.id.returnButton)).perform(click());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {}
-
-        onView(withId(R.id.friendsButton)).perform(click());
-
-        //onView(withId(R.id.friendsTable)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.requestsTable)).check(matches(hasChildCount(1)));
     }
 }
 

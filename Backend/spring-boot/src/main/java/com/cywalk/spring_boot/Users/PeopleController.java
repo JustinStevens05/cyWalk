@@ -321,20 +321,28 @@ public class PeopleController {
         return ResponseEntity.of(Optional.of(asJsonString(peopleResult.get().getUsername())));
     }
 
+    @GetMapping("{key}/organization")
+    @Operation(summary = "organization of user", description = "fetches the organization of a given user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "status ok, request fulfilled", content = @Content),
+            @ApiResponse(responseCode = "404", description = "user not found"),
+    })
+    public ResponseEntity<String> getOrganization(@PathVariable @Parameter(name = "key", description = "the user session key") Long key) {
+        Optional<People> peopleResult = peopleService.getUserFromKey(key);
+        return peopleResult.map(people -> ResponseEntity.of(Optional.of(asJsonString(people.getOrganization())))).orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
 
     @GetMapping("{username}/profile/online")
     @Operation(summary = "online status of user", description = "fetches the online status of a given user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "status ok, request fulfilled", content = @Content),
+            @ApiResponse(responseCode = "200", description = "got the status", content = @Content),
             @ApiResponse(responseCode = "404", description = "user not found"),
     })
     public ResponseEntity<Boolean> getUserLoggedIn(
             @PathVariable @Parameter(name = "username", description = "the username of the user") String username) {
         Optional<People> peopleResult = peopleService.getUserByUsername(username);
-        if (peopleResult.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.of(Optional.of(peopleService.isUserLoggedIn(peopleResult.get())));
+        return peopleResult.map(people -> ResponseEntity.of(Optional.of(peopleService.isUserLoggedIn(people)))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 

@@ -11,6 +11,7 @@ maven-build:
     - springboot_tag    # change to your runner's tag
   script:               # what to execute for this job
     - cd Backend/spring-boot       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - rm target/spring-boot-0.0.2.jar || true
     - mvn package -Dmaven.test.skip     # maven package
   artifacts:            # where to output the packaged jar file, change 'Backend' to to where you have the pom.xml
     paths:
