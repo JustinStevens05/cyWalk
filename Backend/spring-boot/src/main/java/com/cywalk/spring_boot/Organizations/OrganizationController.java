@@ -29,6 +29,13 @@ public class OrganizationController {
     @Autowired
     private PeopleService peopleService;
 
+    @Autowired
+    OrganizationRepository organizationRepository;
+
+    @Autowired
+    OrganizationStepGoalRepository organizationStepGoalRepository;
+
+
     @PostMapping
     public ResponseEntity<Organization> createOrganization(@RequestBody CreateOrganizationRequest request) {
         return ResponseEntity.ok(organizationService.createOrganization(request.getName()));
@@ -95,6 +102,63 @@ public class OrganizationController {
     public ResponseEntity<List<Organization>> listAllOrganizations() {
         return ResponseEntity.ok(organizationService.listAllOrganizations());
     }
+
+
+    @PostMapping("/{orgId}/stepgoal")
+    public ResponseEntity<OrganizationStepGoal> setOrganizationStepGoal(
+            @PathVariable Long orgId,
+            @RequestParam Long sessionKey,
+            @RequestParam int dailyGoal,
+            @RequestParam int weeklyGoal) {
+        Optional<Admin> adminOpt = adminService.getAdminFromSession(sessionKey);
+        if (adminOpt.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Optional<Organization> orgOpt = organizationRepository.findById(orgId);
+        if (orgOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Organization org = orgOpt.get();
+        if (!adminOpt.get().getOrganization().getId().equals(orgId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+
+        Optional<OrganizationStepGoal> existingOpt = organizationStepGoalRepository.findByOrganizationId(orgId);
+        OrganizationStepGoal goal;
+        if (existingOpt.isPresent()) {
+            goal = existingOpt.get();
+            goal.setDailyGoal(dailyGoal);
+            goal.setWeeklyGoal(weeklyGoal);
+        } else {
+            goal = new OrganizationStepGoal();
+            goal.setDailyGoal(dailyGoal);
+            goal.setWeeklyGoal(weeklyGoal);
+            goal.setOrganization(org);
+        }
+        organizationStepGoalRepository.save(goal);
+        return ResponseEntity.ok(goal);
+    }
+
+    @GetMapping("/{orgId}/stepgoal")
+    public ResponseEntity<OrganizationStepGoal> getOrganizationStepGoal(@PathVariable Long orgId) {
+        Optional<OrganizationStepGoal> opt = organizationStepGoalRepository.findByOrganizationId(orgId);
+        if (opt.isPresent()) {
+            return ResponseEntity.ok(opt.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+
+
+
+
+
+
+
+
 
     @DeleteMapping("/remove/{key}/{username}")
     @Schema(description = "Remove a user from an organization")
