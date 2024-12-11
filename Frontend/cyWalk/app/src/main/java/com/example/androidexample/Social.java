@@ -58,6 +58,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private String username;
     private String userType;
     private ArrayList<String> lbList;
+    private String currentLeague;
 
     private static String URL_JSON_OBJECT = null;
     private static String URL_GLOBAL_LEADERBOARD = null;
@@ -269,16 +270,31 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                                 TextView usernameTextView = view.findViewById(R.id.entryUsername);
                                 TextView distanceTextView = view.findViewById(R.id.entryDistance);
                                 ImageView profileImageView = view.findViewById(R.id.entryImage);
+                                TextView leagueTextView = view.findViewById(R.id.entryLeague);
 
                                 // Set data for each item (example: lbList stores "username | distance")
                                 String userEntry = lbList.get(position);
                                 String[] parts = userEntry.split(" \\| ");
                                 String username = parts[0];
                                 String distance = parts[1];
+                                int distanceValue = Integer.parseInt(distance.split(":")[1].trim());
+                                currentLeague = "League: ";
+
+                                if (distanceValue > 40000) {
+                                    currentLeague += "supreme kugler";
+                                } else if (distanceValue > 30000) {
+                                    currentLeague += "gold";
+                                } else if (distanceValue > 15000) {
+                                    currentLeague += "silver";
+                                } else if (distanceValue >= 0) {
+                                    currentLeague += "bronze";
+                                }
+
 
                                 // Set the username and distance text
                                 usernameTextView.setText(username);
                                 distanceTextView.setText(distance); // Correct distance format
+                                leagueTextView.setText(currentLeague);
 
                                 URL_FRIEND_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
 

@@ -53,16 +53,18 @@
         android:layout_marginTop="50dp"
         android:text="Change Profile Picture" />
 
-    <ListView
-        android:id="@+id/lv_achievements"
+    <TextView
+        android:id="@+id/tv_achievements"
         android:layout_width="350dp"
         android:layout_height="200dp"
         android:layout_below="@id/profile_img_avatar"
-        android:background="@color/cywalkRed"
+        android:background="@color/white"
         android:layout_margin="5dp"
         android:layout_centerHorizontal="true"
+        android:textColor="@color/cywalkRed"
+        android:text="Achievements:\n"
         >
-    </ListView>
+    </TextView>
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -47,5 +47,15 @@
             android:layout_weight="1"
             tools:text="Distance" />
 
+        <TextView
+            android:id="@+id/entryLeague"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cywalkRed"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            tools:text="League" />
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>
