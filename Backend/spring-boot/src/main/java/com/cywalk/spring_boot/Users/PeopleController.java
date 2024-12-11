@@ -331,10 +331,7 @@ public class PeopleController {
     public ResponseEntity<Boolean> getUserLoggedIn(
             @PathVariable @Parameter(name = "username", description = "the username of the user") String username) {
         Optional<People> peopleResult = peopleService.getUserByUsername(username);
-        if (peopleResult.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.of(Optional.of(peopleService.isUserLoggedIn(peopleResult.get())));
+        return peopleResult.map(people -> ResponseEntity.of(Optional.of(peopleService.isUserLoggedIn(people)))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
 
