@@ -193,6 +193,7 @@ public class PeopleService {
     /**
      * updates the bio of a user
      */
+    @Transactional
     public People updateBio(People people, String bio) {
         people.setBio(bio);
         return peopleRepository.save(people);
@@ -201,6 +202,7 @@ public class PeopleService {
     /**
      * Updates the username of a user
      */
+    @Transactional
     public People updateUsername(People people, String newUsername) {
         peopleRepository.delete(people);
         people.setUsername(newUsername);
@@ -210,6 +212,7 @@ public class PeopleService {
     /**
      * Updates the email of a user
      */
+    @Transactional
     public People updateEmail(People people, String newEmail) {
         people.setEmail(newEmail);
         return peopleRepository.save(people);
