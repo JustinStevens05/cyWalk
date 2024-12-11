@@ -20,7 +20,7 @@ public class LeaderboardService {
     private PeopleRepository peopleRepository;
 
     private List<LeaderboardEntry> currentLeaderboard = new ArrayList<>();
-    // Existing method for the global leaderboard
+
     public List<LeaderboardEntry> getLeaderboard() {
         List<People> users = peopleRepository.findAll();
         List<LeaderboardEntry> leaderboard = calculateLeaderboard(users);
@@ -35,12 +35,12 @@ public class LeaderboardService {
         return leaderboard;
     }
 
-    // New method for organization-specific leaderboards
+    // Orgspecific leaderboards
     public List<com.cywalk.spring_boot.Leaderboard.LeaderboardEntry> getLeaderboard(Set<People> users) {
         return calculateLeaderboard(users);
     }
 
-    // Helper method to calculate the leaderboard
+    // calculate the leaderboard
     private List<LeaderboardEntry> calculateLeaderboard(Collection<People> users) {
         Map<String, Integer> userStepsMap = new HashMap<>();
 
@@ -67,7 +67,6 @@ public class LeaderboardService {
                 }
             }
 
-            // Convert totalDistance from meters to steps
             double stepsPerMeter = 2000.0 / 1609.34; // Steps per meter
             double totalStepsDouble = totalDistanceMeters * stepsPerMeter;
             int totalSteps = (int) Math.round(totalStepsDouble);
@@ -79,14 +78,13 @@ public class LeaderboardService {
                 .map(entry -> new LeaderboardEntry(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
-        // Sort the leaderboard by total steps in descending order
         leaderboard.sort(Comparator.comparingInt(LeaderboardEntry::getTotalSteps).reversed());
 
         // Assign ranks
         int rank = 1;
         for (LeaderboardEntry entry : leaderboard) {
             entry.setRank(rank++);
-            entry.setLeaderboardId(0); // Adjust if needed
+            entry.setLeaderboardId(0);
         }
 
         return leaderboard;
