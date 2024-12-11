@@ -132,7 +132,7 @@ public class OrgLogin extends AppCompatActivity {
                             orgId = response.getString("orgId");
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);
-                                intent.putExtra("key", userKey);
+                                intent.putExtra("id", userKey);
                                 intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);
@@ -200,7 +200,7 @@ public class OrgLogin extends AppCompatActivity {
                             orgId = response.getString("orgId");
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);
-                                intent.putExtra("key", userKey);
+                                intent.putExtra("id", userKey);
                                 intent.putExtra("orgId",orgId);
                                 //errorMsg.setText("success " + jsonObject);
                                 startActivity(intent);

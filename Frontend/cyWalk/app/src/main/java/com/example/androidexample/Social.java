@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -63,6 +64,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
     private static String URL_GLOBAL_LEADERBOARD = null;
     private String URL_WS_SOCKET = null;
     private String URL_FRIEND_IMAGE = null;
+    private String URL_GOAL_SWITCH = null;
 
     /**
      * creates the social page for the user to see
@@ -89,6 +91,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         Bundle extras = getIntent().getExtras();
         key = extras.getString("key");
         userType = extras.getString("userType");
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -104,11 +107,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
                 return true;
             }
             else if (item.getItemId() == R.id.nav_goals) {
-                intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
-                finish();
+                getOrg();
                 return true;
             }
             else if (item.getItemId() == R.id.nav_social) {
@@ -133,7 +132,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         });
         //makeUsernameReq();
 
-        if(userType.equals("guest")){
+        if(userType.equals("GUEST")){
             friendsButton.setVisibility(View.INVISIBLE);
             globalLeaderboardBtn.setVisibility(View.INVISIBLE);
             friendsLeaderboardBtn.setVisibility(View.INVISIBLE);
@@ -345,6 +344,56 @@ public class Social extends AppCompatActivity implements WebSocketListener{
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(Social.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 
     /*

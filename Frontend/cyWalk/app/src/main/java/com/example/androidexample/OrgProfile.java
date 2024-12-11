@@ -37,6 +37,7 @@ public class OrgProfile extends AppCompatActivity {
     private String orgId = "";
     private String orgName;
     private TextView txt_username;
+    private Button logout;
 
 
     /**
@@ -49,12 +50,13 @@ public class OrgProfile extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         orgId = extras.getString("orgId");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
         txt_username = findViewById(R.id.profile_txt_username);
+        logout = findViewById(R.id.profile_btn_logout);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);
@@ -63,7 +65,7 @@ public class OrgProfile extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_org_users) {
                 intent = new Intent(OrgProfile.this, OrgUsers.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -71,7 +73,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_goals) {
                 intent = new Intent(OrgProfile.this, OrgSetGoals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -79,7 +81,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_social) {
                 intent = new Intent(OrgProfile.this, OrgLeaderboards.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -87,7 +89,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_profile) {
                 intent = new Intent(OrgProfile.this, OrgProfile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -98,6 +100,12 @@ public class OrgProfile extends AppCompatActivity {
             }
         });
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeLogOutReq();
+            }
+        });
         makeUsernameReq();
     }
 

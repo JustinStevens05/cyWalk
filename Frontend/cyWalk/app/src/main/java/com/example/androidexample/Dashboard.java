@@ -106,6 +106,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, WebSocketListener {
 
     private String key = "";
+    private String orgName;
     private static final int FINE_PERMISSION_CODE = 1;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback locationCallback;
@@ -126,7 +127,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 7500;
+    long locationTick = 500;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
@@ -138,6 +139,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_LOCATION = null;
     private String URL_WS_FRIEND_LOCATION = null;
+    private String URL_GOAL_SWITCH = null;
     private Marker friendMarker;
 
     /**
@@ -165,6 +167,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
         URL_WS_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
         URL_WS_FRIEND_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/friends?key="+key;
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
 
         /* connect this activity to the websocket instance */
         WebSocketManagerLocation.getInstance().setWebSocketListener(Dashboard.this);
@@ -208,7 +211,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setSelectedItemId(R.id.nav_dashboard);
         botnav.setOnItemSelectedListener(item -> {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
@@ -220,11 +223,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
                 return true;
             }
             else if (item.getItemId() == R.id.nav_goals) {
-                intent = new Intent(Dashboard.this, Goals.class);
-                intent.putExtra("key", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
-                finish();
+                getOrg();
                 return true;
             }
             else if (item.getItemId() == R.id.nav_social) {
@@ -333,7 +332,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     /**
      * Updates the map with the user's current location and moves the marker.
      */
-    private void updateMapWithLocation(Location location) {
+    void updateMapWithLocation(Location location) {
         if (gMap != null) {
             LatLng currentCoords = new LatLng(location.getLatitude(), location.getLongitude());
             if (userMarker == null) {
@@ -488,6 +487,56 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(Dashboard.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+    }
+
     private void updateFriendLocation(String friendUsername, double latitude, double longitude) {
         LatLng friendLocation = new LatLng(latitude, longitude);
 
@@ -506,6 +555,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException {
         //txt_websocket_test.setText("Connected");
+        Log.d("WebSocket", "Connected");
     }
 
     /**
@@ -514,10 +564,19 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
         Log.d("WebSocket", "Raw Message: " + message);
-                // Update your own location
-                runOnUiThread(() -> {
-                    txt_daily_distance.setText(String.format("Daily Distance: \n%.2f", Double.parseDouble(message)));
-                });
+
+        // Check if the message is being received and log it
+        if (message != null && !message.isEmpty()) {
+            Log.d("WebSocket", "Message received: " + message);
+
+            // Update your daily distance text view on the UI thread
+            runOnUiThread(() -> {
+                // You can modify this to parse the message as needed
+                txt_daily_distance.setText(message);
+            });
+        } else {
+            Log.d("WebSocket", "Empty or null message received");
+        }
     }
 
     /**
@@ -525,7 +584,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
-
+        Log.d("WebSocket", "key " + key + ", reason: " + reason);
     }
 
     /**

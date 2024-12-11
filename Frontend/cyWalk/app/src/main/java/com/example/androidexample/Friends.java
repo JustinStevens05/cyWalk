@@ -81,7 +81,7 @@ public class Friends extends AppCompatActivity {
         profileOverlay = findViewById(R.id.profileOverlay); // Initialize overlay
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         userType = extras.getString("userType");
 
         // Set the URLs for the API calls
@@ -91,7 +91,7 @@ public class Friends extends AppCompatActivity {
         // Return button click listener
         backButton.setOnClickListener(v -> {
             Intent intent = new Intent(Friends.this, Social.class);
-            intent.putExtra("key", key);
+            intent.putExtra("id", key);
             intent.putExtra("userType", userType);
             startActivity(intent);
         });
