@@ -1,6 +1,7 @@
 package com.cywalk.spring_boot.Achievements;
 
 import com.cywalk.spring_boot.Users.People;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
@@ -18,7 +19,7 @@ public class Achievement {
     private String imageUrl;
 
     @ManyToMany(mappedBy = "achievements")
-    @JsonManagedReference
+    @JsonIgnore
     private Set<People> users = new HashSet<>();
 
 
