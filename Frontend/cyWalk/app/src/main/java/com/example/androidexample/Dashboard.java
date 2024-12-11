@@ -126,7 +126,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 7500;
+    long locationTick = 500;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
@@ -163,7 +163,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
         URL_JSON_GET_USER = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
-        URL_WS_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?id="+key;
+        URL_WS_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
         URL_WS_FRIEND_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/friends?id="+key;
 
         /* connect this activity to the websocket instance */
@@ -208,7 +208,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setSelectedItemId(R.id.nav_dashboard);
         botnav.setOnItemSelectedListener(item -> {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
@@ -333,7 +333,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     /**
      * Updates the map with the user's current location and moves the marker.
      */
-    private void updateMapWithLocation(Location location) {
+    void updateMapWithLocation(Location location) {
         if (gMap != null) {
             LatLng currentCoords = new LatLng(location.getLatitude(), location.getLongitude());
             if (userMarker == null) {
