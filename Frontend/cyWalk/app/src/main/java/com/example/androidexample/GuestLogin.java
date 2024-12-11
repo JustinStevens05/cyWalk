@@ -101,7 +101,7 @@ public class GuestLogin extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            key = response.getString("id");
+                            key = response.getString("key");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
                                 Intent intent = new Intent(GuestLogin.this, Dashboard.class);

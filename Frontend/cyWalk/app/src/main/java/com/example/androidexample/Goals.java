@@ -74,7 +74,7 @@ public class Goals extends AppCompatActivity {
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
-        submitButton =findViewById(R.id.submitBtn);
+        submitButton = findViewById(R.id.submitBtn);
         newPlanButton = findViewById(R.id.newPlanBtn);
         newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
@@ -104,24 +104,21 @@ public class Goals extends AppCompatActivity {
             else if (item.getItemId() == R.id.nav_goals) {
                 getOrg();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_social) {
+            } else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Goals.this, Social.class);
                 intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_profile) {
+            } else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Goals.this, Profile.class);
                 intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         });
@@ -201,7 +198,7 @@ public class Goals extends AppCompatActivity {
                             username = response.getString("username");
                             URL_GET_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
                             URL_NEW_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
-                            URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
+                            URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/" + username + "/total";
 
                             getJsonObjStepGoals();
 
@@ -238,7 +235,7 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *gets the current step goals for the user
+     * gets the current step goals for the user
      */
     private void getJsonObjStepGoals() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -303,7 +300,7 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *updates the users step goals locally and changes their goals that are stored in the database
+     * updates the users step goals locally and changes their goals that are stored in the database
      */
     private void setJsonObjStepGoals() throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -354,8 +351,8 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *gets the users username based off of the session key
-     *switches to the join organizations page and passes in the session key and the retrieved username
+     * gets the users username based off of the session key
+     * switches to the join organizations page and passes in the session key and the retrieved username
      */
     private void switchToJoinOrg() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(

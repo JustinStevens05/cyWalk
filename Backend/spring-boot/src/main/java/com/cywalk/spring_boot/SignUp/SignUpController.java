@@ -56,6 +56,7 @@ public class SignUpController {
         People user = new People();
         user.setUsername(userRequest.getUsername());
         user.setEmail("placeholder@gmail.com");
+        user.setUserType("USER");
 
         Optional<People> createdUser = peopleService.createUser(user);
 
@@ -67,6 +68,7 @@ public class SignUpController {
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("username", createdUser.get().getUsername());
                 responseBody.put("id", authKey.get());
+                responseBody.put("type", "USER");
                 return ResponseEntity.ok(responseBody);
             } else {
                 Map<String, String> errorResponse = new HashMap<>();
@@ -79,6 +81,51 @@ public class SignUpController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
+
+    @PostMapping("/guest")
+    public ResponseEntity<?> registerGuest(@RequestBody UserRequest userRequest) {
+        if (userRequest.getUsername() == null || userRequest.getUsername().isEmpty()
+                || userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Username and password are required.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
+        if (peopleService.getUserByUsername(userRequest.getUsername()).isPresent()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Username already in use.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+
+        People user = new People();
+        user.setUsername(userRequest.getUsername());
+        user.setEmail("placeholder@gmail.com");
+        user.setUserType("GUEST"); // Set user type to GUEST
+
+        Optional<People> createdUser = peopleService.createUser(user);
+
+        if (createdUser.isPresent()) {
+            peopleService.saveUserRequest(userRequest);
+            Optional<Long> authKey = peopleService.generateAuthKey(user.getUsername());
+            if (authKey.isPresent()) {
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("username", createdUser.get().getUsername());
+                responseBody.put("id", authKey.get());
+                responseBody.put("type", "GUEST");
+                return ResponseEntity.ok(responseBody);
+            } else {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("message", "Can't Gen Key!");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            }
+        } else {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "User wasn't created.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+    }
+
+
 
     @PostMapping("/organization")
     @Operation(summary = "sign up for organization", description = "sign up an organization and create an admin if one exists. uses the key from the output as session key")

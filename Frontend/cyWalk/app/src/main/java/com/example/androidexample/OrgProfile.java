@@ -50,7 +50,7 @@ public class OrgProfile extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         orgId = extras.getString("orgId");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
@@ -65,7 +65,7 @@ public class OrgProfile extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_org_users) {
                 intent = new Intent(OrgProfile.this, OrgUsers.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -73,7 +73,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_goals) {
                 intent = new Intent(OrgProfile.this, OrgSetGoals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -81,7 +81,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_social) {
                 intent = new Intent(OrgProfile.this, OrgLeaderboards.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -89,7 +89,7 @@ public class OrgProfile extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_profile) {
                 intent = new Intent(OrgProfile.this, OrgProfile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();

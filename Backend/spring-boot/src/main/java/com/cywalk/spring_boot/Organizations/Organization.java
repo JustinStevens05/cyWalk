@@ -20,11 +20,11 @@ public class Organization {
     private String name;
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "organization_users")
     private Set<People> users = new HashSet<>();
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonManagedReference(value = "organization_admins")
     private Set<Admin> admins = new HashSet<>();
 
     public Organization() {}

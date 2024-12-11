@@ -127,7 +127,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     String local_url_chunk;
     LatLng currentCoords;
     Handler handler;
-    long locationTick = 7500;
+    long locationTick = 500;
     private Runnable locationRunnable;
     private Handler locationHandler = new Handler();
     private Marker userMarker; // Marker for the user's location
@@ -211,7 +211,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
-        botnav.setSelectedItemId(R.id.nav_social);
+        botnav.setSelectedItemId(R.id.nav_dashboard);
         botnav.setOnItemSelectedListener(item -> {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
@@ -332,7 +332,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     /**
      * Updates the map with the user's current location and moves the marker.
      */
-    private void updateMapWithLocation(Location location) {
+    void updateMapWithLocation(Location location) {
         if (gMap != null) {
             LatLng currentCoords = new LatLng(location.getLatitude(), location.getLongitude());
             if (userMarker == null) {
@@ -555,6 +555,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onWebSocketOpen(ServerHandshake handshakedata) throws InterruptedException {
         //txt_websocket_test.setText("Connected");
+        Log.d("WebSocket", "Connected");
     }
 
     /**
@@ -563,10 +564,19 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     @Override
     public void onWebSocketMessage(String message) throws InterruptedException {
         Log.d("WebSocket", "Raw Message: " + message);
-                // Update your own location
-                runOnUiThread(() -> {
-                    txt_daily_distance.setText(String.format("Daily Distance: \n%.2f", Double.parseDouble(message)));
-                });
+
+        // Check if the message is being received and log it
+        if (message != null && !message.isEmpty()) {
+            Log.d("WebSocket", "Message received: " + message);
+
+            // Update your daily distance text view on the UI thread
+            runOnUiThread(() -> {
+                // You can modify this to parse the message as needed
+                txt_daily_distance.setText(message);
+            });
+        } else {
+            Log.d("WebSocket", "Empty or null message received");
+        }
     }
 
     /**
@@ -574,7 +584,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
      */
     @Override
     public void onWebSocketClose(int code, String reason, boolean remote) {
-
+        Log.d("WebSocket", "key " + key + ", reason: " + reason);
     }
 
     /**
