@@ -14,7 +14,7 @@
         android:background="@color/cywalkRed"
         android:ems="10"
         android:fontFamily="sans-serif-black"
-        android:text="Guest Login"
+        android:text="Guest Signup"
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -88,16 +88,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/login_login_btn"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Login"
-            android:textSize="20sp"
-            android:textColor="#ffffff">
-        </Button>
 
         <Button
             android:id="@+id/login_signup_btn"

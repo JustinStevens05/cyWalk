@@ -116,6 +116,14 @@
             android:padding="5dp"
             android:textSize="25sp" />
 
+        <LinearLayout
+            android:id="@+id/orgGoalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/addPlanBtnLayout"
             android:layout_width="match_parent"

@@ -39,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:backgroundTint="@color/cywalkRed"
-        android:layout_below="@+id/profile_img_avatar"
-        android:layout_marginTop="25dp"
+        android:layout_toEndOf="@+id/profile_img_avatar"
+        android:layout_margin="15dp"
         android:text="Log Out" />
 
     <Button
@@ -52,6 +52,19 @@
         android:layout_below="@+id/profile_txt_username"
         android:layout_marginTop="50dp"
         android:text="Change Profile Picture" />
+
+    <TextView
+        android:id="@+id/tv_achievements"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/profile_img_avatar"
+        android:background="@color/white"
+        android:layout_margin="5dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/cywalkRed"
+        android:text="Achievements:\n"
+        >
+    </TextView>
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

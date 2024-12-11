@@ -139,7 +139,7 @@ public class WebSocketManagerLocation {
             Log.d("WebSocket", "Received message: " + message);
             if (webSocketListener != null) {
                 try {
-                    webSocketListener.onWebSocketMessage("u\n" + message);
+                    webSocketListener.onWebSocketMessage(message);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

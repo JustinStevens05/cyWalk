@@ -48,7 +48,7 @@ public class OrgUsers extends AppCompatActivity {
         title = findViewById(R.id.title);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         orgId = extras.getString("orgId");
 
         URL_ORG_USERS = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/"+orgId+"/users";
@@ -60,7 +60,7 @@ public class OrgUsers extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_org_users) {
                 intent = new Intent(OrgUsers.this, OrgUsers.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -68,7 +68,7 @@ public class OrgUsers extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_goals) {
                 intent = new Intent(OrgUsers.this, OrgSetGoals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -76,7 +76,7 @@ public class OrgUsers extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_social) {
                 intent = new Intent(OrgUsers.this, OrgLeaderboards.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
@@ -84,7 +84,7 @@ public class OrgUsers extends AppCompatActivity {
             }
             else if (item.getItemId() == R.id.nav_org_profile) {
                 intent = new Intent(OrgUsers.this, OrgProfile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("orgId",orgId);
                 startActivity(intent);
                 finish();
