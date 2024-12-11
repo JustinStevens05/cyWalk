@@ -115,8 +115,8 @@ public class LocationSystemTest {
     @Order(2)
     @Transactional
     void logLocations() throws Exception {
-        if (peopleService.getUserByUsername("userOne").isPresent()) {
-            peopleService.deleteUserByName("userOne");
+        if (peopleService.getUserByUsername("userTwo").isPresent()) {
+            peopleService.deleteUserByName("userTwo");
         }
 
         // try to sign up
@@ -197,7 +197,7 @@ public class LocationSystemTest {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
-            return root.path("key").asLong();
+            return root.path("id").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

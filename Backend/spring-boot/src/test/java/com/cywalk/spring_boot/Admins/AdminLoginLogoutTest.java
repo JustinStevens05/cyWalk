@@ -89,7 +89,7 @@ class AdminLoginLogoutTest {
                 .body(asJsonString(createAdminRequest(USER_ONE)))
                 .post("/signup/organization");
         assertEquals(200, testSignup.getStatusCode());
-        long keyTest = extractKeyFromResponse(testSignup);
+        long keyTest = extractIdFromResponse(testSignup);
 
         Response logout = RestAssured.given()
                 .header("Content-Type", "application/json")
@@ -143,7 +143,7 @@ class AdminLoginLogoutTest {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
-            return root.path("id").asLong();
+            return root.path("key").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

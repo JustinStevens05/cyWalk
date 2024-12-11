@@ -88,7 +88,7 @@ class AdminActionTest {
                 .body(asJsonString(createAdminRequest(USER_ONE)))
                 .post("/signup/organization");
         assertEquals(200, testSignup.getStatusCode());
-        long keyTest = extractKeyFromResponse(testSignup);
+        long keyTest = extractIdFromResponse(testSignup);
 
         // sign up model user to organization
         Response testSignup2 = RestAssured.given()
@@ -176,7 +176,7 @@ class AdminActionTest {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
-            return root.path("id").asLong();
+            return root.path("key").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

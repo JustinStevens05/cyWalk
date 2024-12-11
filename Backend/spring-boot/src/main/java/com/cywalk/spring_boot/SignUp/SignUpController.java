@@ -66,7 +66,7 @@ public class SignUpController {
             if (authKey.isPresent()) {
                 Map<String, Object> responseBody = new HashMap<>();
                 responseBody.put("username", createdUser.get().getUsername());
-                responseBody.put("key", authKey.get());
+                responseBody.put("id", authKey.get());
                 return ResponseEntity.ok(responseBody);
             } else {
                 Map<String, String> errorResponse = new HashMap<>();

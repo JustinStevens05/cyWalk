@@ -187,7 +187,7 @@ class FriendControllerTest {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody().asString());
-            return root.path("key").asLong();
+            return root.path("id").asLong();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

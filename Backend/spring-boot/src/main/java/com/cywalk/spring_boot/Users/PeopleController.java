@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import javax.swing.plaf.nimbus.State;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,10 +96,10 @@ public class PeopleController {
     })
     @DeleteMapping("/{key}")
     public ResponseEntity<Void> logout(@PathVariable @Parameter(name = "key", description = "user key", example = "1") Long key) {
-        Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
+        Optional<UserModel> toDelete = userModelRepository.findById(key);
         if (toDelete.isPresent()) {
             People user = toDelete.get().getUser();
-            userModelRepository.deleteBySecretKey(key);
+            userModelRepository.deleteById(key);
 
             // Update online users
             if (user.getOrganization() != null) {
@@ -138,7 +136,7 @@ public class PeopleController {
            }
            else {
                for (UserModel userModel : elements) {
-                   peopleService.logout(userModel.getSecretKey());
+                   peopleService.logout(userModel.getId());
                }
                return ResponseEntity.ok().build();
            }
@@ -166,7 +164,7 @@ public class PeopleController {
     })
     @GetMapping("/logins/{key}")
     public ResponseEntity<List<UserModel>> getActiveSessions(@PathVariable Long key) {
-        Optional<UserModel> userRequest = userModelRepository.findBySecretKey(key);
+        Optional<UserModel> userRequest = userModelRepository.findById(key);
         if (userRequest.isPresent()) {
             List<UserModel> current = userModelRepository.findAllByPeople(userRequest.get().getUser());
             if (current.isEmpty()) {

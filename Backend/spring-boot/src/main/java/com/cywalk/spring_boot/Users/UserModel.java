@@ -11,7 +11,7 @@ public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "the secret key to be used in endpoints for a user")
-    private long secretKey;
+    private long id;
 
     @ManyToOne
     @Schema(description = "the user who matches with the secret key")
@@ -19,7 +19,7 @@ public class UserModel {
     private People people;
 
     public UserModel(long secretKey, @NonNull People people) {
-        this.secretKey = secretKey;
+        this.id = secretKey;
         this.people = people;
     }
 
@@ -32,12 +32,12 @@ public class UserModel {
     }
 
 
-    public long getSecretKey() {
-        return secretKey;
+    public long getId() {
+        return id;
     }
 
-    public void setSecretKey(long secretKey) {
-        this.secretKey = secretKey;
+    public void setId(long secretKey) {
+        this.id = secretKey;
     }
 
     public People getUser() {
@@ -51,7 +51,7 @@ public class UserModel {
     @Override
     public String toString() {
         return "UserModel{" +
-                "secretKey=" + secretKey +
+                "secretKey=" + id +
                 ", people=" + people +
                 '}';
     }

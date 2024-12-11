@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserModelRepository extends JpaRepository<UserModel, Long> {
-    Optional<UserModel> findBySecretKey(long secretKey);
-    void deleteBySecretKey(long secretKey);
+    Optional<UserModel> findById(long secretKey);
+    void deleteById(long secretKey);
     void deleteByPeople(People people);
     Optional<UserModel> findByPeople(People people);
     List<UserModel> findAllByPeople(People people);

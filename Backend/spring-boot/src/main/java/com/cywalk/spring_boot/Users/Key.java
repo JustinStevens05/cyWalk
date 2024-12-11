@@ -5,21 +5,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "A model for the secret key")
 public class Key {
     @Schema(description = "A key")
-    private long key;
+    private long id;
 
     public Key(long key) {
-        this.key = key;
+        this.id = key;
     }
 
     public Key() {
 
     }
 
-    public Long getKey() {
-        return key;
+    public Long getId() {
+        return id;
     }
 
-    public void setKey(Long key) {
-        this.key = key;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

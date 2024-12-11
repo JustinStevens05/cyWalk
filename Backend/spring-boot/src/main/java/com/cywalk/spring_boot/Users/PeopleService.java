@@ -1,5 +1,4 @@
 package com.cywalk.spring_boot.Users;
-import com.cywalk.spring_boot.Friends.FriendService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class PeopleService {
@@ -104,7 +102,7 @@ public class PeopleService {
                         orgId, onlineUserService.getOnlineUsers(orgId));
             }
 
-            return Optional.of(model.getSecretKey());
+            return Optional.of(model.getId());
         } else {
 
             return Optional.empty();
@@ -121,7 +119,7 @@ public class PeopleService {
      */
     @Transactional
     public Optional<People> getUserFromKey(Long key) {
-        Optional<UserModel> userModelResult = userModelRepository.findBySecretKey(key);
+        Optional<UserModel> userModelResult = userModelRepository.findById(key);
 
         if (userModelResult.isPresent()) {
             UserModel userModel = userModelResult.get();
@@ -164,9 +162,9 @@ public class PeopleService {
 
     @Transactional
     public ResponseEntity<Void> logout(Long key) {
-        Optional<UserModel> toDelete = userModelRepository.findBySecretKey(key);
+        Optional<UserModel> toDelete = userModelRepository.findById(key);
         if (toDelete.isPresent()) {
-            userModelRepository.deleteBySecretKey(key);
+            userModelRepository.deleteById(key);
             return ResponseEntity.ok().build();
         }
         else {
