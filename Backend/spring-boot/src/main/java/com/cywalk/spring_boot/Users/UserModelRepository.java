@@ -10,5 +10,6 @@ public interface UserModelRepository extends JpaRepository<UserModel, Long> {
     Optional<UserModel> findBySecretKey(long secretKey);
     void deleteBySecretKey(long secretKey);
     void deleteByPeople(People people);
+    Optional<UserModel> findByPeople(People people);
     List<UserModel> findAllByPeople(People people);
 }

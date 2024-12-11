@@ -4,6 +4,7 @@ import com.cywalk.spring_boot.Users.People;
 import com.cywalk.spring_boot.Users.PeopleRepository;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
 import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
+import jakarta.transaction.Transactional;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class OrganizationService {
         return organizationRepository.save(organization);
     }
 
+    @Transactional
     public void saveOrganization(Organization organization) {
         organizationRepository.save(organization);
     }

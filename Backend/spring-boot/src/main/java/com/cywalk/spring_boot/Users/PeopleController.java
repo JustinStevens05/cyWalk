@@ -334,6 +334,23 @@ public class PeopleController {
         return peopleResult.map(people -> ResponseEntity.of(Optional.of(asJsonString(people.getOrganization())))).orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+
+    @GetMapping("{username}/profile/online")
+    @Operation(summary = "online status of user", description = "fetches the online status of a given user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "got the status", content = @Content),
+            @ApiResponse(responseCode = "404", description = "user not found"),
+    })
+    public ResponseEntity<Boolean> getUserLoggedIn(
+            @PathVariable @Parameter(name = "username", description = "the username of the user") String username) {
+        Optional<People> peopleResult = peopleService.getUserByUsername(username);
+        if (peopleResult.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.of(Optional.of(peopleService.isUserLoggedIn(peopleResult.get())));
+    }
+
+
     /**
      * Gets the current league a user is in
      * @param key the key of said user

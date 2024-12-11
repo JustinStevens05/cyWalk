@@ -108,38 +108,11 @@
                 android:textSize="20dp"/>
 
             <EditText
-                android:id="@+id/company_username_edt"
+                android:id="@+id/company_username_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:hint="Company name"
                 android:textColor="@color/black"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/companyPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/companyUsername">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="password: "
-                android:textSize="20dp"
-                android:textColor="#000000">
-            </TextView>
-
-            <EditText
-                android:id="@+id/company_password_edt"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:hint="Password"
-                android:textColor="@color/black"
-                android:inputType="textPassword"/>
 
         </LinearLayout>
     </RelativeLayout>
@@ -184,7 +157,8 @@
             android:background="@color/white"
             android:text="User sign-up/log-in"
             android:textColor="#AAAAAA"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"/>
 
     </RelativeLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="75sp"
@@ -19,15 +19,31 @@
         android:textAllCaps="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/white"
-        android:textSize="25dp" />
+        android:textSize="25dp"
+        android:paddingTop="25dp"/>
 
     <LinearLayout
+        android:id="@+id/tabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:translationY="75sp">
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="75dp">
 
+        <ListView
+            android:id="@+id/lv_leaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/cywalkRed"
+            android:dividerHeight="1dp"
+            android:layout_margin="16dp"
+            android:scrollingCache="false"
+            android:layout_gravity="center"/>
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/viewPager"/>
 
     </LinearLayout>
 

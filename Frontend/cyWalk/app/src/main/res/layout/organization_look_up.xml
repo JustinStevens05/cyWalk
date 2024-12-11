@@ -38,41 +38,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/avaiableTitle"
-        android:layout_centerInParent="true"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_margin="25dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="organization name: "
-            android:textSize="20dp"
-            android:textColor="#000000">
-        </TextView>
 
-        <EditText
-            android:id="@+id/org_name_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:hint="org name"
-            android:textColor="@color/black"
-            android:inputType="text"></EditText>
 
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/orgSubmitBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:backgroundTint="@color/cywalkRed"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/white"
-        android:text="Join"
-        android:textSize="15sp"
-        android:layout_marginBottom="15dp"/>
 
     <Button
         android:id="@+id/returnButton"

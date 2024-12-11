@@ -1,5 +1,6 @@
 package com.cywalk.spring_boot.Organizations;
 
+import com.cywalk.spring_boot.Users.People;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -38,4 +39,5 @@ public class OnlineUserService {
     public Set<String> getOnlineUsers(Long orgId) {
         return onlineUsersByOrg.getOrDefault(orgId, Collections.emptySet());
     }
+
 }
