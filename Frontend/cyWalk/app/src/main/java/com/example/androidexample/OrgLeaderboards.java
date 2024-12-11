@@ -63,7 +63,7 @@ public class OrgLeaderboards extends AppCompatActivity {
         key = extras.getString("id");
         orgId = extras.getString("orgId");
 
-        URL_ORG_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
+        URL_ORG_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/" + orgId + "/leaderboard";
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);

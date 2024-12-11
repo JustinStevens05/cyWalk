@@ -33,6 +33,10 @@ public class People {
   @Schema(description = "The organization a user is apart of")
   private Organization organization;
 
+  @Schema(description = "The type of user: USER or GUEST")
+  private String userType;
+
+
   @Schema(description = "the email of the user")
   private String email;
 
@@ -129,6 +133,13 @@ public class People {
   }
 
 
+  public String getUserType() {
+    return userType;
+  }
+
+  public void setUserType(String userType) {
+    this.userType = userType;
+  }
   // Organization
   public Organization getOrganization() {
     return organization;

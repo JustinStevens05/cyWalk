@@ -25,6 +25,7 @@ public class AdminController {
     @Autowired
     OrganizationService organizationService;
 
+
     @PutMapping("/login")
     @Operation(summary = "Log in an admin", description = "Log in an admin and get back a key")
     @ApiResponses(value = {
@@ -68,6 +69,8 @@ public class AdminController {
             return ResponseEntity.status(400).build();
         }
     }
+
+
 
 
 

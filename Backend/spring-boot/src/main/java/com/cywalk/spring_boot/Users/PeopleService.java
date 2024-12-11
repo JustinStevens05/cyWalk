@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import com.cywalk.spring_boot.Organizations.OnlineUserService;
 import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -138,27 +140,36 @@ public class PeopleService {
      * @return a key to be used throughout the session until the user logs out
      */
     @Transactional
-    public ResponseEntity<Key> login(UserRequest request) {
-        Optional<UserRequest> userRequest = userRequestRepository.findByUsername(request.getUsername());
-        if (userRequest.isPresent()) {
-            if (userRequest.get().getPassword().equals(request.getPassword())) {
-                // try and generate the key
+    public ResponseEntity<Map<String,Object>> login(UserRequest request) {
+        Optional<UserRequest> userReqOpt = userRequestRepository.findByUsername(request.getUsername());
+        if (userReqOpt.isPresent()) {
+            UserRequest userReq = userReqOpt.get();
+            if (userReq.getPassword().equals(request.getPassword())) {
                 Optional<Long> toReturn = generateAuthKey(request.getUsername());
                 if (toReturn.isPresent()) {
-                    // return temporary key
-                    return ResponseEntity.ok(new Key(toReturn.get()));
+                    Optional<People> userOpt = getUserByUsername(request.getUsername());
+                    if (userOpt.isPresent()) {
+                        String userType = userOpt.get().getUserType();
+                        if (userType == null || userType.isEmpty()) {
+                            userType = "USER";
+                        }
+                        Map<String, Object> responseBody = new HashMap<>();
+                        responseBody.put("id", toReturn.get());
+                        responseBody.put("type", userType);
+                        return ResponseEntity.ok(responseBody);
+                    } else {
+                        return ResponseEntity.notFound().build();
+                    }
                 }
-                // no need to log info for else case as generate auth key already does this
+            } else {
+                logger.warn("Password incorrect for user: {}", request.getUsername());
             }
-            else {
-                logger.warn("Password incorrect for user. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
-            }
-        }
-        else {
-            logger.warn("People not found. Tried: People: {}; Password: {}", request.getUsername(),request.getPassword());
+        } else {
+            logger.warn("User not found: {}", request.getUsername());
         }
         return ResponseEntity.notFound().build();
     }
+
 
     @Transactional
     public ResponseEntity<Void> logout(Long key) {
@@ -229,5 +240,7 @@ public class PeopleService {
         return League.values()[(int) pointInRank * AMOUNT_LEAGUES];
     }
      */
+
+
 
 }

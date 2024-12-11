@@ -32,6 +32,7 @@ public class OrgProfile extends AppCompatActivity {
     private static String URL_JSON_OBJECT = null;
     private static String URL_CREATE_ORG = null;
     private static String URL_FIND_ORG = null;
+    private static String URL_LOG_OUT= null;
     private String username;
     private String orgId = "";
     private String orgName;
@@ -51,7 +52,8 @@ public class OrgProfile extends AppCompatActivity {
         key = extras.getString("id");
         orgId = extras.getString("orgId");
         //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://10.0.2.2:8080/users/"+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
         txt_username = findViewById(R.id.profile_txt_username);
 
         // NAVIGATION BAR
@@ -122,6 +124,47 @@ public class OrgProfile extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    private void makeLogOutReq() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.DELETE, URL_LOG_OUT, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        Intent intent = new Intent(OrgProfile.this, Login.class);
+                        startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        Intent intent = new Intent(OrgProfile.this, Login.class);
+                        startActivity(intent);
                     }
                 }
         ) {
