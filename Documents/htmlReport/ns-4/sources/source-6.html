@@ -1,0 +1,346 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FriendService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Friends</a>
+</div>
+
+<h1>Coverage Summary for Class: FriendService (com.cywalk.spring_boot.Friends)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FriendService</td>
+<td class="coverageStat">
+  <span class="percent">
+    72.7%
+  </span>
+  <span class="absValue">
+    (8/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (25/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.6%
+  </span>
+  <span class="absValue">
+    (51/87)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FriendService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    72.7%
+  </span>
+  <span class="absValue">
+    (8/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (25/40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.6%
+  </span>
+  <span class="absValue">
+    (51/87)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;    package com.cywalk.spring_boot.Friends;
+&nbsp;
+&nbsp;    import com.cywalk.spring_boot.Leaderboard.LeaderboardEntry;
+&nbsp;    import com.cywalk.spring_boot.Organizations.Organization;
+&nbsp;    import com.cywalk.spring_boot.Users.People;
+&nbsp;    import com.cywalk.spring_boot.Users.PeopleService;
+&nbsp;    import jakarta.transaction.Transactional;
+&nbsp;    import org.slf4j.Logger;
+&nbsp;    import org.slf4j.LoggerFactory;
+&nbsp;    import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;    import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;    import java.util.*;
+&nbsp;
+&nbsp;    import com.cywalk.spring_boot.Leaderboard.LeaderboardService;
+&nbsp;
+&nbsp;    @Service
+<b class="fc">&nbsp;    public class FriendService {</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        private static final Logger log = LoggerFactory.getLogger(FriendService.class);</b>
+&nbsp;        @Autowired
+&nbsp;        FriendRequestRepository friendRequestRepository;
+&nbsp;
+&nbsp;        @Autowired
+&nbsp;        LeaderboardService leaderboardService; // Add dependency
+&nbsp;
+&nbsp;        @Autowired
+&nbsp;        PeopleService peopleService;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Request to friend someone
+&nbsp;         * @param userRequesting user requesting to friend the other
+&nbsp;         * @param userGettingRequested user getting requested to be added
+&nbsp;         * @return true if the request was sent. false if it already existed
+&nbsp;         */
+&nbsp;        @Transactional
+&nbsp;        public boolean requestToFriend(People userRequesting, People userGettingRequested) {
+<b class="fc">&nbsp;            Optional&lt;FriendRequest&gt; fr = getFriendRequestFrom(userRequesting, userGettingRequested);</b>
+<b class="pc">&nbsp;            if (fr.isPresent()) {</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            FriendRequest fr2 = new FriendRequest(userRequesting, userGettingRequested, FriendRequestStatus.PENDING);</b>
+<b class="fc">&nbsp;            friendRequestRepository.save(fr2);</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Transactional
+&nbsp;        Optional&lt;List&lt;FriendRequest&gt;&gt; getPendingFriendRequests(Long sessionKey) {
+<b class="fc">&nbsp;            Optional&lt;People&gt; peopleRequest = peopleService.getUserFromKey(sessionKey);</b>
+<b class="pc">&nbsp;            if (peopleRequest.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Could not fetch pending requests for user as there is no user with the provided key&quot;);</b>
+<b class="nc">&nbsp;                return Optional.empty();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return Optional.of(friendRequestRepository.findByReceiverAndStatus(peopleRequest.get(), FriendRequestStatus.PENDING));</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        public List&lt;FriendRequest&gt; getAllRequests() {
+<b class="nc">&nbsp;            return friendRequestRepository.findAll();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Approves a given friend request and then updates the database correspondingly
+&nbsp;         * @param sessionKey the key of the current session
+&nbsp;         * @param username of the user to approve
+&nbsp;         */
+&nbsp;        @Transactional
+&nbsp;        public boolean approveFriendRequest(Long sessionKey, String username) {
+<b class="fc">&nbsp;            Optional&lt;People&gt; peopleRequest = peopleService.getUserFromKey(sessionKey);</b>
+<b class="pc">&nbsp;            if (peopleRequest.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Approval failed due to invalid key&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            Optional&lt;People&gt; person2Request = peopleService.getUserByUsername(username);</b>
+<b class="pc">&nbsp;            if (person2Request.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;Approval failed due to invalid username (corresponding user)&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            People user2 = person2Request.get();</b>
+<b class="fc">&nbsp;            People user = peopleRequest.get();</b>
+<b class="fc">&nbsp;            Optional&lt;FriendRequest&gt; requestOption = friendRequestRepository.findBySenderAndReceiver(user2, user);</b>
+&nbsp;
+<b class="pc">&nbsp;            if (requestOption.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;friend request did not exist from: {} to: {}&quot;, user2.getUsername(), user.getUsername());</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            FriendRequest request = requestOption.get();</b>
+<b class="fc">&nbsp;            request.setStatus(FriendRequestStatus.APPROVED);</b>
+<b class="fc">&nbsp;            friendRequestRepository.save(request);</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Approves a given friend request and then updates the database correspondingly
+&nbsp;         * @param sessionKey the key of the current session
+&nbsp;         * @param username of the user to approve
+&nbsp;         */
+&nbsp;        @Transactional
+&nbsp;        public boolean denyFriendRequest(Long sessionKey, String username) {
+<b class="nc">&nbsp;            Optional&lt;People&gt; peopleRequest = peopleService.getUserFromKey(sessionKey);</b>
+<b class="nc">&nbsp;            if (peopleRequest.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;denial failed due to invalid key&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            Optional&lt;People&gt; person2Request = peopleService.getUserByUsername(username);</b>
+<b class="nc">&nbsp;            if (person2Request.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;denial failed due to invalid username (corresponding user)&quot;);</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            People user2 = person2Request.get();</b>
+<b class="nc">&nbsp;            People user = peopleRequest.get();</b>
+<b class="nc">&nbsp;            Optional&lt;FriendRequest&gt; requestOption = friendRequestRepository.findBySenderAndReceiver(user2, user);</b>
+&nbsp;
+<b class="nc">&nbsp;            if (requestOption.isEmpty()) {</b>
+<b class="nc">&nbsp;                log.warn(&quot;friend request did not exist from: {} to: {}&quot;, user2.getUsername(), user.getUsername());</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            FriendRequest request = requestOption.get();</b>
+<b class="nc">&nbsp;            request.setStatus(FriendRequestStatus.DENIED);</b>
+<b class="nc">&nbsp;            friendRequestRepository.save(request);</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Transactional
+&nbsp;        public List&lt;People&gt; getFriends(People person) {
+<b class="fc">&nbsp;            List&lt;FriendRequest&gt; requests = friendRequestRepository.findByReceiverOrSender(person, person);</b>
+<b class="fc">&nbsp;            ArrayList&lt;People&gt; friends = new ArrayList&lt;&gt;(requests.size());</b>
+<b class="fc">&nbsp;            for (int i = 0; i &lt; requests.size(); i++) {</b>
+<b class="pc">&nbsp;                if (requests.get(i).getStatus() == FriendRequestStatus.APPROVED) {</b>
+<b class="fc">&nbsp;                    if (requests.get(i).getReceiver() != person) {</b>
+<b class="fc">&nbsp;                        friends.add(requests.get(i).getReceiver());</b>
+&nbsp;                    }
+&nbsp;                    else {
+<b class="fc">&nbsp;                        friends.add(requests.get(i).getSender());</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            return friends;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;        @Transactional
+&nbsp;        public Optional&lt;List&lt;LeaderboardEntry&gt;&gt; getFriendLeaderboard(People person) {
+<b class="nc">&nbsp;            List&lt;People&gt; friendsList = getFriends(person);</b>
+<b class="nc">&nbsp;            Set&lt;People&gt; friends = new HashSet&lt;&gt;(friendsList);</b>
+<b class="nc">&nbsp;            friends.add(person);</b>
+<b class="nc">&nbsp;            if (!friends.isEmpty()) {</b>
+<b class="nc">&nbsp;                List&lt;LeaderboardEntry&gt; leaderboard = leaderboardService.getLeaderboard(friends);</b>
+<b class="nc">&nbsp;                return Optional.of(leaderboard);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Literally just does the repository call
+&nbsp;         * @param user_requesting the user requesting the friend
+&nbsp;         * @param user_getting_requested the user getting requested
+&nbsp;         * @return the cooresponding friend request if it exists in the database
+&nbsp;         */
+&nbsp;        public Optional&lt;FriendRequest&gt; getFriendRequestFrom(People user_requesting, People user_getting_requested) {
+<b class="fc">&nbsp;            return friendRequestRepository.findBySenderAndReceiver(user_requesting, user_getting_requested);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Makes and returns a list of suggested friends for a given user
+&nbsp;         * @param people the people to check against
+&nbsp;         * @return the suggested friends
+&nbsp;         */
+&nbsp;        @Transactional
+&nbsp;        public List&lt;String&gt; getSuggestedFriends(People people) {
+<b class="fc">&nbsp;            HashMap&lt;People, Long&gt; friendConnections = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;            List&lt;People&gt; friends = getFriends(people);</b>
+<b class="fc">&nbsp;            for (People p : friends) {</b>
+<b class="fc">&nbsp;                List&lt;People&gt; friendsOfFriends = getFriends(p);</b>
+<b class="fc">&nbsp;                for (People fof : friendsOfFriends) {</b>
+<b class="fc">&nbsp;                    if (fof.getUsername().equals(people.getUsername())) {</b>
+&nbsp;                        continue;
+&nbsp;                    }
+<b class="pc">&nbsp;                    if (!friendConnections.containsKey(fof)) {</b>
+<b class="fc">&nbsp;                        friendConnections.put(fof, 1L);</b>
+&nbsp;                    }
+&nbsp;                    else {
+<b class="nc">&nbsp;                        friendConnections.put(fof, friendConnections.get(fof) + 1);</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            List&lt;String&gt; suggestedFriends = new ArrayList&lt;&gt;();</b>
+&nbsp;            // now we put the top 5 friends into the list
+<b class="fc">&nbsp;            for (int i = 0; i &lt; 5; i++) {</b>
+<b class="fc">&nbsp;                long max = 0;</b>
+<b class="fc">&nbsp;                People maxPerson = null;</b>
+<b class="fc">&nbsp;                for (People p : friendConnections.keySet()) {</b>
+<b class="fc">&nbsp;                    if (friendConnections.get(p) &gt; max) {</b>
+<b class="fc">&nbsp;                        max = friendConnections.get(p);</b>
+<b class="fc">&nbsp;                        maxPerson = p;</b>
+&nbsp;                    }
+&nbsp;                }
+<b class="fc">&nbsp;                if (maxPerson != null) {</b>
+<b class="fc">&nbsp;                    suggestedFriends.add(maxPerson.getUsername());</b>
+<b class="fc">&nbsp;                    friendConnections.remove(maxPerson);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            return suggestedFriends;</b>
+&nbsp;        }
+&nbsp;    }
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

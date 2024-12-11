@@ -1,0 +1,196 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LeaderboardWebSocket</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Leaderboard</a>
+</div>
+
+<h1>Coverage Summary for Class: LeaderboardWebSocket (com.cywalk.spring_boot.Leaderboard)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LeaderboardWebSocket</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31.8%
+  </span>
+  <span class="absValue">
+    (7/22)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Leaderboard;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;import jakarta.websocket.OnClose;
+&nbsp;import jakarta.websocket.OnError;
+&nbsp;import jakarta.websocket.OnMessage;
+&nbsp;import jakarta.websocket.OnOpen;
+&nbsp;import jakarta.websocket.Session;
+&nbsp;import jakarta.websocket.server.ServerEndpoint;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.Set;
+&nbsp;import java.util.concurrent.CopyOnWriteArraySet;
+&nbsp;
+&nbsp;@ServerEndpoint(&quot;/leaderboard&quot;)
+&nbsp;@Component
+<b class="fc">&nbsp;public class LeaderboardWebSocket {</b>
+&nbsp;
+<b class="fc">&nbsp;    private static Set&lt;Session&gt; sessions = new CopyOnWriteArraySet&lt;&gt;();</b>
+<b class="fc">&nbsp;    private static ObjectMapper objectMapper = new ObjectMapper();</b>
+&nbsp;
+&nbsp;    private static LeaderboardService leaderboardService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    public void setLeaderboardService(LeaderboardService service) {
+<b class="fc">&nbsp;        leaderboardService = service;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    private final Logger logger = LoggerFactory.getLogger(LeaderboardWebSocket.class);</b>
+&nbsp;
+&nbsp;    @OnOpen
+&nbsp;    public void onOpen(Session session) {
+<b class="nc">&nbsp;        sessions.add(session);</b>
+<b class="nc">&nbsp;        logger.info(&quot;New connection established. Session ID: {}&quot;, session.getId());</b>
+&nbsp;
+<b class="nc">&nbsp;        LeaderboardUpdate update = new LeaderboardUpdate(leaderboardService.getLeaderboard());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            String message = objectMapper.writeValueAsString(update);</b>
+<b class="nc">&nbsp;            session.getAsyncRemote().sendText(message);</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            logger.error(&quot;Error sending leaderboard data to Session ID {}: {}&quot;, session.getId(), e.getMessage());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @OnClose
+&nbsp;    public void onClose(Session session) {
+<b class="nc">&nbsp;        sessions.remove(session);</b>
+<b class="nc">&nbsp;        logger.info(&quot;Connection closed. Session ID: {}&quot;, session.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @OnMessage
+&nbsp;    public void onMessage(String message, Session session) {
+<b class="nc">&nbsp;        logger.info(&quot;Received message from Session ID {}: {}&quot;, session.getId(), message);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @OnError
+&nbsp;    public void onError(Session session, Throwable throwable) {
+<b class="nc">&nbsp;        logger.error(&quot;Error in Session ID {}: {}&quot;, session.getId(), throwable.getMessage());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static void broadcast(LeaderboardUpdate update) {
+&nbsp;        String message;
+&nbsp;        try {
+<b class="fc">&nbsp;            message = objectMapper.writeValueAsString(update);</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            System.err.println(&quot;Error serializing leaderboard update: &quot; + e.getMessage());</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        for (Session session : sessions) {</b>
+<b class="nc">&nbsp;            if (session.isOpen()) {</b>
+<b class="nc">&nbsp;                session.getAsyncRemote().sendText(message);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

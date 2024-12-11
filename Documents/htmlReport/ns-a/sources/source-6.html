@@ -1,0 +1,368 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PeopleService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Users</a>
+</div>
+
+<h1>Coverage Summary for Class: PeopleService (com.cywalk.spring_boot.Users)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PeopleService</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.2%
+  </span>
+  <span class="absValue">
+    (9/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.8%
+  </span>
+  <span class="absValue">
+    (5/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (25/60)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PeopleService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    56.2%
+  </span>
+  <span class="absValue">
+    (9/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.8%
+  </span>
+  <span class="absValue">
+    (5/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (25/60)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Users;
+&nbsp;import com.cywalk.spring_boot.Friends.FriendService;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import com.cywalk.spring_boot.Organizations.OnlineUserService;
+&nbsp;import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class PeopleService {
+&nbsp;
+&nbsp;    // I love comptime
+<b class="fc">&nbsp;    public static final int AMOUNT_LEAGUES = League.values().length;</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PeopleRepository peopleRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OnlineUserService onlineUserService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserModelRepository userModelRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private UserRequestRepository userRequestRepository;
+&nbsp;
+<b class="fc">&nbsp;    private final Logger logger = LoggerFactory.getLogger(PeopleService.class);</b>
+&nbsp;
+<b class="fc">&nbsp;    public PeopleService() {}</b>
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public Optional&lt;People&gt; createUser(People user) {
+&nbsp;        try {
+<b class="pc">&nbsp;            if (peopleRepository.findByUsername(user.getUsername()).isPresent()) {</b>
+<b class="nc">&nbsp;                logger.warn(&quot;Issue: username already in use&quot;);</b>
+<b class="nc">&nbsp;                return Optional.empty();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            People savedUser = peopleRepository.save(user);</b>
+<b class="fc">&nbsp;            logger.info(&quot;User saved successfully: {}&quot;, savedUser);</b>
+<b class="fc">&nbsp;            return Optional.of(savedUser);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            logger.error(&quot;Error saving user: {}&quot;, e.getMessage(), e);</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public void saveUserRequest(UserRequest userRequest) {
+<b class="fc">&nbsp;        userRequestRepository.save(userRequest);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public Optional&lt;People&gt; getUserByUsername(String username) {
+<b class="fc">&nbsp;        return peopleRepository.findByUsername(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public People saveUser(People people) {
+<b class="fc">&nbsp;        return peopleRepository.save(people);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Delete a user in the database based off of the passed in username
+&nbsp;     * @param name the username of the user to delete
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    public void deleteUserByName(String name) {
+<b class="fc">&nbsp;        Optional&lt;People&gt; peopleResult = getUserByUsername(name);</b>
+<b class="pc">&nbsp;        if (peopleResult.isPresent()) {</b>
+<b class="fc">&nbsp;            userModelRepository.deleteByPeople(peopleResult.get());</b>
+<b class="fc">&nbsp;            peopleRepository.deleteByUsername(name);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * generates an authentication key that the front end should keep track of for.
+&nbsp;     * This will return -1 if the id does now work
+&nbsp;     *
+&nbsp;     * @param username the People key in the entity
+&nbsp;     * @return a valid auth key
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    public Optional&lt;Long&gt; generateAuthKey(String username) {
+<b class="fc">&nbsp;        Optional&lt;People&gt; userResult = peopleRepository.findByUsername(username);</b>
+<b class="pc">&nbsp;        if (userResult.isPresent()) {</b>
+&nbsp;
+<b class="fc">&nbsp;            UserModel model = new UserModel(userResult.get());</b>
+<b class="fc">&nbsp;            userModelRepository.save(model);</b>
+&nbsp;
+<b class="fc">&nbsp;            People user = userResult.get();</b>
+<b class="pc">&nbsp;            if (user.getOrganization() != null) {</b>
+<b class="nc">&nbsp;                Long orgId = user.getOrganization().getId();</b>
+<b class="nc">&nbsp;                onlineUserService.userLoggedIn(username, orgId);</b>
+&nbsp;
+<b class="nc">&nbsp;                OrganizationOnlineUsersWebSocket.broadcastOnlineUsers(</b>
+<b class="nc">&nbsp;                        orgId, onlineUserService.getOnlineUsers(orgId));</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            return Optional.of(model.getSecretKey());</b>
+&nbsp;        } else {
+&nbsp;
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * verifies whether a key is correct or not.
+&nbsp;     * If it isn&#39;t valid the return wil be empty.
+&nbsp;     * If the key is valid it will return the user object.
+&nbsp;     *
+&nbsp;     * @param key the secret temporary key
+&nbsp;     * @return A user if it&#39;s available
+&nbsp;     */
+&nbsp;    @Transactional
+&nbsp;    public Optional&lt;People&gt; getUserFromKey(Long key) {
+<b class="fc">&nbsp;        Optional&lt;UserModel&gt; userModelResult = userModelRepository.findBySecretKey(key);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (userModelResult.isPresent()) {</b>
+<b class="fc">&nbsp;            UserModel userModel = userModelResult.get();</b>
+<b class="fc">&nbsp;            return Optional.of(userModel.getUser());</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            logger.warn(&quot;key did not find a value. key passed in: {}&quot;, key);</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Login a user
+&nbsp;     * @param request the username password combination
+&nbsp;     * @return a key to be used throughout the session until the user logs out
+&nbsp;     */
+&nbsp;    public ResponseEntity&lt;Key&gt; login(UserRequest request) {
+<b class="nc">&nbsp;        Optional&lt;UserRequest&gt; userRequest = userRequestRepository.findByUsername(request.getUsername());</b>
+<b class="nc">&nbsp;        if (userRequest.isPresent()) {</b>
+<b class="nc">&nbsp;            if (userRequest.get().getPassword().equals(request.getPassword())) {</b>
+&nbsp;                // try and generate the key
+<b class="nc">&nbsp;                Optional&lt;Long&gt; toReturn = generateAuthKey(request.getUsername());</b>
+<b class="nc">&nbsp;                if (toReturn.isPresent()) {</b>
+&nbsp;                    // return temporary key
+<b class="nc">&nbsp;                    return ResponseEntity.ok(new Key(toReturn.get()));</b>
+&nbsp;                }
+&nbsp;                // no need to log info for else case as generate auth key already does this
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                logger.warn(&quot;Password incorrect for user. Tried: People: {}; Password: {}&quot;, request.getUsername(),request.getPassword());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            logger.warn(&quot;People not found. Tried: People: {}; Password: {}&quot;, request.getUsername(),request.getPassword());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return ResponseEntity.notFound().build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public ResponseEntity&lt;Void&gt; logout(Long key) {
+<b class="nc">&nbsp;        Optional&lt;UserModel&gt; toDelete = userModelRepository.findBySecretKey(key);</b>
+<b class="nc">&nbsp;        if (toDelete.isPresent()) {</b>
+<b class="nc">&nbsp;            userModelRepository.deleteBySecretKey(key);</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok().build();</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            return ResponseEntity.badRequest().build();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return all users in the database
+&nbsp;     */
+&nbsp;    public List&lt;People&gt; getAllPeople() {
+<b class="nc">&nbsp;        return peopleRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * updates the bio of a user
+&nbsp;     */
+&nbsp;    public People updateBio(People people, String bio) {
+<b class="nc">&nbsp;        people.setBio(bio);</b>
+<b class="nc">&nbsp;        return peopleRepository.save(people);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the username of a user
+&nbsp;     */
+&nbsp;    public People updateUsername(People people, String newUsername) {
+<b class="nc">&nbsp;        peopleRepository.delete(people);</b>
+<b class="nc">&nbsp;        people.setUsername(newUsername);</b>
+<b class="nc">&nbsp;        return peopleRepository.save(people);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates the email of a user
+&nbsp;     */
+&nbsp;    public People updateEmail(People people, String newEmail) {
+<b class="nc">&nbsp;        people.setEmail(newEmail);</b>
+<b class="nc">&nbsp;        return peopleRepository.save(people);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Boolean isUserLoggedIn(People people) {
+<b class="nc">&nbsp;        return userModelRepository.findByPeople(people).isPresent();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * updates and returns the league that the current user is in.
+&nbsp;     * This function calculates the user&#39;s global ranking relative to everyone else and then returns that
+&nbsp;     * @param username the username of the user.
+&nbsp;     *                 THIS FUNCTION SHOULD ONLY BE CALLED WHEN WE KNOW FOR SURE THAT THE USER FOR SAID USERNAME EXISTS
+&nbsp;     * @return the league that they are in
+&nbsp;     */
+&nbsp;    /*
+&nbsp;    public League updateLeagueForUser(String username) {
+&nbsp;        Optional&lt;Long&gt; rankingResult = ;
+&nbsp;        long ranking = 1;
+&nbsp;        if (rankingResult.isPresent()) {
+&nbsp;            ranking = rankingResult.get();
+&nbsp;        }
+&nbsp;        int amountOfUsers = getAllPeople().size();
+&nbsp;        // ranking as a percent corresponds to the league
+&nbsp;        double pointInRank = (double) ranking / (double) amountOfUsers;
+&nbsp;        // this number times the amount of leagues gives the league a user is in
+&nbsp;        return League.values()[(int) pointInRank * AMOUNT_LEAGUES];
+&nbsp;    }
+&nbsp;     */
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

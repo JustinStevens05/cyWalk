@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AdminService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Admins</a>
+</div>
+
+<h1>Coverage Summary for Class: AdminService (com.cywalk.spring_boot.Admins)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AdminService</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (27/33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AdminService$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (27/33)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Admins;
+&nbsp;
+&nbsp;import com.cywalk.spring_boot.Organizations.Organization;
+&nbsp;import com.cywalk.spring_boot.Organizations.OrganizationRepository;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class AdminService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AdminRepository adminRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AdminCredentialRepository adminCredentialRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AdminSessionRepository adminSessionRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private OrganizationRepository organizationRepository;
+&nbsp;
+&nbsp;    public boolean adminExistsForOrganization(String name, Organization organization) {
+<b class="fc">&nbsp;        return adminRepository.findByNameAndOrganization(name, organization).isEmpty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Admin&gt; getAdminByCombinedName(String combinedName) {
+<b class="nc">&nbsp;        return adminRepository.findById(combinedName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    AdminCredentials fromAdminModel(AdminModel adminModel, Organization organization) {
+<b class="fc">&nbsp;        Admin newAdmin = new Admin(organization, adminModel.getUsername());</b>
+<b class="fc">&nbsp;        return new AdminCredentials(newAdmin, adminModel.getPassword());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public AdminSession signUpAdmin(AdminModel adminModel, Organization organization) {
+<b class="fc">&nbsp;        AdminCredentials adminCredentials = fromAdminModel(adminModel, organization);</b>
+<b class="fc">&nbsp;        adminCredentials.setAdmin(adminRepository.save(adminCredentials.getAdmin()));</b>
+<b class="fc">&nbsp;        organization.addAdmin(adminCredentials.getAdmin());</b>
+<b class="fc">&nbsp;        adminCredentials = adminCredentialRepository.save(adminCredentials);</b>
+<b class="fc">&nbsp;        organization = organizationRepository.save(organization);</b>
+&nbsp;
+<b class="fc">&nbsp;        AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), organization.getId());</b>
+<b class="fc">&nbsp;        return adminSessionRepository.save(adminSession);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean adminExists(AdminModel adminModel) {
+<b class="fc">&nbsp;        return adminCredentialRepository.findById(adminModel.getUsername()).isEmpty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public Optional&lt;AdminSession&gt; loginAdmin(AdminModel adminModel, String orgname) {
+<b class="fc">&nbsp;        Optional&lt;Admin&gt; adminResult = adminRepository.findByNameAndOrganization(adminModel.getUsername(), organizationRepository.findByName(orgname).get());</b>
+<b class="pc">&nbsp;        if (adminResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        Optional&lt;AdminCredentials&gt; adminCredentialsResult = adminCredentialRepository.findAdminCredentialsByAdmin(adminResult.get());</b>
+<b class="pc">&nbsp;        if (adminCredentialsResult.isEmpty()) {</b>
+<b class="nc">&nbsp;            return Optional.empty();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        AdminCredentials adminCredentials = adminCredentialsResult.get();</b>
+<b class="pc">&nbsp;        if (adminCredentials.getPassword().equals(adminModel.getPassword())) {</b>
+<b class="fc">&nbsp;            AdminSession adminSession = new AdminSession(adminCredentials.getAdmin(), adminCredentials.getAdmin().getOrganization().getId());</b>
+<b class="fc">&nbsp;            return Optional.of(adminSessionRepository.save(adminSession));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Optional.empty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Admin&gt; getAdminFromSession(Long key) {
+<b class="fc">&nbsp;        Optional&lt;AdminSession&gt; adminSession = adminSessionRepository.findById(key);</b>
+<b class="fc">&nbsp;        return adminSession.map(AdminSession::getAdmin);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Optional&lt;Admin&gt; getAdminFromName(String name) {
+<b class="nc">&nbsp;        return adminRepository.findById(name);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    public boolean logoutAdmin(Long sessionKey) {
+<b class="fc">&nbsp;        Optional&lt;AdminSession&gt; adminSession = adminSessionRepository.findById(sessionKey);</b>
+<b class="fc">&nbsp;        System.out.println(adminSessionRepository.findAll());</b>
+<b class="pc">&nbsp;        if (adminSession.isEmpty()) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        adminSessionRepository.delete(adminSession.get());</b>
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

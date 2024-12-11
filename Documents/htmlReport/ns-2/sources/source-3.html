@@ -1,0 +1,231 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > AchievementService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Achievements</a>
+</div>
+
+<h1>Coverage Summary for Class: AchievementService (com.cywalk.spring_boot.Achievements)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AchievementService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (9/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (27/42)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Achievements;
+&nbsp;
+&nbsp;import com.cywalk.spring_boot.Achievements.Achievement;
+&nbsp;import com.cywalk.spring_boot.Achievements.AchievementRepository;
+&nbsp;import com.cywalk.spring_boot.Users.People;
+&nbsp;import com.cywalk.spring_boot.Users.PeopleRepository;
+&nbsp;import com.cywalk.spring_boot.Locations.LocationDay;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.util.*;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class AchievementService {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private AchievementRepository achievementRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PeopleRepository peopleRepository;
+&nbsp;
+&nbsp;    private static final double FIVE_MILES = 5 * 1609.34;
+&nbsp;    private static final double TEN_MILES = 10 * 1609.34;
+&nbsp;    private static final double TWENTY_MILES = 20 * 1609.34;
+&nbsp;
+&nbsp;    public void initAchievements() {
+<b class="fc">&nbsp;        createIfNotExists(&quot;5 Miles&quot;, &quot;You traveled a total of at least 5 miles!&quot;, &quot;http://example.com/5miles.png&quot;);</b>
+<b class="fc">&nbsp;        createIfNotExists(&quot;10 Miles&quot;, &quot;You traveled a total of at least 10 miles!&quot;, &quot;http://example.com/10miles.png&quot;);</b>
+<b class="fc">&nbsp;        createIfNotExists(&quot;20 Miles&quot;, &quot;You traveled a total of at least 20 miles!&quot;, &quot;http://example.com/20miles.png&quot;);</b>
+<b class="fc">&nbsp;        createIfNotExists(&quot;5 Miles a Day for a Week&quot;, &quot;You traveled at least 5 miles every day for 7 days straight!&quot;, &quot;http://example.com/5miles_7days.png&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void createIfNotExists(String name, String description, String imageUrl) {
+<b class="pc">&nbsp;        if (achievementRepository.findByName(name).isEmpty()) {</b>
+<b class="fc">&nbsp;            Achievement a = new Achievement(name, description, imageUrl);</b>
+<b class="fc">&nbsp;            achievementRepository.save(a);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void checkAndAwardAchievements(People user) {
+<b class="fc">&nbsp;        initAchievements();</b>
+&nbsp;
+<b class="fc">&nbsp;        Set&lt;Achievement&gt; userAchievements = user.getAchievements();</b>
+&nbsp;
+<b class="fc">&nbsp;        double totalDistance = getTotalDistanceOfUser(user);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (totalDistance &gt;= FIVE_MILES) {</b>
+<b class="nc">&nbsp;            awardAchievement(user, &quot;5 Miles&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (totalDistance &gt;= TEN_MILES) {</b>
+<b class="nc">&nbsp;            awardAchievement(user, &quot;10 Miles&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (totalDistance &gt;= TWENTY_MILES) {</b>
+<b class="nc">&nbsp;            awardAchievement(user, &quot;20 Miles&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (hasReachedFiveMilesEveryDayForWeek(user)) {</b>
+<b class="nc">&nbsp;            awardAchievement(user, &quot;5 Miles a Day for a Week&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        peopleRepository.save(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean hasReachedFiveMilesEveryDayForWeek(People user) {
+&nbsp;
+<b class="fc">&nbsp;        List&lt;LocationDay&gt; days = user.getLocations();</b>
+&nbsp;
+<b class="fc">&nbsp;        LocalDate today = LocalDate.now();</b>
+<b class="fc">&nbsp;        List&lt;LocationDay&gt; last7Days = days.stream()</b>
+<b class="pc">&nbsp;                .filter(d -&gt; !d.getDate().isAfter(today) &amp;&amp; !d.getDate().isBefore(today.minusDays(6)))</b>
+<b class="fc">&nbsp;                .collect(Collectors.toList());</b>
+&nbsp;
+<b class="pc">&nbsp;        if (last7Days.size() &lt; 7) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (LocationDay ld : last7Days) {</b>
+<b class="nc">&nbsp;            if (ld.getTotalDistance() &lt; FIVE_MILES) {</b>
+<b class="nc">&nbsp;                return false;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private double getTotalDistanceOfUser(People user) {
+&nbsp;
+<b class="fc">&nbsp;        double total = 0;</b>
+<b class="fc">&nbsp;        for (LocationDay ld : user.getLocations()) {</b>
+<b class="fc">&nbsp;            total += ld.getTotalDistance();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return total;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void awardAchievement(People user, String achievementName) {
+<b class="nc">&nbsp;        Optional&lt;Achievement&gt; achOpt = achievementRepository.findByName(achievementName);</b>
+<b class="nc">&nbsp;        if (achOpt.isPresent()) {</b>
+<b class="nc">&nbsp;            Achievement achievement = achOpt.get();</b>
+<b class="nc">&nbsp;            if (!user.getAchievements().contains(achievement)) {</b>
+<b class="nc">&nbsp;                user.addAchievement(achievement);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Achievement&gt; getAllAchievements() {
+<b class="nc">&nbsp;        return achievementRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Set&lt;Achievement&gt; getAchievementsOfUser(People user) {
+<b class="nc">&nbsp;        return user.getAchievements();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LocationActivity</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Locations</a>
+</div>
+
+<h1>Coverage Summary for Class: LocationActivity (com.cywalk.spring_boot.Locations)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LocationActivity</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (7/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (3/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34.2%
+  </span>
+  <span class="absValue">
+    (13/38)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LocationActivity$HibernateInstantiator$S0GTwHjR</td>
+  </tr>
+  <tr>
+    <td class="name">LocationActivity$HibernateProxy$JpMmHoOU</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (7/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (3/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34.2%
+  </span>
+  <span class="absValue">
+    (13/38)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Locations;
+&nbsp;
+&nbsp;import io.swagger.v3.oas.annotations.media.Schema;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;@Schema(description = &quot;The activity or location session recording&quot;)
+&nbsp;public class LocationActivity {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    @Schema(description = &quot;primary key in the database&quot;)
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+&nbsp;    @Schema(description = &quot;The locations logged during this activity&quot;)
+&nbsp;    private List&lt;Location&gt; locations;
+&nbsp;
+&nbsp;    @Schema(description = &quot;The total distance traveled during this session&quot;)
+&nbsp;    private double totalDistance;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Whether the activity is finished or not.
+&nbsp;     */
+&nbsp;    @Schema(description = &quot;Whether this is actively being update or whether this is complete&quot;)
+&nbsp;    private boolean finished;
+&nbsp;
+<b class="nc">&nbsp;    public LocationActivity(Long id, List&lt;Location&gt; locations) {</b>
+<b class="nc">&nbsp;        this.id = id;</b>
+<b class="nc">&nbsp;        this.locations = locations;</b>
+<b class="nc">&nbsp;        this.finished = false;</b>
+<b class="nc">&nbsp;        this.totalDistance = 0;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public LocationActivity(Long id, List&lt;Location&gt; locations, boolean finished) {</b>
+<b class="nc">&nbsp;        this.id = id;</b>
+<b class="nc">&nbsp;        this.locations = locations;</b>
+<b class="nc">&nbsp;        this.finished = finished;</b>
+<b class="nc">&nbsp;        this.totalDistance = 0;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public LocationActivity() {</b>
+<b class="fc">&nbsp;        this.locations = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.finished = false;</b>
+<b class="fc">&nbsp;        this.totalDistance = 0;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public LocationActivity(Long id, List&lt;Location&gt; locations, double totalDistance, boolean finished) {</b>
+<b class="nc">&nbsp;        this.id = id;</b>
+<b class="nc">&nbsp;        this.locations = locations;</b>
+<b class="nc">&nbsp;        this.totalDistance = totalDistance;</b>
+<b class="nc">&nbsp;        this.finished = finished;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double getTotalDistance() {
+<b class="fc">&nbsp;        return totalDistance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTotalDistance(double totalDistance) {
+<b class="nc">&nbsp;        this.totalDistance = totalDistance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public double calculateAndUpdateDistance() {
+<b class="nc">&nbsp;        double distance = 0;</b>
+<b class="nc">&nbsp;        for (int i = 1; i &lt; locations.size(); i++) {</b>
+<b class="nc">&nbsp;            LocationUtils.calculateDistance(locations.get(i - 1), locations.get(i));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        totalDistance = distance;</b>
+<b class="nc">&nbsp;        return distance;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Long getId() {
+<b class="fc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(Long id) {
+<b class="nc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Location&gt; getLocations() {
+<b class="fc">&nbsp;        return locations;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setLocations(List&lt;Location&gt; locations) {
+<b class="nc">&nbsp;        this.locations = locations;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addLocationToActivity(Location newLocation) {
+<b class="pc">&nbsp;        if (this.locations == null) {</b>
+<b class="nc">&nbsp;            this.locations = new ArrayList&lt;&gt;();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        this.locations.add(newLocation);</b>
+&nbsp;        // update distance here
+<b class="fc">&nbsp;        if (locations.size() &gt; 1) {</b>
+<b class="fc">&nbsp;            totalDistance += LocationUtils.calculateDistance(locations.get(locations.size() - 2), newLocation);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isFinished() {
+<b class="fc">&nbsp;        return finished;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setFinished(boolean finished) {
+<b class="fc">&nbsp;        this.finished = finished;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A valid session is one that has a start and end. This means at least two logged locations
+&nbsp;     * @return Whether the session is valid/complete
+&nbsp;     */
+&nbsp;    public boolean validSession() {
+<b class="nc">&nbsp;        return this.locations.size() &gt; 1;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

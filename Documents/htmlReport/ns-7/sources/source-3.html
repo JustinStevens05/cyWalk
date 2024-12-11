@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > LocationController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Locations</a>
+</div>
+
+<h1>Coverage Summary for Class: LocationController (com.cywalk.spring_boot.Locations)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LocationController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.7%
+  </span>
+  <span class="absValue">
+    (5/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.7%
+  </span>
+  <span class="absValue">
+    (5/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Locations;
+&nbsp;
+&nbsp;import com.cywalk.spring_boot.Users.PeopleService;
+&nbsp;import io.swagger.v3.oas.annotations.Operation;
+&nbsp;import io.swagger.v3.oas.annotations.Parameter;
+&nbsp;import io.swagger.v3.oas.annotations.responses.ApiResponse;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@RestController
+&nbsp;@RequestMapping(&quot;/{key}/locations&quot;)
+<b class="fc">&nbsp;public class LocationController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private LocationService locationService;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private PeopleService peopleService;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;return a location by its id in the database&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public Optional&lt;Location&gt; getLocationById(
+&nbsp;            @PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the session key for the user. Completely unused&quot;, example = &quot;1&quot;) Long key,
+&nbsp;            @PathVariable @Parameter(name = &quot;id&quot;, description = &quot;the id of the location in the database&quot;, example = &quot;121&quot;) Long id) {
+<b class="nc">&nbsp;        return locationService.getLocationById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;get all of the locations of a user&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping
+&nbsp;    public Optional&lt;List&lt;Location&gt;&gt; getAllLocations(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the session key of a user&quot;, example = &quot;1&quot;) Long key) {
+<b class="nc">&nbsp;        return locationService.getAllLocationsOfUser(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary  = &quot;deletes a location from the database&quot;)
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public void deleteLocation(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the session key of the user&quot;, example = &quot;1&quot;) Long key,
+&nbsp;                               @PathVariable @Parameter(name = &quot;id&quot;, description = &quot;the id of the location in the database&quot;, example = &quot;121&quot;) Long id) {
+<b class="nc">&nbsp;        locationService.deleteLocation(key, id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;starts a location session or activity&quot;)
+&nbsp;    @PostMapping(&quot;/start&quot;)
+&nbsp;    public void startSession(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the session key of the user&quot;, example = &quot;1&quot;) Long key) {
+<b class="fc">&nbsp;        locationService.startActivity(peopleService.getUserFromKey(key).get());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary =  &quot;log a location onto the current session. DOES NOT WORK IF THERE IS NO RUNNING SESSION&quot;)
+&nbsp;    @PostMapping(&quot;/log&quot;)
+&nbsp;    public void logLocation(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the session key of the user&quot;, example = &quot;1&quot;) Long key,
+&nbsp;                            @RequestBody @Parameter(name = &quot;location&quot;, description = &quot;the location to add&quot;) Location location) {
+<b class="fc">&nbsp;        locationService.appendLocation(peopleService.getUserFromKey(key).get(), location);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;ends a location session or activity&quot;)
+&nbsp;    @DeleteMapping(&quot;/end&quot;)
+&nbsp;    public void endSession(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user session key&quot;, example = &quot;1&quot;) Long key) {
+<b class="fc">&nbsp;        locationService.endSession(peopleService.getUserFromKey(key).get());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;creates a new location day. Might be useful for loading data&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @PostMapping(&quot;/day&quot;)
+&nbsp;    public LocationDay createLocation(
+&nbsp;            @PathVariable @Parameter(name = &quot;key&quot;, description = &quot;unused&quot;) Long key,
+&nbsp;            @RequestBody @Parameter(name = &quot;locationDay&quot;, description = &quot;the location day to load into the database&quot;) LocationDay locationDay)
+&nbsp;    {
+<b class="nc">&nbsp;        return locationService.saveLocationDay(locationDay);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;Get all of the location days in the database&quot;, description = &quot;reminder that a location day is a list of location activities in that day. a location activity is a list of raw locations&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/day&quot;)
+&nbsp;    public List&lt;LocationDay&gt; getAllLocationDays(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;unused&quot;) Long key) {
+<b class="nc">&nbsp;        return locationService.getAllLocationDays();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;get today&#39;s location&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/today&quot;)
+&nbsp;    public Optional&lt;LocationDay&gt; getLocationsFromToday(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user&#39;s session key&quot;) String key) {
+<b class="nc">&nbsp;        return locationService.getTodaysLocation(Long.valueOf(key));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Operation(summary = &quot;get the LocationDay from today&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/total&quot;)
+&nbsp;    public Optional&lt;LocationDay&gt; getDistanceFromDay(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;the user&#39;s session key&quot;) Long key) {
+<b class="fc">&nbsp;        return locationService.totalDistanceFromUser(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Operation(summary = &quot;get the LocationDay from today&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    @GetMapping(&quot;/user/{username}/total&quot;)
+&nbsp;    public Optional&lt;LocationDay&gt; getDistanceFromDayUsername(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;ignore for this just give a 0&quot;, example = &quot;0&quot;) Long key,
+&nbsp;                                                            @PathVariable @Parameter(name = &quot;username&quot;, description = &quot;the user&#39;s username&quot;, example = &quot;ckugel&quot;) String username) {
+<b class="nc">&nbsp;        return locationService.totalDistanceFromUser(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/week/total&quot;)
+&nbsp;    @Operation(summary = &quot;Weekly distance&quot;, description = &quot;gets the total distance traveled by a user over the course of the past week&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    public Optional&lt;Double&gt; getTotalDistancePastWeek(@PathVariable Long key) {
+<b class="nc">&nbsp;        return locationService.totalDistanceFromUserWeek(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/user/{username}/week/total&quot;)
+&nbsp;    @Operation(summary = &quot;Weekly distance&quot;, description = &quot;gets the total distance traveled by a user over the course of the past week&quot;)
+&nbsp;    @ApiResponse(useReturnTypeSchema = true)
+&nbsp;    public Optional&lt;Double&gt; getTotalDistancePastWeek(@PathVariable @Parameter(name = &quot;key&quot;, description = &quot;ignore, fill 0&quot;, example = &quot;0&quot;) Long key,
+&nbsp;                                                     @PathVariable @Parameter(name = &quot;username&quot;, description = &quot;the user&#39;s id&quot;, example = &quot;1&quot;) String username) {
+<b class="nc">&nbsp;        return locationService.totalDistanceFromUserWeek(username);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FriendRequestRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.cywalk.spring_boot.Friends</a>
+</div>
+
+<h1>Coverage Summary for Class: FriendRequestRepository (com.cywalk.spring_boot.Friends)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">FriendRequestRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.cywalk.spring_boot.Friends;
+&nbsp;
+&nbsp;import com.cywalk.spring_boot.Users.People;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;public interface FriendRequestRepository extends JpaRepository&lt;FriendRequest, String&gt; {
+&nbsp;    Optional&lt;FriendRequest&gt; findByRequestID(Long id);
+&nbsp;
+&nbsp;    List&lt;FriendRequest&gt; findAllBySender(People peopleRequesting);
+&nbsp;    List&lt;FriendRequest&gt; findAllByReceiver(People peopleGettingRequested);
+&nbsp;
+&nbsp;    Optional&lt;FriendRequest&gt; findBySenderAndReceiver(People peopleRequesting, People peopleGettingRequested);
+&nbsp;    List&lt;FriendRequest&gt; findByReceiverAndStatus(People receiver, FriendRequestStatus status);
+&nbsp;    List&lt;FriendRequest&gt; findByReceiverOrSender(People receiver, People sender);
+&nbsp;    Optional&lt;FriendRequest&gt; findByReceiverAndSender(People receiver, People requester);
+&nbsp;    List&lt;FriendRequest&gt; findByReceiverOrSenderAndStatus(People receiver, People requester, FriendRequestStatus status);
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-12-10 19:22</div>
+</div>
+</body>
+</html>
