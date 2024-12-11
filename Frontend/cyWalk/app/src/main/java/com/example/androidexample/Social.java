@@ -87,7 +87,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
         viewPager2.setAdapter(myViewPagerAdapter);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         userType = extras.getString("userType");
 
         // NAVIGATION BAR
@@ -97,7 +97,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Social.this, Dashboard.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -105,7 +105,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             }
             else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Social.this, Goals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -113,7 +113,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             }
             else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Social.this, Social.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -121,7 +121,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             }
             else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Social.this, Profile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -157,7 +157,7 @@ public class Social extends AppCompatActivity implements WebSocketListener{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Social.this, Friends.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
             }

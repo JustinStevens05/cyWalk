@@ -58,7 +58,7 @@ public class OrganizationLookUp extends AppCompatActivity {
         body = findViewById(R.id.body);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         userType = extras.getString("userType");
         username = extras.getString("username");
 
@@ -70,7 +70,7 @@ public class OrganizationLookUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
             }
@@ -188,7 +188,7 @@ public class OrganizationLookUp extends AppCompatActivity {
                         Log.e("Volley Error", error.toString());
                         //title.setText(URL_ORGANIZATIONS_JOIN);
                         Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
-                        intent.putExtra("key", key);
+                        intent.putExtra("id", key);
                         intent.putExtra("userType", userType);
                         startActivity(intent);
                     }

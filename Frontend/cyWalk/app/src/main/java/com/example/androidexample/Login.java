@@ -138,11 +138,11 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response after login attempt: ", response.toString());
                         try {
                             // Parse JSON object data
-                            key = response.getString("key");
+                            key = response.getString("id");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", key);
+                                intent.putExtra("id", key);
                                 intent.putExtra("userType", userType);
                                 //errorMsg.setText("success " + key);
                                 startActivity(intent);
@@ -205,11 +205,11 @@ public class Login extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            key = response.getString("key");
+                            key = response.getString("id");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
-                                intent.putExtra("key", key);
+                                intent.putExtra("id", key);
                                 intent.putExtra("userType", userType);
                                 //errorMsg.setText("success " + userKey);
                                 startActivity(intent);

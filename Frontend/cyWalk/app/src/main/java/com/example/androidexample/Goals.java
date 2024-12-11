@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Goals page for the users to see
- * */
+ */
 public class Goals extends AppCompatActivity {
 
     private TextView daily_step_disp;
@@ -71,7 +71,7 @@ public class Goals extends AppCompatActivity {
         newGoalsButton = findViewById(R.id.setGoalsBtn);
         newDaily = findViewById(R.id.new_daily);
         newWeekly = findViewById(R.id.new_weekly);
-        submitButton =findViewById(R.id.submitBtn);
+        submitButton = findViewById(R.id.submitBtn);
         newPlanButton = findViewById(R.id.newPlanBtn);
         newGoalLayout = findViewById(R.id.newGoalLayout);
         daily_step_disp = findViewById(R.id.dailySteps);
@@ -92,48 +92,44 @@ public class Goals extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Goals.this, Dashboard.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_goals) {
+            } else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Goals.this, Goals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_social) {
+            } else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Goals.this, Social.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_profile) {
+            } else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Goals.this, Profile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         });
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         userType = extras.getString("userType");
-        URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
-        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/week/total";
+        URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
+        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/" + key + "/locations/week/total";
 
-        if(userType.equals("guest")){
+        if (userType.equals("guest")) {
             orgGoalTitle.setVisibility(View.INVISIBLE);
             addPlanLayout.setVisibility(View.INVISIBLE);
         }
@@ -191,7 +187,7 @@ public class Goals extends AppCompatActivity {
                             username = response.getString("username");
                             URL_GET_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
                             URL_NEW_GOALS = "http://coms-3090-072.class.las.iastate.edu:8080/goals/" + username;
-                            URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
+                            URL_GET_DAILY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/" + username + "/total";
 
                             getJsonObjStepGoals();
 
@@ -228,7 +224,7 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *gets the current step goals for the user
+     * gets the current step goals for the user
      */
     private void getJsonObjStepGoals() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -293,7 +289,7 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *updates the users step goals locally and changes their goals that are stored in the database
+     * updates the users step goals locally and changes their goals that are stored in the database
      */
     private void setJsonObjStepGoals() throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -344,8 +340,8 @@ public class Goals extends AppCompatActivity {
     }
 
     /**
-     *gets the users username based off of the session key
-     *switches to the join organizations page and passes in the session key and the retrieved username
+     * gets the users username based off of the session key
+     * switches to the join organizations page and passes in the session key and the retrieved username
      */
     private void switchToJoinOrg() {
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(
@@ -359,7 +355,7 @@ public class Goals extends AppCompatActivity {
                             username = response.getString("username");
 
                             Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
-                            intent.putExtra("key", key);
+                            intent.putExtra("id", key);
                             intent.putExtra("username", username);
                             intent.putExtra("userType", userType);
                             startActivity(intent);

@@ -3,14 +3,20 @@ package com.example.androidexample;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,22 +31,25 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * The users view that shows them their profile
- * */
+ */
 public class Profile extends AppCompatActivity {
 
     private static String key;
@@ -51,7 +60,10 @@ public class Profile extends AppCompatActivity {
     private Button btn_logout;
     private Button btn_edit_avatar;
     public String URL_IMAGE = null;
+    private String URL_ACHIEVEMENTS = null;
     private String userType;
+    ListView lv_achievements;
+    private ArrayList<String> achievementsList;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -82,14 +94,15 @@ public class Profile extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("key");
+        key = extras.getString("id");
         userType = extras.getString("userType");
         //txt_response.setText("Key: " + key);
-        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
         btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
         img_profile_avatar = findViewById(R.id.profile_img_avatar);
+        lv_achievements = findViewById(R.id.lv_achievements);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -98,46 +111,44 @@ public class Profile extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Profile.this, Dashboard.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_goals) {
+            } else if (item.getItemId() == R.id.nav_goals) {
                 intent = new Intent(Profile.this, Goals.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_social) {
+            } else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Profile.this, Social.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else if (item.getItemId() == R.id.nav_profile) {
+            } else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Profile.this, Profile.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         });
         makeUsernameReq();
 
-        URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
+        URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/" + username;
+        URL_ACHIEVEMENTS = "http://coms-3090-072.class.las.iastate.edu:8080/achievements/user/" + key;
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
             Intent intent = null;
+
             @Override
             public void onClick(View v) {
                 intent = new Intent(Profile.this, Login.class);
@@ -150,14 +161,14 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
                 // Navigate to ImageUploadActivity
                 Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
-                intent.putExtra("key", key);
+                intent.putExtra("id", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 makeImageRequest();
             }
         });
 
-
+    makeAchievementsRequest();
     }
 
     /**
@@ -215,7 +226,7 @@ public class Profile extends AppCompatActivity {
 
     /**
      * Making image request
-     * */
+     */
     private void makeImageRequest() {
 
         ImageRequest imageRequest = new ImageRequest(
@@ -244,4 +255,50 @@ public class Profile extends AppCompatActivity {
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
     }
+
+    private void makeAchievementsRequest() {
+        // Initialize the achievements list
+        achievementsList = new ArrayList<>();
+
+        JsonArrayRequest jsonArrReq = new JsonArrayRequest(
+                Request.Method.GET, URL_ACHIEVEMENTS, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("Volley Response", response.toString());
+                        try {
+                            // Parse each JSONObject in the JSONArray
+                            for (int i = 0; i < response.length(); i++) {
+                                JSONObject current = response.getJSONObject(i);
+                                String achievementEntry = current.toString(); // Convert JSONObject to String
+                                achievementsList.add("Achievement " + i + " " + achievementEntry); // Add to the list
+                            }
+
+                            if (achievementsList.isEmpty()) {
+                                achievementsList.add("No achievements available.");
+                            }
+
+
+                            // Update ListView with the fetched data
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Profile.this, android.R.layout.simple_list_item_1, achievementsList);
+                            lv_achievements.setAdapter(adapter);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(Profile.this, "Failed to parse achievements.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        Toast.makeText(Profile.this, "Failed to fetch achievements. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
 }
