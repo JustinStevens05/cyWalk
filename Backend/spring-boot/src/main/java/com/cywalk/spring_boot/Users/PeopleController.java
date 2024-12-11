@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.cywalk.spring_boot.Organizations.OnlineUserService;
 import com.cywalk.spring_boot.Organizations.OrganizationOnlineUsersWebSocket;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
 
 
 import java.io.File;
@@ -79,9 +80,10 @@ public class PeopleController {
      */
     @Operation(summary = "Log in a user with the corresponding user request")
     @PutMapping
-    public ResponseEntity<Key> login(@RequestBody @Parameter(name = "userRequest", description = "the username password combination to sign in") UserRequest userRequest) {
+    public ResponseEntity<Map<String,Object>> login(@RequestBody UserRequest userRequest) {
         return peopleService.login(userRequest);
     }
+
 
     /**
      * log out a user and delete the cooresponding usermodel from the database
