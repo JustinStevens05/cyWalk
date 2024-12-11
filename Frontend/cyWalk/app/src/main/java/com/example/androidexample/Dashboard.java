@@ -134,7 +134,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
     private boolean isCameraMoved = false; // To track if the camera was moved initially
     private String userType;
 
-    private String URL_JSON_GET_DISTANCE = null;
+
     private String URL_JSON_GET_USER = null;
     private String URL_JSON_POST_LOCATION = null;
     private String URL_WS_LOCATION = null;
@@ -162,7 +162,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
 
         server_url_chunk = "coms-3090-072.class.las.iastate.edu:8080";
         local_url_chunk = "10.0.2.2:8080";
-        URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
+
         URL_JSON_GET_USER = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_JSON_POST_LOCATION = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/createLocation";
         URL_WS_LOCATION = "ws://coms-3090-072.class.las.iastate.edu:8080/locations/sessions?key="+key;
@@ -396,48 +396,7 @@ public class Dashboard extends AppCompatActivity implements OnMapReadyCallback, 
         }
     }
 
-    /**
-     * Asks the backend server for the distance that the user has walked so far in the day using a volley request.
-     * retrieves the double from the database and then changes the text on the screen to reflect this new distance.
-     */
-    private void requestDailyDistance() {
-        String URL_JSON_GET_DISTANCE = "http://" + server_url_chunk + "/"+key+"/location/total";
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.GET, URL_JSON_GET_DISTANCE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("Volley Response", response);
-                        // msgResponse.setText(response.toString());
-                        txt_daily_distance.setText("Daily Distance: " + response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley Error", error.toString());
-                        // msgResponse.setText(error.toString());
-                    }
-                }
-            ) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
-//                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-//                params.put("param1", "value1");
-//                params.put("param2", "value2");
-                return params;
-            }
-        };
-        // Adding request to request queue
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-    }
+
 
     /**
      * requests the username from the database using the session key and then sets the welcome text equal to the username retrieved

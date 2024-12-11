@@ -47,6 +47,8 @@
         android:textSize="15sp"
         android:textColor="@color/cywalkRed"
         android:text="Daily Distance:\n" />
+
+
     </LinearLayout>
 
     <Button

@@ -207,7 +207,7 @@ public class CharliesTests {
         } catch (InterruptedException e) {}
 
         // Verify that the achievements ListView is populated
-        onView(withId(R.id.lv_achievements)).check(matches(hasMinimumChildCount(1)));
+        onView(withId(R.id.tv_achievements)).check(matches(hasMinimumChildCount(1)));
 
     }
 }

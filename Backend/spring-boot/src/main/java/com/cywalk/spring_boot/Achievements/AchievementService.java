@@ -26,10 +26,10 @@ public class AchievementService {
     private static final double TWENTY_MILES = 20 * 1609.34;
 
     public void initAchievements() {
-        createIfNotExists("5 Miles", "You traveled a total of at least 5 miles!", "http://example.com/5miles.png");
-        createIfNotExists("10 Miles", "You traveled a total of at least 10 miles!", "http://example.com/10miles.png");
-        createIfNotExists("20 Miles", "You traveled a total of at least 20 miles!", "http://example.com/20miles.png");
-        createIfNotExists("5 Miles a Day for a Week", "You traveled at least 5 miles every day for 7 days straight!", "http://example.com/5miles_7days.png");
+        createIfNotExists("5 Miles", "You traveled a total of at least 5 miles!", "https://png.pngtree.com/png-clipart/20230811/original/pngtree-ranking-medal-icon-illustration-5th-place-award-mark-achievement-vector-picture-image_10347103.png");
+        createIfNotExists("10 Miles", "You traveled a total of at least 10 miles!", "https://dgalywyr863hv.cloudfront.net/challenges/3101/3101-logo.png");
+        createIfNotExists("20 Miles", "You traveled a total of at least 20 miles!", "https://d1nhzlodq7rhe4.cloudfront.net/5k3twdgjmoowccg4.png");
+        createIfNotExists("5 Miles a Day for a Week", "You traveled at least 5 miles every day for 7 days straight!", "https://png.pngtree.com/png-clipart/20230823/original/pngtree-award-prize-batch-achievement-badge-picture-image_8233474.png");
     }
 
     private void createIfNotExists(String name, String description, String imageUrl) {

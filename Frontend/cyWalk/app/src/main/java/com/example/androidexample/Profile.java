@@ -62,8 +62,11 @@ public class Profile extends AppCompatActivity {
     private Button btn_edit_avatar;
     public String URL_IMAGE = null;
     private String URL_ACHIEVEMENTS = null;
+    private String URL_JSON_GET_DISTANCE = null;
+    private String URL_GLOBAL_LEADERBOARD = null;
+    private String URL_WEEKLY_DISTANCE;
     private String userType;
-    ListView lv_achievements;
+    TextView tv_achievements;
     private ArrayList<String> achievementsList;
 
     public String URL_LOG_OUT = null;
@@ -103,12 +106,15 @@ public class Profile extends AppCompatActivity {
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
+        URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
+        URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
+        URL_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
         URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
         btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
         img_profile_avatar = findViewById(R.id.profile_img_avatar);
-        lv_achievements = findViewById(R.id.lv_achievements);
+        tv_achievements = findViewById(R.id.tv_achievements);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.bottomNavigation);
@@ -167,10 +173,10 @@ public class Profile extends AppCompatActivity {
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 makeImageRequest();
+                makeDistanceRequest();
             }
         });
-
-    makeAchievementsRequest();
+    //makeAchievementsRequest();
     }
 
     /**
@@ -352,33 +358,20 @@ public class Profile extends AppCompatActivity {
     private void makeAchievementsRequest() {
         // Initialize the achievements list
         achievementsList = new ArrayList<>();
-
         JsonArrayRequest jsonArrReq = new JsonArrayRequest(
-                Request.Method.GET, URL_ACHIEVEMENTS, null,
+                Request.Method.GET, URL_GLOBAL_LEADERBOARD, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
-                        try {
-                            // Parse each JSONObject in the JSONArray
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject current = response.getJSONObject(i);
-                                String achievementEntry = current.toString(); // Convert JSONObject to String
-                                achievementsList.add("Achievement " + i + " " + achievementEntry); // Add to the list
+                        // Parse each JSONObject in the JSONArray
+                            try {
+                                JSONObject current = response.getJSONObject(0);
+                                String userEntry = current.getString("totalDistance");
+                                achievementsList.add(userEntry);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            if (achievementsList.isEmpty()) {
-                                achievementsList.add("No achievements available.");
-                            }
-
-
-                            // Update ListView with the fetched data
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(Profile.this, android.R.layout.simple_list_item_1, achievementsList);
-                            lv_achievements.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(Profile.this, "Failed to parse achievements.", Toast.LENGTH_SHORT).show();
-                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -392,6 +385,48 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonArrReq);
+    }
+
+    private void makeDistanceRequest() {
+        StringRequest stringReq = new StringRequest(
+                Request.Method.GET,
+                URL_WEEKLY_DISTANCE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Volley Response for distance request", response.toString());
+                        try {
+                            // Convert the string into a JSONObject
+                            JSONObject jsonObject = new JSONObject(response);
+
+
+                            // Access the 'totalDistance' field before the 'activities' array
+                            double totalDistance = jsonObject.getDouble("totalDistance");
+                            String achievements = "";
+                            if(totalDistance > 0) {
+                                achievements += "First Step: You reached a distance of 1\n";
+                            }
+                            if(totalDistance > 69) {
+                                achievements += "NICE: You reached a distance of 69\n";
+                            }
+
+                            tv_achievements.setText(achievements);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        );
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringReq);
     }
 
 }
