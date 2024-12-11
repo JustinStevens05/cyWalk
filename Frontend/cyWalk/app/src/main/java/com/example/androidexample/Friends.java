@@ -39,9 +39,7 @@ public class Friends extends AppCompatActivity {
 
     private Button backButton;
     private Button friendsSubmitButton;
-    private Button acceptFriendSubmitButton;
     private EditText friendUsername;
-    private EditText acceptedFriendUsername;
     private TextView newFriendTitle;
     private String key;
     private LinearLayout friendTable;
@@ -72,11 +70,9 @@ public class Friends extends AppCompatActivity {
         // Initialize views
         backButton = findViewById(R.id.returnButton);
         friendsSubmitButton = findViewById(R.id.friendSubmitBtn);
-        acceptFriendSubmitButton = findViewById(R.id.acceptFriendSubmitBtn);
         friendTable = findViewById(R.id.friendsTable);
         requestsTable = findViewById(R.id.requestsTable);
         friendUsername = findViewById(R.id.entryUsername);
-        acceptedFriendUsername = findViewById(R.id.acceptedFriendUsername);
         newFriendTitle = findViewById(R.id.newFriendTile);
         profileCard = findViewById(R.id.profileCard);
         profilePicture = findViewById(R.id.profilePicture);
@@ -107,16 +103,6 @@ public class Friends extends AppCompatActivity {
                 URL_NEW_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key +"/request/" + newFriendUsername;
 
                 makeFriendRequest();
-            }
-        });
-
-        acceptFriendSubmitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                acceptFriendUsername = acceptedFriendUsername.getText().toString();
-                URL_ACCEPT_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key +"/request/approve/" + acceptFriendUsername;
-
-                makeFriendApproval();
             }
         });
 
@@ -259,13 +245,21 @@ public class Friends extends AppCompatActivity {
                     public void onResponse(JSONArray response) {
                         Log.d("Volley Response", response.toString());
 
+                        requestsTable.removeAllViews();
                         if (response.length() > 0) {
-                            requestsTable.removeAllViews();
                             for (int i = 0; i < response.length(); i++) {
 
                                 try {
                                     String current = response.getString(i);
+                                    LinearLayout tempLayout = new LinearLayout(Friends.this);
                                     TextView tempText = new TextView(Friends.this);
+                                    Button tempButton = new Button(Friends.this);
+
+                                    tempLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT
+                                    ));
+                                    tempLayout.setOrientation(LinearLayout.HORIZONTAL);
 
                                     tempText.setLayoutParams(new LinearLayout.LayoutParams(
                                             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -274,7 +268,20 @@ public class Friends extends AppCompatActivity {
                                     tempText.setTextColor(Color.parseColor("#000000"));
                                     tempText.setText(current);
 
-                                    requestsTable.addView(tempText);
+                                    tempButton.setText("accept");
+                                    tempButton.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            acceptFriendUsername = current;
+                                            URL_ACCEPT_FRIEND = "http://coms-3090-072.class.las.iastate.edu:8080/friends/" + key +"/request/approve/" + acceptFriendUsername;
+
+                                            makeFriendApproval();
+                                        }
+                                    });
+
+                                    tempLayout.addView(tempText);
+                                    tempLayout.addView(tempButton);
+                                    requestsTable.addView(tempLayout);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -382,6 +389,7 @@ public class Friends extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
                         friendUsername.setText("");
+                        makeJsonPendingReq();
                         //temp.setText(error.toString());
                         //newFriendTitle.setText("couldn't find that user try again");
                     }
@@ -427,7 +435,7 @@ public class Friends extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error", error.toString());
-                        acceptedFriendUsername.setText("");
+                        makeJsonFriendReq();
                     }
                 }
         ) {

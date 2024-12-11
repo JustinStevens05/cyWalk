@@ -128,7 +128,7 @@ public class OrgLogin extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            userKey = response.getString("id");
                             orgId = response.getString("orgId");
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);
@@ -196,7 +196,7 @@ public class OrgLogin extends AppCompatActivity {
                         Log.d("Volley Response", response.toString());
                         try {
                             // Parse JSON object data
-                            userKey = response.getString("key");
+                            userKey = response.getString("id");
                             orgId = response.getString("orgId");
                             if(!userKey.isEmpty()) {
                                 Intent intent = new Intent(OrgLogin.this, OrgSetGoals.class);

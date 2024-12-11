@@ -53,6 +53,8 @@ public class Profile extends AppCompatActivity {
     public String URL_IMAGE = null;
     private String userType;
 
+    public String URL_LOG_OUT = null;
+
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -86,6 +88,7 @@ public class Profile extends AppCompatActivity {
         userType = extras.getString("userType");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
         btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
@@ -137,11 +140,9 @@ public class Profile extends AppCompatActivity {
         URL_IMAGE = "http://coms-3090-072.class.las.iastate.edu:8080/users/image/"+username;
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
-            Intent intent = null;
             @Override
             public void onClick(View v) {
-                intent = new Intent(Profile.this, Login.class);
-                startActivity(intent);
+                makeLogOutReq();
             }
         });
 
@@ -243,5 +244,46 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(imageRequest);
+    }
+
+    private void makeLogOutReq() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.DELETE, URL_LOG_OUT, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+                        Intent intent = new Intent(Profile.this, Login.class);
+                        startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                        Intent intent = new Intent(Profile.this, Login.class);
+                        startActivity(intent);
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 }
