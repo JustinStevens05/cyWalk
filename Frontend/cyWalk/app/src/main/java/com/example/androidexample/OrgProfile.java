@@ -37,6 +37,7 @@ public class OrgProfile extends AppCompatActivity {
     private String orgId = "";
     private String orgName;
     private TextView txt_username;
+    private Button logout;
 
 
     /**
@@ -55,6 +56,7 @@ public class OrgProfile extends AppCompatActivity {
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
         URL_LOG_OUT = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
         txt_username = findViewById(R.id.profile_txt_username);
+        logout = findViewById(R.id.profile_btn_logout);
 
         // NAVIGATION BAR
         BottomNavigationView botnav = findViewById(R.id.orgbottomNavigation);
@@ -98,6 +100,12 @@ public class OrgProfile extends AppCompatActivity {
             }
         });
 
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeLogOutReq();
+            }
+        });
         makeUsernameReq();
     }
 

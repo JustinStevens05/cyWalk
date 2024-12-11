@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +49,7 @@ public class OrganizationLookUp extends AppCompatActivity {
     private static String URL_ORGANIZATIONS_JOIN= null;
     private static String URL_ORGANIZATIONS_FIND= null;
     private static String URL_GET_ALL_ORGS = null;
+    private String URL_GOAL_SWITCH = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,21 +60,19 @@ public class OrganizationLookUp extends AppCompatActivity {
         body = findViewById(R.id.body);
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("id");
+        key = extras.getString("key");
         userType = extras.getString("userType");
         username = extras.getString("username");
 
         URL_ORGANIZATIONS_FIND = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/get-id";
         URL_GET_ALL_ORGS = "http://coms-3090-072.class.las.iastate.edu:8080/organizations/all";
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
-                intent.putExtra("id", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
+                getOrg();
             }
         });
 
@@ -188,7 +188,7 @@ public class OrganizationLookUp extends AppCompatActivity {
                         Log.e("Volley Error", error.toString());
                         //title.setText(URL_ORGANIZATIONS_JOIN);
                         Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
-                        intent.putExtra("id", key);
+                        intent.putExtra("key", key);
                         intent.putExtra("userType", userType);
                         startActivity(intent);
                     }
@@ -265,5 +265,54 @@ public class OrganizationLookUp extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(OrganizationLookUp.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 }

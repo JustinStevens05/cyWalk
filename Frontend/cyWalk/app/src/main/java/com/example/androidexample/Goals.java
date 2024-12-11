@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Goals page for the users to see
- */
+ * */
 public class Goals extends AppCompatActivity {
 
     private TextView daily_step_disp;
@@ -52,12 +52,15 @@ public class Goals extends AppCompatActivity {
     private String key = "";
     private String username;
     private String userType;
+    private String orgName;
 
     private static String URL_GET_GOALS = null;
     private static String URL_NEW_GOALS = null;
     private static String URL_GET_USERNAME = null;
     private static String URL_GET_DAILY_DIST = null;
     private static String URL_GET_WEEKLY_DIST = null;
+    private String URL_GOAL_SWITCH = null;
+    private String URL_GET_ORG_GOAL = null;
 
 
     @Override
@@ -92,28 +95,25 @@ public class Goals extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Goals.this, Dashboard.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            } else if (item.getItemId() == R.id.nav_goals) {
-                intent = new Intent(Goals.this, Goals.class);
-                intent.putExtra("id", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
-                finish();
+            }
+            else if (item.getItemId() == R.id.nav_goals) {
+                getOrg();
                 return true;
             } else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Goals.this, Social.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
             } else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Goals.this, Profile.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -124,14 +124,25 @@ public class Goals extends AppCompatActivity {
         });
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("id");
+        key = extras.getString("key");
         userType = extras.getString("userType");
-        URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key;
-        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/" + key + "/locations/week/total";
+        orgName = extras.getString("orgName");
+        URL_GET_USERNAME = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
+        URL_GET_WEEKLY_DIST = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/week/total";
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
+        URL_GET_ORG_GOAL = "";
 
-        if (userType.equals("guest")) {
+        if(userType.equals("GUEST")){
             orgGoalTitle.setVisibility(View.INVISIBLE);
             addPlanLayout.setVisibility(View.INVISIBLE);
+        }
+
+        if(orgName.equals("no org")){
+            addPlanLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    0
+            ));
+            getOrgGoals();
         }
 
         newPlanButton.setOnClickListener(new View.OnClickListener() {
@@ -355,7 +366,7 @@ public class Goals extends AppCompatActivity {
                             username = response.getString("username");
 
                             Intent intent = new Intent(Goals.this, OrganizationLookUp.class);
-                            intent.putExtra("id", key);
+                            intent.putExtra("key", key);
                             intent.putExtra("username", username);
                             intent.putExtra("userType", userType);
                             startActivity(intent);
@@ -483,5 +494,95 @@ public class Goals extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+    }
+
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(Goals.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
+    }
+
+    private void getOrgGoals() {
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(
+                Request.Method.GET,
+                URL_GET_ORG_GOAL,
+                null, // Pass null as the request body since it's a GET request
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response", response.toString());
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
     }
 }

@@ -70,6 +70,7 @@ public class Profile extends AppCompatActivity {
     private ArrayList<String> achievementsList;
 
     public String URL_LOG_OUT = null;
+    private String URL_GOAL_SWITCH = null;
 
     // ActivityResultLauncher for opening the gallery
     ActivityResultLauncher<Intent> openGalleryLauncher = registerForActivityResult(
@@ -100,7 +101,7 @@ public class Profile extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        key = extras.getString("id");
+        key = extras.getString("key");
         userType = extras.getString("userType");
         //txt_response.setText("Key: " + key);
         URL_JSON_OBJECT = "http://coms-3090-072.class.las.iastate.edu:8080/users/"+key;
@@ -108,6 +109,7 @@ public class Profile extends AppCompatActivity {
         URL_JSON_GET_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/"+key+"/locations/total";
         URL_GLOBAL_LEADERBOARD = "http://coms-3090-072.class.las.iastate.edu:8080/leaderboard";
         URL_WEEKLY_DISTANCE = "http://coms-3090-072.class.las.iastate.edu:8080/0/locations/user/"+username+"/total";
+        URL_GOAL_SWITCH = "http://coms-3090-072.class.las.iastate.edu:8080/users/" + key + "/organization";
         txt_username = findViewById(R.id.profile_txt_username);
         btn_logout = findViewById(R.id.profile_btn_logout);
         btn_edit_avatar = findViewById(R.id.profile_btn_edit_avatar);
@@ -121,28 +123,25 @@ public class Profile extends AppCompatActivity {
             Intent intent = null;
             if (item.getItemId() == R.id.nav_dashboard) {
                 intent = new Intent(Profile.this, Dashboard.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
-            } else if (item.getItemId() == R.id.nav_goals) {
-                intent = new Intent(Profile.this, Goals.class);
-                intent.putExtra("id", key);
-                intent.putExtra("userType", userType);
-                startActivity(intent);
-                finish();
+            }
+            else if (item.getItemId() == R.id.nav_goals) {
+                getOrg();
                 return true;
             } else if (item.getItemId() == R.id.nav_social) {
                 intent = new Intent(Profile.this, Social.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
                 return true;
             } else if (item.getItemId() == R.id.nav_profile) {
                 intent = new Intent(Profile.this, Profile.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 finish();
@@ -170,7 +169,7 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
                 // Navigate to ImageUploadActivity
                 Intent intent = new Intent(Profile.this, ImageUploadActivity.class);
-                intent.putExtra("id", key);
+                intent.putExtra("key", key);
                 intent.putExtra("userType", userType);
                 startActivity(intent);
                 makeImageRequest();
@@ -304,6 +303,56 @@ public class Profile extends AppCompatActivity {
 
         // Adding request to request queue
         VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjReq);
+    }
+
+    /**
+     * requests the organization of the user if they are part of one
+     */
+    private void getOrg() {
+
+        StringRequest stringRequest = new StringRequest(
+                Request.Method.GET,
+                URL_GOAL_SWITCH,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Handle the successful response here
+                        Log.d("Volley Response", response);
+                        Intent intent = new Intent(Profile.this, Goals.class);
+                        intent.putExtra("key", key);
+                        intent.putExtra("userType", userType);
+                        intent.putExtra("orgName", response);
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle any errors that occur during the request
+                        Log.e("Volley Error", error.toString());
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", "Bearer YOUR_ACCESS_TOKEN");
+//                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+//                params.put("param1", "value1");
+//                params.put("param2", "value2");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 
     private void makeAchievementsRequest() {

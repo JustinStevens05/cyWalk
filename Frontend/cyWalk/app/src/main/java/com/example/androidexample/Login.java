@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
     private String key = "";
     private String username;
     private String password;
-    private String userType = "user";
+    private String userType = "";
     private Button signUpButton;        // define signup button variable
 
     @Override
@@ -139,6 +139,7 @@ public class Login extends AppCompatActivity {
                         try {
                             // Parse JSON object data
                             key = response.getString("id");
+                            userType = response.getString("type");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
@@ -206,6 +207,7 @@ public class Login extends AppCompatActivity {
                         try {
                             // Parse JSON object data
                             key = response.getString("id");
+                            userType = response.getString("type");
                             //extraMsg.setText("working " + userKey);
                             if(!key.isEmpty()) {
                                 Intent intent = new Intent(Login.this, Dashboard.class);
